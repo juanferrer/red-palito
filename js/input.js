@@ -8,7 +8,9 @@ var camRotSpeed = 0.01;
 var keyState = {};
 
 var isPaused = false;
-var canChangePause = true;
+var canTogglePause = true;
+var isCamLocked = true;
+var canToggleCamLock = true;
 
 /**
  * Initialise keyboard to keep track what keys have
@@ -38,36 +40,36 @@ function resolveInput() {
 
 		// Left
 		if (keyState[37]) {
-			move("left");
+			move(camera, "left");
 		}
 		// Right
 		if (keyState[39]) {
-			move("right");
+			move(camera, "right");
 		}
 		// Up
 		if (keyState[38]) {
-			move("front");
+			move(camera, "front");
 		}
 		// Down
 		if (keyState[40]) {
-			move("back");
+			move(camera, "back");
 		}
 
 		// A
 		if (keyState[65]) {
-			rotate("left");
+			rotate(player, "left");
 		}
 		// D
 		if (keyState[68]) {
-			rotate("right");
+			rotate(player, "right");
 		}
 		// W
 		if (keyState[87]) {
-			rotate("up");
+			move(player, "front");
 		}
 		// S
 		if (keyState[83]) {
-			rotate("down");
+			move(player, "back");
 		}
 
 		// 0
@@ -93,18 +95,33 @@ function resolveInput() {
 
 	// P
 	if (keyState[80]) {
-		if (isPaused && canChangePause) {
+		if (isPaused && canTogglePause) {
 			isPaused = false;
-			canChangePause = false;
+			canTogglePause = false;
 		}
-		else if (!isPaused && canChangePause) {
+		else if (!isPaused && canTogglePause) {
 			isPaused = true;
-			canChangePause = false;
+			canTogglePause = false;
+		}
+	}
+	if (!keyState[80]) {
+		canTogglePause = true;
+	}
+
+	// Tab
+	if (keyState[17]) {
+		if (isCamLocked && canToggleCamLock) {
+			isCamLocked = false;
+			canToggleCamLock = false;
+		}
+		else if (!isCamLocked && canToggleCamLock) {
+			isCamLocked = true;
+			canToggleCamLock = false;
 		}
 	}
 
-	if (!keyState[80]) {
-		canChangePause = true;
+	if (!keyState[17]) {
+		canToggleCamLock = true;
 	}
 }
 
@@ -113,38 +130,35 @@ function resolveInput() {
  * @param {number} color - Hex literal
  */
 function changeColor(color) {
-	cube.material.color.setHex(color);
+	player.material.color.setHex(color);
 }
 
 /**
  * 
  */
 function rotateCube() {
-	cube.rotation.x += modelRotSpeed;
-	cube.rotation.y += modelRotSpeed;
+	player.rotation.x += modelRotSpeed;
+	player.rotation.y += modelRotSpeed;
 }
 
 /**
  * Move camera locally. TODO: global
  * @param {string} dir - Direction of movement
+ * @param {THREE.Object3D} obj - Object to be moved
  */
-function move(dir) {
+function move(obj, dir) {
 	switch (dir) {
 		case "left":
-			//camera.position.x -= camMoveSpeed
-			camera.translateX(-camMoveSpeed);
+			obj.translateX(-camMoveSpeed);
 			break;
 		case "right":
-			// camera.position.x += camMoveSpeed
-			camera.translateX(camMoveSpeed);
+			obj.translateX(camMoveSpeed);
 			break;
 		case "front":
-			// camera.position.z -= camMoveSpeed
-			camera.translateZ(-camMoveSpeed);
+			obj.translateZ(-camMoveSpeed);
 			break;
 		case "back":
-			// camera.position.z += camMoveSpeed
-			camera.translateZ(camMoveSpeed);
+			obj.translateZ(camMoveSpeed);
 			break;
 	}
 }
@@ -152,24 +166,21 @@ function move(dir) {
 /**
  * Rotate camera locally. TODO: global
  * @param {string} dir - Direction of rotation
+ * @param {THREE.Object3D} obj - Object to be moved
  */
-function rotate(dir) {
+function rotate(obj, dir) {
 	switch (dir) {
 		case "left":
-			// camera.rotation.y += camRotSpeed;
-			camera.rotateY(camRotSpeed);
+			obj.rotateY(camRotSpeed);
 			break;
 		case "right":
-			// camera.rotation.y -= camRotSpeed;
-			camera.rotateY(-camRotSpeed);
+			obj.rotateY(-camRotSpeed);
 			break;
 		case "up":
-			// camera.rotation.x += camRotSpeed;
-			camera.rotateX(camRotSpeed);
+			obj.rotateX(camRotSpeed);
 			break;
 		case "down":
-			// camera.rotation.x -= camRotSpeed;
-			camera.rotateX(-camRotSpeed);
+			obj.rotateX(-camRotSpeed);
 			break;
 	}
 }
