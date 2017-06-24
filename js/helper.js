@@ -1,6 +1,6 @@
 
 /**
- * Polyfill degrees to radians
+ * Math polyfill degrees to radians
  * @param {number} x - Degrees to be converted
  */
 Math.degToRad = function (x) {
@@ -8,7 +8,7 @@ Math.degToRad = function (x) {
 }
 
 /**
- * Polyfill radians to degrees
+ * Math polyfill radians to degrees
  * @param {number} x - Radians to be converted
  */
 Math.radToDeg = function (x) {
@@ -20,6 +20,9 @@ var spawnPoints = [];
 var spawnPointsX = [15, -5, -12, 10];
 var spawnPointsZ = [6, -8, 9, -3];
 
+/**
+ * 
+ */
 function spawnPointsInit() {
     for (var i = 0; i < spawnPointsX.length; ++i) {
         spawnPoints[i] = new THREE.Vector3(spawnPointsX[i], 1, spawnPointsZ[i]);

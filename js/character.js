@@ -14,6 +14,7 @@ class Character {
         this.initialHP = 0;
         this.isPlayer = false;
         this.initialSpawnCountDown = 0;
+        this.radius = 0;
         switch (charType) {
             case "player":
                 this.isPlayer = true;
@@ -23,6 +24,7 @@ class Character {
                 this.ownedWeapons = [];
                 this.currentWeapon = 0;
                 this.initialSpawnCountDown = 5;
+                this.radius = 0.5;
 
                 /**
                  * Change current weapon to next owned weapon
@@ -37,6 +39,7 @@ class Character {
                 this.color = 0xFFFFFF;
                 this.initialHP = 2;
                 this.initialSpawnCountDown = Math.random();
+                                this.radius = 0.5;
 
                 /**
                  * Follow player

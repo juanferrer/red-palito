@@ -112,5 +112,16 @@ function moveEnemies() {
  * Detect and resolve collisions between models
  */
 function collisions() {
-
+	for (var i = 0; i < enemyAmount; ++i) {
+		// Only check active enemies...
+		if (enemy[i].isSpawned) {
+			// ...against every other active enemy...
+			for (var j = i + 1; j < enemyAmount; ++j) {
+				if (enemy[j].isSpawned) {
+					if (enemy[j].position.distanceTo(enemy[i].position) < (enemy[i].radius + enemy[j].radius))
+				}
+			}
+			//...and then the player
+		}
+	}
 }
