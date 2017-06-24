@@ -57,19 +57,19 @@ function resolveInput() {
 
 		// A
 		if (keyState[65]) {
-			rotate(player, "left");
+			player.rotateLeft();
 		}
 		// D
 		if (keyState[68]) {
-			rotate(player, "right");
+			player.rotateRight();
 		}
 		// W
 		if (keyState[87]) {
-			move(player, "front");
+			player.moveForward();
 		}
 		// S
 		if (keyState[83]) {
-			move(player, "back");
+			player.moveBackward();
 		}
 
 		// 0

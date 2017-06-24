@@ -1,11 +1,11 @@
-var scene, camera, renderer;
-var playerG, playerM, player, cubeColor;
+var clock, scene, camera, renderer;
+var player;
 var planeG, planeM, plane, planeColor;
-var light, lightG, lightM, lightMesh, lightColor;
-var valueX, valueY, counter;
+var light;
+var frameTime;
 
-var isRight = false;
-var isUp = false;
+var enemy = [];
+var enemyAmount = 10;
 
 init();
 animate();
@@ -16,18 +16,29 @@ animate();
  */
 function init() {
 
+	clock = new THREE.Clock();
+	frameTime = 0;
+
 	keyboardInit();
+	spawnPointsInit();
 
 	scene = new THREE.Scene();
 
+	// Camera
+	camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 100);
+	camera.position.set(0, 40, 40);
+	camera.rotateX(Math.degToRad(-40));
+
 	// Models
-	cubeColor = 0xF44336;
-	playerG = new THREE.IcosahedronGeometry(1);
-	playerM = new THREE.MeshPhongMaterial({ color: cubeColor });
-	player = new THREE.Mesh(playerG, playerM);
-	player.castShadow = true;
-	player.receiveShadow = false;
-	scene.add(player);
+	player = new Character("player");
+	player.addToScene();
+	player.Mesh.add(camera);
+
+	enemy = new Array(enemyAmount);
+	for (var i = 0; i < enemyAmount; ++i) {
+		enemy[i] = new Character("minion");
+		enemy[i].addToScene();
+	}
 
 	planeColor = 0xFFFFFF;
 	planeG = new THREE.PlaneGeometry(100, 100, 20, 20);
@@ -36,11 +47,6 @@ function init() {
 	plane.castShadow = false;
 	plane.receiveShadow = true;
 	scene.add(plane);
-
-	// Camera
-	camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 100);
-	camera.position.set(0, 20, 20);
-	camera.rotateX(Math.degToRad(-50));
 
 	// Lights
 	var lightX = 10;
@@ -61,8 +67,6 @@ function init() {
 	renderer.shadowMap.type = THREE.PCFShadowMap;
 	document.body.appendChild(renderer.domElement);
 
-	player.translateY(0.8);
-
 	plane.rotateX(Math.degToRad(-90));
 	plane.translateZ(0);
 }
@@ -71,15 +75,26 @@ function init() {
  * Animate scene
  */
 function animate() {
-
+	clock.getElapsedTime();
 	requestAnimationFrame(animate);
 
 	resolveInput();
 
 	if (isCamLocked) {
-		camera.lookAt(player.position);
+		//camera.lookAt(player.position);
 	}
-
+	for (var i = 0; i < enemyAmount; ++i) {
+		if (enemy[i].isSpawned) {
+			enemy[i].moveTowardPlayer();
+		}
+		else {
+			enemy[i].spawnCountDown -= frameTime;
+			if (enemy[i].spawnCountDown < 0) {
+				enemy[i].spawn();
+				console.log("Spawning");
+			}
+		}
+	}
 	renderer.render(scene, camera);
-
+	frameTime = clock.getDelta();
 }
