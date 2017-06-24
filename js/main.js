@@ -76,13 +76,24 @@ function init() {
  */
 function animate() {
 	clock.getElapsedTime();
+
 	requestAnimationFrame(animate);
 
 	resolveInput();
 
-	if (isCamLocked) {
-		//camera.lookAt(player.position);
-	}
+	moveEnemies();
+
+	collisions();
+
+	renderer.render(scene, camera);
+
+	frameTime = clock.getDelta();
+}
+
+/**
+ * Move enemies towards player
+ */
+function moveEnemies() {
 	for (var i = 0; i < enemyAmount; ++i) {
 		if (enemy[i].isSpawned) {
 			enemy[i].moveTowardPlayer();
@@ -95,6 +106,11 @@ function animate() {
 			}
 		}
 	}
-	renderer.render(scene, camera);
-	frameTime = clock.getDelta();
+}
+
+/**
+ * Detect and resolve collisions between models
+ */
+function collisions() {
+
 }

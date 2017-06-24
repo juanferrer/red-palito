@@ -35,24 +35,7 @@ function resolveInput() {
 	if (!isPaused) {
 		// Spacebar
 		if (keyState[32]) {
-			rotateCube();
-		}
-
-		// Left
-		if (keyState[37]) {
-			move(camera, "left");
-		}
-		// Right
-		if (keyState[39]) {
-			move(camera, "right");
-		}
-		// Up
-		if (keyState[38]) {
-			move(camera, "front");
-		}
-		// Down
-		if (keyState[40]) {
-			move(camera, "back");
+			player.attack();
 		}
 
 		// A
@@ -70,6 +53,25 @@ function resolveInput() {
 		// S
 		if (keyState[83]) {
 			player.moveBackward();
+		}
+
+		// unused
+
+		// Left
+		if (keyState[37]) {
+			move(camera, "left");
+		}
+		// Right
+		if (keyState[39]) {
+			move(camera, "right");
+		}
+		// Up
+		if (keyState[38]) {
+			move(camera, "front");
+		}
+		// Down
+		if (keyState[40]) {
+			move(camera, "back");
 		}
 
 		// 0
@@ -91,6 +93,8 @@ function resolveInput() {
 		if (keyState[99]) {
 			changeColor(lightColor3);
 		}
+
+		// End of unused
 	}
 
 	// P

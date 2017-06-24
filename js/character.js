@@ -65,8 +65,26 @@ class Character {
         scene.add(this.Mesh);
     }
 
+
+    /**
+     * Get the position of the model
+     * @returns {THREE.Vector3}
+     */
     get position() {
         return this.Mesh.position;
+    }
+
+    /**
+     * Gets the facing vector of the model. A.K.A. Forward
+     * @returns {THREE.Vector3}
+     */
+    get facingVector() {
+        // var matrix = new THREE.Matrix4();
+        // matrix.extractRotation(mesh.matrix);
+
+        // var direction = new THREE.Vector3(0, 0, 1);
+        // matrix.multiplyVector3(direction);
+        return new Vector3(0, 0, -1).applyQuaternion(this.Mesh.quaternion);
     }
 
     /**
