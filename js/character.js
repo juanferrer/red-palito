@@ -39,7 +39,7 @@ class Character {
                 this.color = 0xFFFFFF;
                 this.initialHP = 2;
                 this.initialSpawnCountDown = Math.random();
-                                this.radius = 0.5;
+                this.radius = 0.5;
 
                 /**
                  * Follow player

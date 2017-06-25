@@ -112,16 +112,25 @@ function moveEnemies() {
  * Detect and resolve collisions between models
  */
 function collisions() {
+	// Check every active enemy...
 	for (var i = 0; i < enemyAmount; ++i) {
-		// Only check active enemies...
 		if (enemy[i].isSpawned) {
 			// ...against every other active enemy...
 			for (var j = i + 1; j < enemyAmount; ++j) {
 				if (enemy[j].isSpawned) {
-					if (enemy[j].position.distanceTo(enemy[i].position) < (enemy[i].radius + enemy[j].radius))
+					if (enemy[j].position.distanceTo(enemy[i].position) < (enemy[i].radius + enemy[j].radius)) {
+						var direction = enemy[i].position.clone().sub(enemy[j].position).normalize();
+						enemy[i].position.add(direction.clone().multiplyScalar(enemy[i].radius / 10));
+						enemy[j].position.add(direction.clone().multiplyScalar(-enemy[j].radius / 10));
+					}
 				}
 			}
 			//...and then the player
+			while (enemy[i].position.distanceTo(player.position) < (enemy[i].radius + player.radius)) {
+				var direction = enemy[i].position.clone().sub(player.position).normalize();
+				enemy[i].position.add(direction.clone().multiplyScalar(enemy[i].radius / 10));
+				//player.position.add(direction.clone().multiplyScalar(-player.radius / 10));
+			}
 		}
 	}
 }
