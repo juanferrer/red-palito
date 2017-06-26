@@ -38,3 +38,12 @@ function getNextSpawnPoint() {
     currentSpawnPoint = currentSpawnPoint < spawnPoints.length - 1 ? currentSpawnPoint + 1 : 0;
     return spawnPoint;
 }
+
+var currentBullet = 0;
+
+function getNextBullet() {
+    var bullet = bullets[currentBullet];
+    bullet.isAlive = true;
+    currentBullet = currentBullet < bullets.length - 1 ? currentBullet + 1 : 0;
+    return bullet;
+}

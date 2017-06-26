@@ -1,6 +1,7 @@
 body {
 	margin: 0;
 	overflow: hidden;
+	position: absolute;
 }
 
 canvas {
@@ -12,7 +13,12 @@ canvas {
 /* GUI */
 .gui {
 	position: absolute;
-	top: 110;
-	left: 110;
+	top: 0;
+	left: 0;
 	z-index: 1;
+}
+
+#hp-bar {
+	color: white;
+	font-size: 50px;
 }

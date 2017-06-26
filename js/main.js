@@ -4,8 +4,11 @@ var planeG, planeM, plane, planeColor;
 var light;
 var frameTime;
 
-var enemy = [];
-var enemyAmount = 10;
+var enemies = [];
+var enemyAmount = 1;
+
+var bullets = [];
+var bulletsAmount = 5;
 
 init();
 animate();
@@ -25,19 +28,24 @@ function init() {
 	scene = new THREE.Scene();
 
 	// Camera
-	camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 100);
-	camera.position.set(0, 40, 40);
-	camera.rotateX(Math.degToRad(-40));
+	camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 1000);
+	camera.position.set(0, 40, -40);
+	camera.rotateY(Math.degToRad(-180));
+	camera.rotateX(Math.degToRad(-45));
 
 	// Models
-	player = new Character("player");
+	player = new Player();
 	player.addToScene();
 	player.Mesh.add(camera);
 
-	enemy = new Array(enemyAmount);
-	for (var i = 0; i < enemyAmount; ++i) {
-		enemy[i] = new Character("minion");
-		enemy[i].addToScene();
+	for (var i = 0; i < bulletsAmount; ++i) {
+		bullets.push(new Bullet());
+	}
+
+	enemies = new Array(enemyAmount);
+	for (i = 0; i < enemyAmount; ++i) {
+		enemies[i] = new Enemy();
+		enemies[i].addToScene();
 	}
 
 	planeColor = 0xFFFFFF;
@@ -75,19 +83,57 @@ function init() {
  * Animate scene
  */
 function animate() {
-	clock.getElapsedTime();
-
 	requestAnimationFrame(animate);
 
+	updateUI();
+
 	resolveInput();
+	if (!isPaused) {
 
-	moveEnemies();
+		updateAttackCounters();
 
-	collisions();
+		updateBullet();
+
+		moveEnemies();
+
+		collisions();
+	}
 
 	renderer.render(scene, camera);
 
 	frameTime = clock.getDelta();
+	clock.getElapsedTime();
+}
+
+function updateUI() {
+	document.getElementById("hp-bar").innerHTML = player.HP;
+}
+
+function updateAttackCounters() {
+	for (var i = 0; i < enemyAmount; ++i) {
+		if (enemies[i].attackCounter > 0) {
+			enemies[i].attackCounter -= frameTime;
+		}
+	}
+	if (player.attackCounter > 0) {
+		player.attackCounter -= frameTime;
+	}
+}
+
+/**
+ * Decrease bullet lifetime and dispose of bullets
+ */
+function updateBullet() {
+	for (var i = 0; i < bulletsAmount; ++i) {
+		if (bullets[i].isAlive) {
+			bullets[i].lifeTime -= frameTime;
+			bullets[i].position.add(bullets[i].direction.multiplyScalar(this.speed));
+			console.log(bullets[i].position);
+		}
+		if (bullets[i].lifeTime < 0) {
+			bullets[i].isAlive = false;
+		}
+	}
 }
 
 /**
@@ -95,13 +141,13 @@ function animate() {
  */
 function moveEnemies() {
 	for (var i = 0; i < enemyAmount; ++i) {
-		if (enemy[i].isSpawned) {
-			enemy[i].moveTowardPlayer();
+		if (enemies[i].isSpawned && enemies[i].HP > 0) {
+			enemies[i].moveTowardPlayer();
 		}
 		else {
-			enemy[i].spawnCountDown -= frameTime;
-			if (enemy[i].spawnCountDown < 0) {
-				enemy[i].spawn();
+			enemies[i].spawnCountDown -= frameTime;
+			if (enemies[i].spawnCountDown < 0) {
+				enemies[i].spawn();
 				console.log("Spawning");
 			}
 		}
@@ -114,22 +160,23 @@ function moveEnemies() {
 function collisions() {
 	// Check every active enemy...
 	for (var i = 0; i < enemyAmount; ++i) {
-		if (enemy[i].isSpawned) {
+		if (enemies[i].isSpawned) {
 			// ...against every other active enemy...
 			for (var j = i + 1; j < enemyAmount; ++j) {
-				if (enemy[j].isSpawned) {
-					if (enemy[j].position.distanceTo(enemy[i].position) < (enemy[i].radius + enemy[j].radius)) {
-						var direction = enemy[i].position.clone().sub(enemy[j].position).normalize();
-						enemy[i].position.add(direction.clone().multiplyScalar(enemy[i].radius / 10));
-						enemy[j].position.add(direction.clone().multiplyScalar(-enemy[j].radius / 10));
+				if (enemies[j].isSpawned) {
+					if (enemies[j].position.distanceTo(enemies[i].position) < (enemies[i].radius + enemies[j].radius)) {
+						var direction = enemies[i].position.clone().sub(enemies[j].position).normalize();
+						enemies[i].position.add(direction.clone().multiplyScalar(enemies[i].radius / 10));
+						enemies[j].position.add(direction.clone().multiplyScalar(-enemies[j].radius / 10));
 					}
 				}
 			}
 			//...and then the player
-			while (enemy[i].position.distanceTo(player.position) < (enemy[i].radius + player.radius)) {
-				var direction = enemy[i].position.clone().sub(player.position).normalize();
-				enemy[i].position.add(direction.clone().multiplyScalar(enemy[i].radius / 10));
+			while (enemies[i].position.distanceTo(player.position) < (enemies[i].radius + player.radius)) {
+				var direction = enemies[i].position.clone().sub(player.position).normalize();
+				enemies[i].position.add(direction.clone().multiplyScalar(enemies[i].radius / 10));
 				//player.position.add(direction.clone().multiplyScalar(-player.radius / 10));
+				enemies[i].attack();
 			}
 		}
 	}

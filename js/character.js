@@ -14,53 +14,22 @@ class Character {
         this.initialHP = 0;
         this.isPlayer = false;
         this.initialSpawnCountDown = 0;
-        this.radius = 0;
-        switch (charType) {
-            case "player":
-                this.isPlayer = true;
-                this.moveSpeed = 10;
-                this.color = 0xF44336;
-                this.initialHP = 10;
-                this.ownedWeapons = [];
-                this.currentWeapon = 0;
-                this.initialSpawnCountDown = 5;
-                this.radius = 0.5;
-
-                /**
-                 * Change current weapon to next owned weapon
-                 */
-                this.nextWeapon = function () {
-                    currentWeapon++;
-                }
-                break;
-            case "minion":
-                this.isPlayer = false;
-                this.moveSpeed = 3;
-                this.color = 0xFFFFFF;
-                this.initialHP = 2;
-                this.initialSpawnCountDown = Math.random();
-                this.radius = 0.5;
-
-                /**
-                 * Follow player
-                 */
-                this.moveTowardPlayer = function () {
-                    this.Mesh.lookAt(player.position);
-                    this.moveBackward();    // What??? Why backward? Well, it works... Don't touch it
-                }
-                break;
-        }
+        this.radius = 0.5;
         this.spawnCountDown = this.initialSpawnCountDown;
         this.isSpawned = false;
         this.rotSpeed = 60;
-        this.HP = this.initialHP;
+        this.attackCounter = 0;
         this.attackSpeed = 1;
-        this.damage = 1;
+    }
+
+    init() {
         this.Geometry = new THREE.BoxGeometry(1, 2, 1);
         this.Material = new THREE.MeshLambertMaterial({ color: this.color });
         this.Mesh = new THREE.Mesh(this.Geometry, this.Material);
         this.Mesh.castShadow = true;
         this.Mesh.receiveShadow = true;
+        this.HP = this.initialHP;
+        this.damage = 1;
     }
 
     addToScene() {
@@ -68,6 +37,12 @@ class Character {
         scene.add(this.Mesh);
     }
 
+    /**
+     * Get the unique id from the mesh. Used to know what object was hit during raycasting
+     */
+    get id() {
+        return this.Mesh.id;
+    }
 
     /**
      * Get the position of the model
@@ -82,28 +57,19 @@ class Character {
      * @returns {THREE.Vector3}
      */
     get facingVector() {
-        // var matrix = new THREE.Matrix4();
-        // matrix.extractRotation(mesh.matrix);
+        var matrix = new THREE.Matrix4();
+        matrix.extractRotation(this.Mesh.matrix);
 
-        // var direction = new THREE.Vector3(0, 0, 1);
-        // matrix.multiplyVector3(direction);
-        return new Vector3(0, 0, -1).applyQuaternion(this.Mesh.quaternion);
-    }
-
-    /**
-     * If holding a weapon, shoot. Otherwise, attack whatever is
-     * in ahead.
-     */
-    attack() {
-        // TODO
+        var direction = new THREE.Vector3(0, 0, 1);
+        return direction.applyMatrix4(matrix).normalize();
     }
 
     moveForward() {
-        this.Mesh.translateZ(-this.moveSpeed / 60);
+        this.Mesh.translateZ(this.moveSpeed / 60);
     }
 
     moveBackward() {
-        this.Mesh.translateZ(this.moveSpeed / 60);
+        this.Mesh.translateZ(-this.moveSpeed / 60);
     }
 
     rotateRight() {
