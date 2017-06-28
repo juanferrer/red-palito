@@ -47,3 +47,10 @@ function getNextBullet() {
     currentBullet = currentBullet < bullets.length - 1 ? currentBullet + 1 : 0;
     return bullet;
 }
+
+function arrayFromJSON(file) {
+    $.getJSON(file, function (response) {
+        JSON = response;
+        alert(JSON.property);
+    });
+}

@@ -26,6 +26,13 @@ class Player extends Character {
     nextWeapon() {
         currentWeapon++;
         // TODO: update stats
+        this.accuracy = ownedWeapons[currentWeapon].accuracy;
+        this.attackSpeed = ownedWeapons[currentWeapon].attackSpeed;
+        this.damage = ownedWeapons[currentWeapon].damage;
+    }
+
+    acquireWeapon() {
+        
     }
 
     /**
