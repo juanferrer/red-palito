@@ -58,10 +58,22 @@ class Player extends Character {
 
     receiveDamage(damageDealt) {
         this.HP -= damageDealt;
+        var element = document.getElementById("hp-bar");
+        element.classList.remove("gained-hp-anim");
+        element.classList.remove("lost-hp-anim");
+        void element.offsetWidth;
+        element.classList.add("lost-hp-anim");
         if (this.HP < 0) {
             this.die();
         }
     }
+
+    // heal(damageHealed) {
+    //     element.classList.remove("lost-hp-anim");
+    //     element.classList.remove("gained-hp-anim");
+    //     void element.offsetWidth;
+    //     element.classList.add("gained-hp-anim");
+    // }
 
     /**
      * 

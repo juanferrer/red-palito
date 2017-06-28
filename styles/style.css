@@ -1,24 +1,94 @@
 body {
-	margin: 0;
-	overflow: hidden;
-	position: absolute;
+  margin: 0;
+  overflow: hidden;
+  position: absolute;
 }
 
 canvas {
-	width: 100%;
-	height: 100%;
-	z-index: -1;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
 }
 
-/* GUI */
 .gui {
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 1;
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  bottom: 0px;
+  left: 0px;
+  z-index: 1;
+  font-family: 'Anton', sans-serif;
+  font-size: 50px;
+  text-align: center;
+  line-height: 100px;
 }
 
-#hp-bar {
-	color: white;
-	font-size: 50px;
+@keyframes lost-hp {
+  0% {}
+  8% {
+    font-size: 100px;
+    color: red;
+    transform: rotate(-15deg);
+    bottom: 5px;
+    left: 5px;
+  }
+  100% {
+    font-size: 50px;
+    transform: scale(35px);
+    color: black;
+    transform: rotate(0deg);
+    bottom: 0px;
+    left: 0px;
+  }
+}
+
+.lost-hp-anim {
+  animation-name: lost-hp;
+  animation-duration: 1s;
+}
+
+@keyframes gained-hp {
+  0% {}
+  10% {
+    font-size: 50px;
+    color: green;
+  }
+  20% {
+    font-size: 35px;
+  }
+  30% {
+    font-size: 50px;
+  }
+  40% {
+    font-size: 35px;
+  }
+  /* Pause - no animation */
+  50% {
+    font-size: 35px;
+  }
+  60% {
+    font-size: 50px;
+  }
+  70% {
+    font-size: 35px;
+  }
+  80% {
+    font-size: 50px;
+  }
+  90% {
+    font-size: 35px;
+    color: green;
+  }
+  100% {
+    font-size: 35px;
+    color: black;
+    transform: rotate(0deg);
+    left: 0px;
+    bottom: 0px;
+  }
+}
+
+.gained-hp-anim {
+  animation-name: gained-hp;
+  animation-duration: 1.5s;
 }

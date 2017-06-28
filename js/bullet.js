@@ -26,7 +26,7 @@ class Bullet {
         this.direction = dir;
         this.isAlive = true;
         this.lifeTime = this.initialLifeTime;
-        this.Mesh.position.set(pos.x, 1, pos.z);
+        this.Mesh.position.set(pos.x, 3, pos.z);
         this.orient();
     }
 
