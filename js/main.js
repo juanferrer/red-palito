@@ -127,11 +127,11 @@ function updateBullet() {
 	for (var i = 0; i < bulletsAmount; ++i) {
 		if (bullets[i].isAlive) {
 			bullets[i].lifeTime -= frameTime;
-			bullets[i].position.add(bullets[i].direction.multiplyScalar(this.speed));
-			console.log(bullets[i].position);
+			bullets[i].position.add(bullets[i].direction.multiplyScalar(bullets[i].speed));
+			//console.log(bullets[i].position);
 		}
-		if (bullets[i].lifeTime < 0) {
-			bullets[i].isAlive = false;
+		if (bullets[i].lifeTime < 0 ) {
+			bullets[i].reset();
 		}
 	}
 }

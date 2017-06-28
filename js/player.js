@@ -16,6 +16,7 @@ class Player extends Character {
         this.initialHP = 10;
         this.ownedWeapons = [];
         this.currentWeapon = 0;
+        this.accuracy = 0.5;
         super.init();
     }
 
@@ -34,7 +35,7 @@ class Player extends Character {
     attack() {
         if (this.attackCounter <= 0) {
             var bullet = getNextBullet();
-            bullet.spawn(this.position, this.facingVector);
+            bullet.spawn(this.position, this.facingVector, this.accuracy);
             var raycaster = new THREE.Raycaster(this.position, this.facingVector);
             var enemyMeshes = [];
             for (var e = 0; e < enemyAmount; ++e) {
