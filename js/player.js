@@ -14,30 +14,46 @@ class Player extends Character {
         this.moveSpeed = 10;
         this.color = 0xF44336;
         this.initialHP = 10;
-        this.ownedWeapons = [];
+        this.ownedWeapons = [0];
+        this.weaponsAmmo = [-1];
         this.currentWeapon = 0;
-        this.accuracy = 0.5;
         super.init();
+        this.attackSpeed = 0.5;
+        this.accuracy = 0.5;
+        this.damage = 1;
+        //this.acquireWeapon(0);
+        //this.updateWeaponStats();
     }
 
     /**
      * Change current weapon to next owned weapon
      */
     nextWeapon() {
-        currentWeapon++;
-        // TODO: update stats
-        this.accuracy = ownedWeapons[currentWeapon].accuracy;
-        this.attackSpeed = ownedWeapons[currentWeapon].attackSpeed;
-        this.damage = ownedWeapons[currentWeapon].damage;
-    }
-
-    acquireWeapon() {
-        
+        this.currentWeapon = this.currentWeapon < this.ownedWeapons.length - 1 ? this.currentWeapon + 1 : 0;
+        // Update stats
+        this.updateWeaponStats();
     }
 
     /**
-    * Attack whatever is
-    * ahead.
+     * Set stats to those of the weapon
+     */
+    updateWeaponStats() {
+        this.attackSpeed = weapons[this.ownedWeapons[this.currentWeapon]].speed;
+        this.accuracy = weapons[this.ownedWeapons[this.currentWeapon]].accuracy;
+        this.damage = weapons[this.ownedWeapons[this.currentWeapon]].damage;
+    }
+
+    /**
+     * Add weapon index to the owned weapons
+     * @param {number} index - Weapon number to add
+     */
+    acquireWeapon(index) {
+        //if (this.ownedWeapons.indexOf(index))
+            this.ownedWeapons.push(index);
+    }
+
+    /**
+    * Attack whatever is ahead.
     */
     attack() {
         if (this.attackCounter <= 0) {
@@ -71,7 +87,7 @@ class Player extends Character {
         element.classList.remove("lost-hp-anim");
         void element.offsetWidth;
         element.classList.add("lost-hp-anim");
-        if (this.HP < 0) {
+        if (this.HP <= 0) {
             this.die();
         }
     }

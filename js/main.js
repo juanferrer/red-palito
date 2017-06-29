@@ -5,7 +5,7 @@ var light;
 var frameTime;
 
 var enemies = [];
-var enemyAmount = 1;
+var enemyAmount = 3;
 
 var bullets = [];
 var bulletsAmount = 5;
@@ -23,6 +23,8 @@ function init() {
 
 	clock = new THREE.Clock();
 	frameTime = 0;
+
+	parseJSONToVar("https://raw.githubusercontent.com/JuanFerrer/Survival/master/weapons.json", "weapons", weapons);
 
 	keyboardInit();
 	spawnPointsInit();
@@ -79,8 +81,6 @@ function init() {
 
 	plane.rotateX(Math.degToRad(-90));
 	plane.translateZ(0);
-
-	weapons = arrayFromJSON("./weapons.json", "weapons");
 }
 
 /**
@@ -110,7 +110,12 @@ function animate() {
 }
 
 function updateUI() {
-	document.getElementById("hp-bar").innerHTML = player.HP;
+	if (player.HP)
+		document.getElementById("hp-bar").innerHTML = player.HP;
+	if (weapons[1]) {
+		document.getElementById("current-weapon-name").innerHTML = weapons[player.currentWeapon].name;
+		document.getElementById("current-weapon-ammo").innerHTML = player.weaponsAmmo[player.currentWeapon].toString();
+	}
 }
 
 function updateAttackCounters() {

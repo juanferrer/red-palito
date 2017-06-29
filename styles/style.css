@@ -12,15 +12,45 @@ canvas {
 
 .gui {
   position: absolute;
-  width: 100px;
-  height: 100px;
-  bottom: 0px;
-  left: 0px;
+  z-index: 1;
+  font-family: 'Anton', sans-serif;
+  text-align: center;
+}
+
+.gui-main {
+  position: absolute;
   z-index: 1;
   font-family: 'Anton', sans-serif;
   font-size: 50px;
-  text-align: center;
   line-height: 100px;
+}
+
+#hp-bar {
+  bottom: 0px;
+  left: 0px;
+    width: 100px;
+  height: 100px;
+}
+
+#current-weapon-stats {
+  right: 0px;
+  bottom: 0px;
+  width: 300px;
+  height: 150px;
+  line-height: 100px;
+}
+
+#current-weapon-name {
+  width: 300px;
+  height: 100px;
+  font-size: 50px;
+  bottom: 50px;
+}
+#current-weapon-ammo {
+  width: 300px;
+  height: 50px;
+  font-size: 35px;
+  bottom: 50px;
 }
 
 @keyframes lost-hp {

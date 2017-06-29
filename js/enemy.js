@@ -40,7 +40,7 @@ class Enemy extends Character {
      * Attack whatever is ahead.
      */
     attack() {
-        if (this.attackCounter <= 0) {
+        if (this.attackCounter <= 0 && this.HP > 0) {
             var raycaster = new THREE.Raycaster(this.position, this.facingVector);
             var intersects = raycaster.intersectObjects([player.Mesh]);
 

@@ -48,20 +48,10 @@ function getNextBullet() {
     return bullet;
 }
 
-function arrayFromJSON(file, object) {
-    var json = readTextFile(file);
-    return JSON.parse(json)["weapons"];
-}
-
-function readTextFile(file) {
-    var rawFile = new XMLHttpRequest();
-    rawFile.open("GET", file, false);
-    rawFile.onreadystatechange = function () {
-        if (rawFile.readyState === 4) {
-            if (rawFile.status === 200 || rawFile.status == 0) {
-                return rawFile.responseText;
-            }
+function parseJSONToVar(file, object, copyTo) {
+    $.getJSON(file, function (data) {
+        for (var i = 0; i < data[object].length; ++i) {
+            copyTo.push(data[object][i]);
         }
-    }
-    rawFile.send(null);
+    });
 }

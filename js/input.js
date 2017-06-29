@@ -9,8 +9,8 @@ var keyState = {};
 
 var isPaused = false;
 var canTogglePause = true;
-var isCamLocked = true;
-var canToggleCamLock = true;
+
+var canToggleShift = true;
 
 /**
  * Initialise keyboard to keep track what keys have
@@ -36,6 +36,14 @@ function resolveInput() {
 		// Spacebar
 		if (keyState[32]) {
 			player.attack();
+		}
+
+		// Shift
+		if (keyState[16]) {
+			if (canToggleShift) {
+				player.nextWeapon();
+				canToggleShift = false;
+			}
 		}
 
 		// A
@@ -76,12 +84,12 @@ function resolveInput() {
 
 		// 0
 		if (keyState[96]) {
-			changeColor(cubeColor);
+			changeColor(0xFFFFFF);
 		}
 
 		// 1
 		if (keyState[97]) {
-			changeColor(lightColor);
+			changeColor(0xF44336);
 		}
 
 		// 2
@@ -112,20 +120,9 @@ function resolveInput() {
 		canTogglePause = true;
 	}
 
-	// Tab
-	if (keyState[17]) {
-		if (isCamLocked && canToggleCamLock) {
-			isCamLocked = false;
-			canToggleCamLock = false;
-		}
-		else if (!isCamLocked && canToggleCamLock) {
-			isCamLocked = true;
-			canToggleCamLock = false;
-		}
-	}
-
-	if (!keyState[17]) {
-		canToggleCamLock = true;
+	// Release shift
+	if (!keyState[16]) {
+		canToggleShift = true;
 	}
 }
 
@@ -134,7 +131,7 @@ function resolveInput() {
  * @param {number} color - Hex literal
  */
 function changeColor(color) {
-	player.material.color.setHex(color);
+	player.Material.color.setHex(color);
 }
 
 /**
