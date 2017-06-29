@@ -110,11 +110,11 @@ function animate() {
 }
 
 function updateUI() {
-	if (player.HP)
+	if (player.HP >= 0)
 		document.getElementById("hp-bar").innerHTML = player.HP;
 	if (weapons[1]) {
 		document.getElementById("current-weapon-name").innerHTML = weapons[player.currentWeapon].name;
-		document.getElementById("current-weapon-ammo").innerHTML = player.weaponsAmmo[player.currentWeapon].toString();
+		document.getElementById("current-weapon-ammo").innerHTML = player.weaponsAmmo[player.currentWeapon];
 	}
 }
 

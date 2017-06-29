@@ -29,9 +29,12 @@ class Player extends Character {
      * Change current weapon to next owned weapon
      */
     nextWeapon() {
+        this.triggerWeaponChangeAnim();
         // DEBUG
-        if (this.ownedWeapons.length == 1)
+        if (this.ownedWeapons.length == 1) {
+            console.log("DEBUG: add UZI");
             this.acquireWeapon(1);
+        }
         this.currentWeapon = this.currentWeapon < this.ownedWeapons.length - 1 ? this.currentWeapon + 1 : 0;
         // Update stats
         this.updateWeaponStats();
@@ -65,7 +68,15 @@ class Player extends Character {
     * Attack whatever is ahead.
     */
     attack() {
+        if (this.weaponsAmmo[this.currentWeapon] == 0) {
+            //this.weaponsAmmo.slice(this.ownedWeapons[this.currentWeapon], 1);
+            //this.ownedWeapons.slice(this.currentWeapon, 1);
+            this.nextWeapon();
+        }
         if (this.attackCounter <= 0) {
+            if (this.weaponsAmmo[this.currentWeapon] > 0)
+                this.weaponsAmmo[this.currentWeapon]--;
+            this.triggerBulletAnim();
             var bullet = getNextBullet();
             bullet.spawn(this.position, this.facingVector, this.accuracy);
             var raycaster = new THREE.Raycaster(this.position, this.facingVector);
@@ -91,14 +102,46 @@ class Player extends Character {
 
     receiveDamage(damageDealt) {
         this.HP -= damageDealt;
+        this.triggerLostHPAnim();
+        if (this.HP <= 0) {
+            this.die();
+        }
+    }
+
+    triggerLostHPAnim() {
         var element = document.getElementById("hp-bar");
         element.classList.remove("gained-hp-anim");
         element.classList.remove("lost-hp-anim");
         void element.offsetWidth;
         element.classList.add("lost-hp-anim");
-        if (this.HP <= 0) {
-            this.die();
-        }
+    }
+
+    triggerGainedHPAnim() {
+        var element = document.getElementById("hp-bar");
+        element.classList.remove("gained-hp-anim");
+        element.classList.remove("lost-hp-anim");
+        void element.offsetWidth;
+        element.classList.add("gained-hp-anim");
+    }
+
+    triggerBulletAnim() {
+        var element = document.getElementById("current-weapon-ammo");
+        element.classList.remove("changed-weapon-anim");
+        element.classList.remove("used-bullet-anim");
+        void element.offsetWidth;
+        element.classList.add("used-bullet-anim");
+    }
+
+    triggerWeaponChangeAnim() {
+        var weapon = document.getElementById("current-weapon-name");
+        var ammo = document.getElementById("current-weapon-ammo");
+        weapon.classList.remove("changed-weapon-anim");
+        ammo.classList.remove("changed-weapon-anim");
+        ammo.classList.remove("used-bullet-anim");
+        void weapon.offsetWidth;
+        void ammo.offsetWidth;
+        weapon.classList.add("changed-weapon-anim");
+        ammo.classList.add("changed-weapon-anim");
     }
 
     // heal(damageHealed) {

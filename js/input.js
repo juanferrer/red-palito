@@ -33,6 +33,11 @@ function keyboardInit() {
  */
 function resolveInput() {
 	if (!isPaused) {
+
+		// DEBUG: Numpad +
+		if (keyState[107]) {
+		}
+
 		// Spacebar
 		if (keyState[32]) {
 			player.attack();

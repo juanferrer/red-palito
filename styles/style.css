@@ -54,7 +54,6 @@ canvas {
 }
 
 @keyframes lost-hp {
-  0% {}
   8% {
     font-size: 100px;
     color: red;
@@ -78,39 +77,38 @@ canvas {
 }
 
 @keyframes gained-hp {
-  0% {}
   10% {
-    font-size: 50px;
+    font-size: 70px;
     color: green;
   }
   20% {
-    font-size: 35px;
-  }
-  30% {
     font-size: 50px;
   }
+  30% {
+    font-size: 70px;
+  }
   40% {
-    font-size: 35px;
+    font-size: 50px;
   }
   /* Pause - no animation */
   50% {
-    font-size: 35px;
+    font-size: 50px;
   }
   60% {
-    font-size: 50px;
+    font-size: 70px;
   }
   70% {
-    font-size: 35px;
-  }
-  80% {
     font-size: 50px;
   }
+  80% {
+    font-size: 70px;
+  }
   90% {
-    font-size: 35px;
+    font-size: 50px;
     color: green;
   }
   100% {
-    font-size: 35px;
+    font-size: 50px;
     color: black;
     transform: rotate(0deg);
     left: 0px;
@@ -121,4 +119,50 @@ canvas {
 .gained-hp-anim {
   animation-name: gained-hp;
   animation-duration: 1.5s;
+}
+
+@keyframes used-bullet {
+  50% {
+    font-size: 45px;
+    color: yellow;
+  }
+  100% {
+    font-size: 35px;
+    color: black;
+  }
+}
+
+.used-bullet-anim {
+  animation-name: used-bullet;
+  animation-duration: 0.15s;
+}
+
+@keyframes used-bullet {
+  50% {
+    font-size: 45px;
+    color: yellow;
+  }
+  100% {
+    font-size: 35px;
+    color: black;
+  }
+}
+
+.used-bullet-anim {
+  animation-name: used-bullet;
+  animation-duration: 0.15s;
+}
+
+@keyframes changed-weapon {
+  20% {
+    transform: rotateY(90deg);
+  }
+  100% {
+    color: black;
+  }
+}
+
+.changed-weapon-anim {
+  animation-name: changed-weapon;
+  animation-duration: 0.2s;
 }
