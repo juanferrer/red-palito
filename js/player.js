@@ -18,9 +18,9 @@ class Player extends Character {
         this.weaponsAmmo = [-1];
         this.currentWeapon = 0;
         super.init();
-        this.attackSpeed = 0.5;
+        this.attackSpeed = 1;
         this.accuracy = 0.5;
-        this.damage = 1;
+        this.damage = 2;
         //this.acquireWeapon(0);
         //this.updateWeaponStats();
     }
@@ -29,6 +29,9 @@ class Player extends Character {
      * Change current weapon to next owned weapon
      */
     nextWeapon() {
+        // DEBUG
+        if (this.ownedWeapons.length == 1)
+            this.acquireWeapon(1);
         this.currentWeapon = this.currentWeapon < this.ownedWeapons.length - 1 ? this.currentWeapon + 1 : 0;
         // Update stats
         this.updateWeaponStats();
@@ -49,7 +52,13 @@ class Player extends Character {
      */
     acquireWeapon(index) {
         //if (this.ownedWeapons.indexOf(index))
-            this.ownedWeapons.push(index);
+        this.ownedWeapons.push(index);
+        if (this.weaponsAmmo[index]) {
+            this.weaponsAmmo[index] += weapons[index].ammo;
+        }
+        else {
+            this.weaponsAmmo.push(weapons[index].ammo);
+        }
     }
 
     /**
