@@ -1,0 +1,24 @@
+{
+  "name": "Survival",
+  "version": "1.0.0",
+  "description": "It is mainly an experiment to try a WebGL based framework. I'm using [Three.js](https://threejs.org/).",
+  "main": "index.js",
+  "dependencies": {
+     "three": "^0.86.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JuanFerrer/Survival.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JuanFerrer/Survival/issues"
+  },
+  "homepage": "https://github.com/JuanFerrer/Survival#readme"
+}
