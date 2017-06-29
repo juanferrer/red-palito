@@ -48,9 +48,20 @@ function getNextBullet() {
     return bullet;
 }
 
-function arrayFromJSON(file) {
-    $.getJSON(file, function (response) {
-        JSON = response;
-        alert(JSON.property);
-    });
+function arrayFromJSON(file, object) {
+    var json = readTextFile(file);
+    return JSON.parse(json)["weapons"];
+}
+
+function readTextFile(file) {
+    var rawFile = new XMLHttpRequest();
+    rawFile.open("GET", file, false);
+    rawFile.onreadystatechange = function () {
+        if (rawFile.readyState === 4) {
+            if (rawFile.status === 200 || rawFile.status == 0) {
+                return rawFile.responseText;
+            }
+        }
+    }
+    rawFile.send(null);
 }

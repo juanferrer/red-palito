@@ -10,6 +10,8 @@ var enemyAmount = 1;
 var bullets = [];
 var bulletsAmount = 5;
 
+var weapons = [];
+
 init();
 animate();
 
@@ -77,6 +79,8 @@ function init() {
 
 	plane.rotateX(Math.degToRad(-90));
 	plane.translateZ(0);
+
+	weapons = arrayFromJSON("./weapons.json", "weapons");
 }
 
 /**
@@ -130,7 +134,7 @@ function updateBullet() {
 			bullets[i].position.add(bullets[i].direction.multiplyScalar(bullets[i].speed));
 			//console.log(bullets[i].position);
 		}
-		if (bullets[i].lifeTime < 0 ) {
+		if (bullets[i].lifeTime < 0) {
 			bullets[i].reset();
 		}
 	}
