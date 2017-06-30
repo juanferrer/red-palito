@@ -29,15 +29,17 @@ class Player extends Character {
      * Change current weapon to next owned weapon
      */
     nextWeapon() {
-        this.triggerWeaponChangeAnim();
         // DEBUG
         if (this.ownedWeapons.length == 1) {
             console.log("DEBUG: add UZI");
             this.acquireWeapon(1);
         }
-        this.currentWeapon = this.currentWeapon < this.ownedWeapons.length - 1 ? this.currentWeapon + 1 : 0;
+        this.triggerWeaponChangeAnim();
         // Update stats
-        this.updateWeaponStats();
+        setTimeout(function () {
+            player.currentWeapon = player.currentWeapon < player.ownedWeapons.length - 1 ? player.currentWeapon + 1 : 0;
+            player.updateWeaponStats();
+        }, 200);
     }
 
     /**
@@ -133,15 +135,10 @@ class Player extends Character {
     }
 
     triggerWeaponChangeAnim() {
-        var weapon = document.getElementById("current-weapon-name");
-        var ammo = document.getElementById("current-weapon-ammo");
+        var weapon = document.getElementById("current-weapon-stats");
         weapon.classList.remove("changed-weapon-anim");
-        ammo.classList.remove("changed-weapon-anim");
-        ammo.classList.remove("used-bullet-anim");
         void weapon.offsetWidth;
-        void ammo.offsetWidth;
         weapon.classList.add("changed-weapon-anim");
-        ammo.classList.add("changed-weapon-anim");
     }
 
     // heal(damageHealed) {

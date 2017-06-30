@@ -101,6 +101,8 @@ function animate() {
 		moveEnemies();
 
 		collisions();
+
+		// TODO: Spawn new wave
 	}
 
 	renderer.render(scene, camera);
@@ -189,4 +191,11 @@ function collisions() {
 			}
 		}
 	}
+}
+
+function triggerIncomingWaveAnim() {
+	var wave = document.getElementById("wave-number");
+	wave.classList.remove("incoming-wave-anim");
+	void wave.offsetWidth;
+	wave.classList.add("incoming-wave-anim");
 }

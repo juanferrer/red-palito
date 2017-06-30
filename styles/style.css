@@ -9,7 +9,6 @@ canvas {
   height: 100%;
   z-index: -1;
 }
-
 .gui {
   position: absolute;
   z-index: 1;
@@ -25,33 +24,41 @@ canvas {
   line-height: 100px;
 }
 
+/* Elements */
+#wave-number {
+  width: 100%;
+}
+
 #hp-bar {
   bottom: 0px;
   left: 0px;
-    width: 100px;
+  width: 100px;
   height: 100px;
 }
 
 #current-weapon-stats {
   right: 0px;
   bottom: 0px;
-  width: 300px;
+  width: 200px;
   height: 150px;
   line-height: 100px;
+  transform-origin: 100% 100%;
 }
 
 #current-weapon-name {
-  width: 300px;
+  width: 100%;
   height: 100px;
   font-size: 50px;
   bottom: 50px;
 }
 #current-weapon-ammo {
-  width: 300px;
+  width: 100%;
   height: 50px;
   font-size: 35px;
   bottom: 50px;
 }
+
+/* Animations */
 
 @keyframes lost-hp {
   8% {
@@ -154,15 +161,36 @@ canvas {
 }
 
 @keyframes changed-weapon {
-  20% {
-    transform: rotateY(90deg);
+  0% {
+    transform: rotate(0deg);
+  }
+  49% {
+    transform: rotate(-90deg);
+  }
+  50% {
+    transform: rotate(90deg);
   }
   100% {
-    color: black;
+    transform: rotate(0deg);
   }
 }
 
 .changed-weapon-anim {
   animation-name: changed-weapon;
-  animation-duration: 0.2s;
+  animation-duration: 0.5s;
+}
+
+@keyframes incoming-wave {
+  5% {
+    font-size: 100px;
+    color: red;
+  }
+  100% {
+    font-size: 50px
+  }
+}
+
+.incoming-wave-anim {
+  animation-name: incoming-wave;
+  animation-duration: 1.5s;
 }
