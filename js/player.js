@@ -110,6 +110,7 @@ class Player extends Character {
         }
     }
 
+    /** Trigger CSS nimations */
     triggerLostHPAnim() {
         var element = document.getElementById("hp-bar");
         element.classList.remove("gained-hp-anim");
@@ -118,6 +119,7 @@ class Player extends Character {
         element.classList.add("lost-hp-anim");
     }
 
+    /** Trigger CSS nimations */
     triggerGainedHPAnim() {
         var element = document.getElementById("hp-bar");
         element.classList.remove("gained-hp-anim");
@@ -126,6 +128,7 @@ class Player extends Character {
         element.classList.add("gained-hp-anim");
     }
 
+    /** Trigger CSS nimations */
     triggerBulletAnim() {
         var element = document.getElementById("current-weapon-ammo");
         element.classList.remove("changed-weapon-anim");
@@ -134,6 +137,7 @@ class Player extends Character {
         element.classList.add("used-bullet-anim");
     }
 
+    /** Trigger CSS nimations */
     triggerWeaponChangeAnim() {
         var weapon = document.getElementById("current-weapon-stats");
         weapon.classList.remove("changed-weapon-anim");

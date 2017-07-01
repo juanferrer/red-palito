@@ -12,6 +12,8 @@ var bulletsAmount = 5;
 
 var weapons = [];
 
+var healthDropCounter, weaponDropCounter, healthDropTime = 25, weaponDropTime = 10;
+
 init();
 animate();
 
@@ -26,6 +28,8 @@ function init() {
 
 	parseJSONToVar("https://raw.githubusercontent.com/JuanFerrer/Survival/master/weapons.json", "weapons", weapons);
 
+	healthDropCounter = healthDropTime;
+	weaponDropCounter = weaponDropTime;
 	keyboardInit();
 	spawnPointsInit();
 
@@ -102,6 +106,8 @@ function animate() {
 
 		collisions();
 
+		updateDropCounters();
+
 		// TODO: Spawn new wave
 	}
 
@@ -169,6 +175,12 @@ function moveEnemies() {
  * Detect and resolve collisions between models
  */
 function collisions() {
+	enemyCollisions();
+	objectCollisions();
+}
+
+/** Collisions between enemy and player models */
+function enemyCollisions() {
 	// Check every active enemy...
 	for (var i = 0; i < enemyAmount; ++i) {
 		if (enemies[i].isSpawned) {
@@ -193,6 +205,37 @@ function collisions() {
 	}
 }
 
+/** Collisions between characters and objects */
+function objectCollisions() {
+	// TODO: Health packs, weapon drops, walls, etc
+}
+
+/**
+ * Decrease weapon and health drop counters
+ */
+function updateDropCounters() {
+	healthDropCounter -= frameTime;
+	weaponDropCounter -= frameTime;
+
+	if (healthDropCounter < 0) {
+		healthDropCounter = healthDropTime;
+		makeDrop("HP");
+	}
+	if (weaponDropCounter < 0) {
+		weaponDropCounter = weaponDropTime;
+		makeDrop("weapon");
+	}
+}
+
+/**
+ * Make a drop from the specified type
+ * @param {string} type - Type of drop to be made 
+ */
+function makeDrop(type) {
+	// TODO: 
+}
+
+/** Trigger CSS nimations */
 function triggerIncomingWaveAnim() {
 	var wave = document.getElementById("wave-number");
 	wave.classList.remove("incoming-wave-anim");
