@@ -1,6 +1,7 @@
 var clock, scene, camera, renderer;
 var player;
 var planeG, planeM, plane, planeColor;
+var planeSize = 100;
 var light;
 var frameTime;
 
@@ -14,6 +15,12 @@ var weapons = [];
 
 var healthDropCounter, weaponDropCounter, healthDropTime = 25, weaponDropTime = 10;
 
+var hpDrops = [];
+var weaponDrops = [];
+var hpDropAmount = 1;
+var weaponDropAmount = 4;
+
+
 init();
 animate();
 
@@ -26,7 +33,7 @@ function init() {
 	clock = new THREE.Clock();
 	frameTime = 0;
 
-	parseJSONToVar("https://raw.githubusercontent.com/JuanFerrer/Survival/master/weapons.json", "weapons", weapons);
+	var parseResult = parseJSONToVar("https://raw.githubusercontent.com/JuanFerrer/Survival/master/weapons.json", "weapons", weapons);
 
 	healthDropCounter = healthDropTime;
 	weaponDropCounter = weaponDropTime;
@@ -41,11 +48,14 @@ function init() {
 	camera.rotateY(Math.degToRad(-180));
 	camera.rotateX(Math.degToRad(-45));
 
-	// Models
-	player = new Player();
-	player.addToScene();
-	player.Mesh.add(camera);
+	// Load player asynchronously
+	parseResult.then(function () {
+		player = new Player();
+		player.addToScene();
+		player.Mesh.add(camera);
+	});
 
+	// Models
 	for (var i = 0; i < bulletsAmount; ++i) {
 		bullets.push(new Bullet());
 	}
@@ -56,8 +66,15 @@ function init() {
 		enemies[i].addToScene();
 	}
 
+	for (i = 0; i < hpDropAmount; ++i) {
+		hpDrops.push(new Drop("HP"));
+	}
+	for (i = 0; i < weaponDropAmount; ++i) {
+		weaponDrops.push(new Drop("weapon"));
+	}
+
 	planeColor = 0xFFFFFF;
-	planeG = new THREE.PlaneGeometry(100, 100, 20, 20);
+	planeG = new THREE.PlaneGeometry(planeSize, planeSize, 20, 20);
 	planeM = new THREE.MeshPhongMaterial({ color: planeColor });
 	plane = new THREE.Mesh(planeG, planeM);
 	plane.castShadow = false;
@@ -93,28 +110,31 @@ function init() {
 function animate() {
 	requestAnimationFrame(animate);
 
-	updateUI();
+	if (player !== undefined) {
 
-	resolveInput();
-	if (!isPaused) {
+		updateUI();
 
-		updateAttackCounters();
+		resolveInput();
+		if (!isPaused) {
 
-		updateBullet();
+			updateAttackCounters();
 
-		moveEnemies();
+			updateBullet();
 
-		collisions();
+			moveEnemies();
 
-		updateDropCounters();
+			collisions();
 
-		// TODO: Spawn new wave
+			updateDropCounters();
+
+			// TODO: Spawn new wave
+		}
+
+		renderer.render(scene, camera);
+
+		frameTime = clock.getDelta();
+		clock.getElapsedTime();
 	}
-
-	renderer.render(scene, camera);
-
-	frameTime = clock.getDelta();
-	clock.getElapsedTime();
 }
 
 function updateUI() {
@@ -208,12 +228,37 @@ function enemyCollisions() {
 /** Collisions between characters and objects */
 function objectCollisions() {
 	// TODO: Health packs, weapon drops, walls, etc
+
+	// Check each object against the player
+	for (var i = 0; i < hpDropAmount; ++i) {
+		if (hpDrops[i].isSpawned) {
+			if (hpDrops[i].position.distanceTo(player.position) < (player.radius)) {
+				player.heal(hpDrops[i].value);
+				hpDrops[i].unspawn();
+			}
+		}
+	}
+	for (var i = 0; i < weaponDropAmount; ++i) {
+		if (weaponDrops[i].isSpawned) {
+			if (weaponDrops[i].position.distanceTo(player.position) < (player.radius * 2)) {
+				player.acquireWeapon(weaponDrops[i].value);
+				weaponDrops[i].unspawn();
+			}
+		}
+	}
 }
 
 /**
  * Decrease weapon and health drop counters
  */
 function updateDropCounters() {
+	for (var i = 0; i < weaponDropAmount; ++i) {
+		weaponDrops[i].Mesh.rotateY(0.1);
+	}
+	for (var i = 0; i < hpDropAmount; ++i) {
+		hpDrops[i].Mesh.rotateY(0.1);
+	}
+
 	healthDropCounter -= frameTime;
 	weaponDropCounter -= frameTime;
 
@@ -232,7 +277,27 @@ function updateDropCounters() {
  * @param {string} type - Type of drop to be made 
  */
 function makeDrop(type) {
-	// TODO: 
+	// TODO:
+	// 1. Calculate random position
+	var position = new THREE.Vector3(((Math.random() * planeSize) - (planeSize / 2.0)),
+		1,
+		((Math.random() * planeSize) - (planeSize / 2.0)));
+	// 3. Set drop to position and calculate random index if weapon
+	if (type == "weapon") {
+		var value = Math.randomInterval(0, weapons.length - 1);
+		var weapon = getNextWeaponDrop();
+		if (!weapon.isSpawned) {
+			weapon.spawn(position, value);
+			console.log(type + " dropped. " + value);
+		}
+	}
+
+	if (type == "HP") {
+		var hp = getNextHPDrop();
+		if (!hp.isSpawned) {
+			hp.spawn(position, 3);
+		}
+	}
 }
 
 /** Trigger CSS nimations */

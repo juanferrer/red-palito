@@ -8,21 +8,24 @@ class Player extends Character {
      * @param {string} charType - Type of character it is. 
      */
     constructor() {
-
         super();
         this.isPlayer = true;
         this.moveSpeed = 10;
         this.color = 0xF44336;
         this.initialHP = 10;
-        this.ownedWeapons = [0];
-        this.weaponsAmmo = [-1];
+        this.ownedWeapons = [];
+        this.weaponsAmmo = [];
+        for (var i = 0; i < weapons.length; ++i) {
+            this.ownedWeapons.push(false);
+            this.weaponsAmmo.push(0);
+        }
         this.currentWeapon = 0;
         super.init();
         this.attackSpeed = 1;
         this.accuracy = 0.5;
         this.damage = 2;
-        //this.acquireWeapon(0);
-        //this.updateWeaponStats();
+        this.acquireWeapon(0);
+        this.updateWeaponStats();
     }
 
     /**
@@ -30,14 +33,17 @@ class Player extends Character {
      */
     nextWeapon() {
         // DEBUG
-        if (this.ownedWeapons.length == 1) {
-            console.log("DEBUG: add UZI");
-            this.acquireWeapon(1);
-        }
+        //if (this.ownedWeapons.length == 1) {
+        //    console.log("DEBUG: add UZI");
+        //    this.acquireWeapon(1);
+        //}
         this.triggerWeaponChangeAnim();
         // Update stats
         setTimeout(function () {
-            player.currentWeapon = player.currentWeapon < player.ownedWeapons.length - 1 ? player.currentWeapon + 1 : 0;
+            do {
+                // player instead of this because it's a callback
+                player.currentWeapon = player.currentWeapon < player.ownedWeapons.length - 1 ? player.currentWeapon + 1 : 0;
+            } while (!player.ownedWeapons[player.currentWeapon] && !player.currentWeapon == 0)
             player.updateWeaponStats();
         }, 200);
     }
@@ -46,9 +52,9 @@ class Player extends Character {
      * Set stats to those of the weapon
      */
     updateWeaponStats() {
-        this.attackSpeed = weapons[this.ownedWeapons[this.currentWeapon]].speed;
-        this.accuracy = weapons[this.ownedWeapons[this.currentWeapon]].accuracy;
-        this.damage = weapons[this.ownedWeapons[this.currentWeapon]].damage;
+        this.attackSpeed = weapons[this.currentWeapon].speed;
+        this.accuracy = weapons[this.currentWeapon].accuracy;
+        this.damage = weapons[this.currentWeapon].damage;
     }
 
     /**
@@ -56,13 +62,14 @@ class Player extends Character {
      * @param {number} index - Weapon number to add
      */
     acquireWeapon(index) {
-        //if (this.ownedWeapons.indexOf(index))
-        this.ownedWeapons.push(index);
-        if (this.weaponsAmmo[index]) {
+        if (!this.ownedWeapons[index]) {
+            this.ownedWeapons[index] = true;
+        }
+        if (this.weaponsAmmo[index] >= 0 && weapons[index].ammo > 0) {
             this.weaponsAmmo[index] += weapons[index].ammo;
         }
         else {
-            this.weaponsAmmo.push(weapons[index].ammo);
+            this.weaponsAmmo[index] = weapons[index].ammo;
         }
     }
 
@@ -102,12 +109,25 @@ class Player extends Character {
         }
     }
 
+    /**
+     * Reduce HP by amount
+     * @param {number} damageDealt - Total damage received
+     */
     receiveDamage(damageDealt) {
         this.HP -= damageDealt;
         this.triggerLostHPAnim();
         if (this.HP <= 0) {
             this.die();
         }
+    }
+
+    /**
+     * Increase HP by amount
+     * @param {number} hpHealed - Total HP gained
+     */
+    heal(hpHealed) {
+        this.HP += hpHealed;
+        this.triggerGainedHPAnim();
     }
 
     /** Trigger CSS nimations */
@@ -144,13 +164,6 @@ class Player extends Character {
         void weapon.offsetWidth;
         weapon.classList.add("changed-weapon-anim");
     }
-
-    // heal(damageHealed) {
-    //     element.classList.remove("lost-hp-anim");
-    //     element.classList.remove("gained-hp-anim");
-    //     void element.offsetWidth;
-    //     element.classList.add("gained-hp-anim");
-    // }
 
     /**
      * 
