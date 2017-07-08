@@ -81,3 +81,9 @@ function getNextHPDrop() {
     currentHPDrop = currentHPDrop < hpDropAmount - 1 ? currentHPDrop + 1 : 0;
     return hpd;
 }
+
+function getRandomPosition(maxSize) {
+    	return new THREE.Vector3(((Math.random() * maxSize) - (maxSize / 2.0)),
+		1,
+		((Math.random() * maxSize) - (maxSize / 2.0)));
+}

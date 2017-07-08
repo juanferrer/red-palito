@@ -95,10 +95,11 @@ class Character {
         this.HP = this.initialHP;
         this.spawnCountDown = this.initialSpawnCountDown;
         // 2. Find spawnPoint
-        var spawnPoint = getNextSpawnPoint();
+        var spawnPoint = getRandomPosition(planeSize);
         // 3. Move to spawnPoint
         this.Mesh.position.set(spawnPoint.x, spawnPoint.y, spawnPoint.z);
         // 4. Allow yourself to check if it is spawned or not
         this.isSpawned = true;
+        this.shouldSpawn = false;
     }
 }

@@ -1,12 +1,15 @@
 var clock, scene, camera, renderer;
 var player;
 var planeG, planeM, plane, planeColor;
-var planeSize = 100;
+var planeSize = 50;
 var light;
 var frameTime;
 
 var enemies = [];
 var enemyAmount = 3;
+var currentEnemyAmount = enemyAmount;
+var waveNumber = 1;
+var isWaveSpawning = true;
 
 var bullets = [];
 var bulletsAmount = 5;
@@ -60,10 +63,8 @@ function init() {
 		bullets.push(new Bullet());
 	}
 
-	enemies = new Array(enemyAmount);
 	for (i = 0; i < enemyAmount; ++i) {
-		enemies[i] = new Enemy();
-		enemies[i].addToScene();
+		addEnemy();
 	}
 
 	for (i = 0; i < hpDropAmount; ++i) {
@@ -95,13 +96,18 @@ function init() {
 
 	renderer = new THREE.WebGLRenderer();
 	renderer.setSize(window.innerWidth, window.innerHeight);
-	renderer.setClearColor(0x212121, 1);
+	renderer.setClearColor(0x0, 1);
 	renderer.shadowMap.enabled = true;
 	renderer.shadowMap.type = THREE.PCFShadowMap;
 	document.body.appendChild(renderer.domElement);
 
 	plane.rotateX(Math.degToRad(-90));
 	plane.translateZ(0);
+}
+
+function addEnemy() {
+	enemies.push(new Enemy());
+	enemies[enemies.length - 1].addToScene();
 }
 
 /**
@@ -115,6 +121,7 @@ function animate() {
 		updateUI();
 
 		resolveInput();
+
 		if (!isPaused) {
 
 			updateAttackCounters();
@@ -122,30 +129,42 @@ function animate() {
 			updateBullet();
 
 			moveEnemies();
+			updateSpawnCounters();
 
 			collisions();
 
 			updateDropCounters();
 
 			// TODO: Spawn new wave
+			if (!enemyAlive() && !isWaveSpawning) {
+				spawnWave();
+			}
 		}
 
 		renderer.render(scene, camera);
-
-		frameTime = clock.getDelta();
-		clock.getElapsedTime();
 	}
+	frameTime = clock.getDelta();
 }
 
+/**
+ * Update elements from the UI
+ */
 function updateUI() {
-	if (player.HP >= 0)
+	if (waveNumber > 0) {
+		document.getElementById("wave-number").innerHTML = waveNumber;
+	}
+	if (player.HP >= 0) {
 		document.getElementById("hp-bar").innerHTML = player.HP;
+	}
 	if (weapons[1]) {
 		document.getElementById("current-weapon-name").innerHTML = weapons[player.currentWeapon].name;
 		document.getElementById("current-weapon-ammo").innerHTML = player.weaponsAmmo[player.currentWeapon];
 	}
 }
 
+/**
+ * Decrease attack cooldowns
+ */
 function updateAttackCounters() {
 	for (var i = 0; i < enemyAmount; ++i) {
 		if (enemies[i].attackCounter > 0) {
@@ -181,10 +200,24 @@ function moveEnemies() {
 		if (enemies[i].isSpawned && enemies[i].HP > 0) {
 			enemies[i].moveTowardPlayer();
 		}
-		else {
+		else if (enemies[i].HP <= 0 && enemies[i].isSpawned) {
+			// Enemy died
+			// TODO: add death counter
+			enemies[i].die();
+		}
+	}
+}
+
+function updateSpawnCounters() {
+	for (var i = 0; i < enemyAmount; ++i) {
+		if (enemies[i].shouldSpawn) {
 			enemies[i].spawnCountDown -= frameTime;
+
 			if (enemies[i].spawnCountDown < 0) {
 				enemies[i].spawn();
+				if (i == enemyAmount - 1) {
+					isWaveSpawning = false;
+				}
 				console.log("Spawning");
 			}
 		}
@@ -232,7 +265,7 @@ function objectCollisions() {
 	// Check each object against the player
 	for (var i = 0; i < hpDropAmount; ++i) {
 		if (hpDrops[i].isSpawned) {
-			if (hpDrops[i].position.distanceTo(player.position) < (player.radius)) {
+			if (hpDrops[i].position.distanceTo(player.position) < (player.radius * 2)) {
 				player.heal(hpDrops[i].value);
 				hpDrops[i].unspawn();
 			}
@@ -279,9 +312,7 @@ function updateDropCounters() {
 function makeDrop(type) {
 	// TODO:
 	// 1. Calculate random position
-	var position = new THREE.Vector3(((Math.random() * planeSize) - (planeSize / 2.0)),
-		1,
-		((Math.random() * planeSize) - (planeSize / 2.0)));
+	var position = getRandomPosition(planeSize);
 	// 3. Set drop to position and calculate random index if weapon
 	if (type == "weapon") {
 		var value = Math.randomInterval(0, weapons.length - 1);
@@ -300,10 +331,43 @@ function makeDrop(type) {
 	}
 }
 
-/** Trigger CSS nimations */
+/** Trigger CSS animations */
 function triggerIncomingWaveAnim() {
 	var wave = document.getElementById("wave-number");
 	wave.classList.remove("incoming-wave-anim");
 	void wave.offsetWidth;
 	wave.classList.add("incoming-wave-anim");
+}
+
+/**
+ * Check if there's any enemy alive
+ * @returns {bool} Whether any enemy is alive
+ */
+function enemyAlive() {
+	for (var i = 0; i < enemyAmount; ++i) {
+		if (enemies[i].isSpawned) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * 
+ */
+function spawnWave() {
+	triggerIncomingWaveAnim();
+	isWaveSpawning = true;
+	waveNumber++;
+
+	// TODO: increase number of enemies to spawn
+	enemyAmount += 2;
+
+	for (var i = 0; i < enemyAmount - currentEnemyAmount; ++i) {
+		addEnemy();
+	}
+
+	for (i = 0; i < enemyAmount; ++i) {
+		enemies[i].shouldSpawn = true;
+	}
 }

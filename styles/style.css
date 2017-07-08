@@ -9,11 +9,14 @@ canvas {
   height: 100%;
   z-index: -1;
 }
+
 .gui {
   position: absolute;
   z-index: 1;
   font-family: 'Anton', sans-serif;
   text-align: center;
+  /*DEBUG*/
+  text-shadow: 0 0 4px #FFFFFF;
 }
 
 .gui-main {
@@ -24,7 +27,9 @@ canvas {
   line-height: 100px;
 }
 
+
 /* Elements */
+
 #wave-number {
   width: 100%;
 }
@@ -51,12 +56,14 @@ canvas {
   font-size: 50px;
   bottom: 50px;
 }
+
 #current-weapon-ammo {
   width: 100%;
   height: 50px;
   font-size: 35px;
   bottom: 50px;
 }
+
 
 /* Animations */
 
