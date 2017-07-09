@@ -230,6 +230,7 @@ function updateSpawnCounters() {
 function collisions() {
 	enemyCollisions();
 	objectCollisions();
+	wallCollisions();
 }
 
 /** Collisions between enemy and player models */
@@ -242,15 +243,15 @@ function enemyCollisions() {
 				if (enemies[j].isSpawned) {
 					if (enemies[j].position.distanceTo(enemies[i].position) < (enemies[i].radius + enemies[j].radius)) {
 						var direction = enemies[i].position.clone().sub(enemies[j].position).normalize();
-						enemies[i].position.add(direction.clone().multiplyScalar(enemies[i].radius / 10));
-						enemies[j].position.add(direction.clone().multiplyScalar(-enemies[j].radius / 10));
+						enemies[i].position.add(direction.clone().multiplyScalar(enemies[i].moveSpeed * frameTime));
+						enemies[j].position.add(direction.clone().multiplyScalar(-enemies[j].moveSpeed * frameTime));
 					}
 				}
 			}
 			//...and then the player
 			while (enemies[i].position.distanceTo(player.position) < (enemies[i].radius + player.radius)) {
 				var direction = enemies[i].position.clone().sub(player.position).normalize();
-				enemies[i].position.add(direction.clone().multiplyScalar(enemies[i].radius / 10));
+				enemies[i].position.add(direction.clone().multiplyScalar(enemies[i].moveSpeed * frameTime));
 				//player.position.add(direction.clone().multiplyScalar(-player.radius / 10));
 				enemies[i].attack();
 			}
@@ -279,6 +280,14 @@ function objectCollisions() {
 			}
 		}
 	}
+
+}
+
+/**
+ * Check if character against the wals
+ */
+function wallCollisions() {
+
 }
 
 /**

@@ -1,5 +1,5 @@
 /**
- * Single class meant to be used by players and enemies alike.
+ * Single class meant to be used by this.Meshs and enemies alike.
  * It has a THREE.Geometry, THREE.Material and THREE.Mesh among others.
  */
 class Character {
@@ -64,20 +64,41 @@ class Character {
         return direction.applyMatrix4(matrix).normalize();
     }
 
+    correctOutOfBounds() {
+        if (this.Mesh.position.x + this.radius > (planeSize / 2)) {
+            this.Mesh.position.x = (planeSize / 2) - this.radius;
+        }
+        else if (this.Mesh.position.x - this.radius < -(planeSize / 2)) {
+            this.Mesh.position.x = (-planeSize / 2) + this.radius;
+        }
+        if (this.Mesh.position.z + this.radius > (planeSize / 2)) {
+            this.Mesh.position.z = (planeSize / 2) - this.radius;
+        }
+        else if (this.Mesh.position.z - this.radius < -(planeSize / 2)) {
+            this.Mesh.position.z = (-planeSize / 2) + this.radius;
+        }
+    }
+
     moveForward() {
-        this.Mesh.translateZ(this.moveSpeed / 60);
+        var newPos = this.Mesh.position;
+        newPos.add(this.facingVector.normalize().multiplyScalar(this.moveSpeed * frameTime));
+        this.Mesh.position.set(newPos.x, newPos.y, newPos.z);
+        this.correctOutOfBounds();
     }
 
     moveBackward() {
-        this.Mesh.translateZ(-this.moveSpeed / 60);
+        var newPos = this.Mesh.position;
+        newPos.add(this.facingVector.normalize().multiplyScalar(-this.moveSpeed * frameTime));
+        this.Mesh.position.set(newPos.x, newPos.y, newPos.z);
+        this.correctOutOfBounds();
     }
 
     rotateRight() {
-        this.Mesh.rotateY(Math.degToRad(-this.rotSpeed / 60));
+        this.Mesh.rotateY(Math.degToRad(-this.rotSpeed * frameTime));
     }
 
     rotateLeft() {
-        this.Mesh.rotateY(Math.degToRad(this.rotSpeed / 60));
+        this.Mesh.rotateY(Math.degToRad(this.rotSpeed * frameTime));
     }
 
     die() {
