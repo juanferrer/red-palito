@@ -24,7 +24,7 @@ class Character {
 
     init() {
         this.Geometry = new THREE.BoxGeometry(1, 2, 1);
-        this.Material = new THREE.MeshLambertMaterial({ color: this.color });
+        this.Material = new THREE.MeshStandardMaterial({ color: this.color });
         this.Mesh = new THREE.Mesh(this.Geometry, this.Material);
         this.Mesh.castShadow = true;
         this.Mesh.receiveShadow = true;

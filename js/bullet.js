@@ -10,7 +10,7 @@ class Bullet {
         this.initialLifeTime = 1;
         this.lifeTime = this.initialLifeTime;
         this.direction = null;
-        this.speed = 1.4;
+        this.speed = 1.8;
     }
 
     get position() {
@@ -36,11 +36,29 @@ class Bullet {
      * @param {number} acc - Shot accuracy
      */
     orient(acc) {
-        var randX = (Math.random() + (acc - 0.5)) / 50;
-        var randZ = (Math.random() + (acc - 0.5)) / 50;
+        var randX = Math.max((Math.random() - acc) / 20, 0);
+        var randZ = Math.max((Math.random() - acc) / 20, 0);
 
         this.direction.add(new THREE.Vector3(randX, 0, randZ));
         this.Mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), this.direction.normalize());
+    }
+
+    /**
+    * 
+     * @param {number} weaponIndex - Index of weapon to prepare bullet for
+    */
+    prepareForWeapon(weaponIndex) {
+        switch (weaponIndex) {
+            case 0: // Pistol
+                break;
+            case 1: // Uzi
+                break;
+            case 2: // Shotgun 
+                break;
+            case 4: // Laser
+                this.Material.color.setHex(0x0000FF);
+                break;
+        }
     }
 
 
@@ -54,9 +72,9 @@ class Bullet {
     }
 
     /**
- * Gets the Y vector of the model. A.K.A. Upward
- * @returns {THREE.Vector3}
- */
+    * Gets the Y vector of the model. A.K.A. Upward
+    * @returns {THREE.Vector3}
+    */
     get frontVector() {
         var matrix = new THREE.Matrix4();
         matrix.extractRotation(this.Mesh.matrix);

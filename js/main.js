@@ -2,7 +2,8 @@ var clock, scene, camera, renderer;
 var player;
 var planeG, planeM, plane, planeColor;
 var planeSize = 50;
-var light;
+var lights = [];
+var lightsAmount = 4;
 var frameTime;
 
 var enemies = [];
@@ -76,23 +77,26 @@ function init() {
 
 	planeColor = 0xFFFFFF;
 	planeG = new THREE.PlaneGeometry(planeSize, planeSize, 20, 20);
-	planeM = new THREE.MeshPhongMaterial({ color: planeColor });
+	planeM = new THREE.MeshStandardMaterial({ color: planeColor });
 	plane = new THREE.Mesh(planeG, planeM);
 	plane.castShadow = false;
 	plane.receiveShadow = true;
 	scene.add(plane);
 
 	// Lights
-	var lightX = 10;
+	var lightX = [15, 15, -15, -15];
 	var lightY = 20;
-	var lightZ = 10;
-	var lightIntensity = 0.7;
+	var lightZ = [15, -15, -15, 15];
+	var lightIntensity = 2;
 	lightColor = 0xFFFFFF;
-	light = new THREE.PointLight(lightColor);
-	light.castShadow = true;
-	light.intensity = lightIntensity;
+	var light = new THREE.AmbientLight(0xFFFFFF, 0.1);
 	scene.add(light);
-	light.position.set(lightX, lightY, lightZ);
+	for (i = 0; i < lightsAmount; ++i) {
+		lights.push(new THREE.PointLight(lightColor, lightIntensity, 30, 2));
+		lights[lights.length - 1].castShadow = true;
+		scene.add(lights[lights.length - 1]);
+		lights[lights.length - 1].position.set(lightX[i], lightY, lightZ[i]);
+	}
 
 	renderer = new THREE.WebGLRenderer();
 	renderer.setSize(window.innerWidth, window.innerHeight);
@@ -127,6 +131,8 @@ function animate() {
 			updateAttackCounters();
 
 			updateBullet();
+
+			updateLightFlicker();
 
 			moveEnemies();
 			updateSpawnCounters();
@@ -192,6 +198,15 @@ function updateBullet() {
 	}
 }
 
+var lightFlickerCounter = 0;
+
+function updateLightFlicker() {
+	if (lightFlickerCounter < 0) {
+		lights[0].intensity = 0;
+		lightFlickerCounter = Math.randomInterval(0, );
+	}
+}
+
 /**
  * Move enemies towards player
  */
@@ -241,7 +256,7 @@ function enemyCollisions() {
 			// ...against every other active enemy...
 			for (var j = i + 1; j < enemyAmount; ++j) {
 				if (enemies[j].isSpawned) {
-					if (enemies[j].position.distanceTo(enemies[i].position) < (enemies[i].radius + enemies[j].radius)) {
+					while (enemies[j].position.distanceTo(enemies[i].position) < (enemies[i].radius + enemies[j].radius)) {
 						var direction = enemies[i].position.clone().sub(enemies[j].position).normalize();
 						enemies[i].position.add(direction.clone().multiplyScalar(enemies[i].moveSpeed * frameTime));
 						enemies[j].position.add(direction.clone().multiplyScalar(-enemies[j].moveSpeed * frameTime));

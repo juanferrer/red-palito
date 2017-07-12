@@ -87,6 +87,7 @@ class Player extends Character {
                 this.weaponsAmmo[this.currentWeapon]--;
             this.triggerBulletAnim();
             var bullet = getNextBullet();
+            // bullet.prepareBulletForWeapons(weapons[this.currentWeapon]);
             bullet.spawn(this.position, this.facingVector, this.accuracy);
             var raycaster = new THREE.Raycaster(this.position, this.facingVector);
             var enemyMeshes = [];

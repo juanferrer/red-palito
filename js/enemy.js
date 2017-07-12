@@ -11,7 +11,7 @@ class Enemy extends Character {
         super();
         this.isPlayer = false;
         this.moveSpeed = 3;
-        this.color = 0xFFFFFF;
+        this.color = 0x4CAF50;
         this.initialHP = 4;
         this.initialSpawnCountDown = Math.random();
         this.shouldSpawn = true;
