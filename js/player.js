@@ -33,10 +33,10 @@ class Player extends Character {
      */
     nextWeapon() {
         // DEBUG
-        //if (this.ownedWeapons.length == 1) {
-        //    console.log("DEBUG: add UZI");
-        //    this.acquireWeapon(1);
-        //}
+        if (!this.ownedWeapons[2]) {
+           console.log("DEBUG: add shotgun");
+           this.acquireWeapon(2);
+        }
         this.triggerWeaponChangeAnim();
         // Update stats
         setTimeout(function () {
@@ -86,9 +86,7 @@ class Player extends Character {
             if (this.weaponsAmmo[this.currentWeapon] > 0)
                 this.weaponsAmmo[this.currentWeapon]--;
             this.triggerBulletAnim();
-            var bullet = getNextBullet();
-            // bullet.prepareBulletForWeapons(weapons[this.currentWeapon]);
-            bullet.spawn(this.position, this.facingVector, this.accuracy);
+            this.weaponAnimation();
             var raycaster = new THREE.Raycaster(this.position, this.facingVector);
             var enemyMeshes = [];
             for (var e = 0; e < enemyAmount; ++e) {
@@ -164,6 +162,38 @@ class Player extends Character {
         weapon.classList.remove("changed-weapon-anim");
         void weapon.offsetWidth;
         weapon.classList.add("changed-weapon-anim");
+    }
+
+    weaponAnimation() {
+        var bullet;
+        switch (this.currentWeapon) {
+            // Single shot weapons
+            case 0: case 1:
+                bullet = getNextBullet();
+                // bullet.prepareBulletForWeapons(weapons[this.currentWeapon]);
+                bullet.spawn(this.position, this.facingVector, this.accuracy);
+                break;
+            // Special cases
+
+            // Shotgun: multiple shots in an outward direction
+            case 2:
+            var dirVector, randX, randY, randZ;
+                for (var i = 0; i < 5; ++i) {
+                    bullet = getNextBullet();
+                    // bullet.prepareBulletForWeapons(weapons[this.currentWeapon]);
+                    dirVector = this.facingVector;
+                    randX = (Math.random() / 5) - 0.1;
+                    randY = (Math.random() / 5) - 0.1;
+                    randZ = (Math.random() / 5) - 0.1;
+                    dirVector.add(new THREE.Vector3(randX, randY, randZ));
+                    console.log(dirVector);
+                    bullet.spawn(this.position, dirVector, this.accuracy);
+                }
+                break;
+            // Laser: single, long ray. Damages everything in it's path
+            case 3:
+                break;
+        }
     }
 
     /**

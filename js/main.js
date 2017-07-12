@@ -13,7 +13,7 @@ var waveNumber = 1;
 var isWaveSpawning = true;
 
 var bullets = [];
-var bulletsAmount = 5;
+var bulletsAmount = 30;
 
 var weapons = [];
 

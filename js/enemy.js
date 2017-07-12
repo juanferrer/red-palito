@@ -62,6 +62,6 @@ class Enemy extends Character {
         // 2. setTimeout(disappear, time);
         this.isSpawned = false;
         this.spawnCountDown = this.initialSpawnCountDown;
-        this.position.y = -2;
+        this.position.set(0, -2, 0);
     }
 }
