@@ -33,9 +33,9 @@ class Player extends Character {
      */
     nextWeapon() {
         // DEBUG
-        if (!this.ownedWeapons[2]) {
-           console.log("DEBUG: add shotgun");
-           this.acquireWeapon(2);
+        if (!this.ownedWeapons[3]) {
+            console.log("DEBUG: add laser");
+            this.acquireWeapon(3);
         }
         this.triggerWeaponChangeAnim();
         // Update stats
@@ -86,24 +86,7 @@ class Player extends Character {
             if (this.weaponsAmmo[this.currentWeapon] > 0)
                 this.weaponsAmmo[this.currentWeapon]--;
             this.triggerBulletAnim();
-            this.weaponAnimation();
-            var raycaster = new THREE.Raycaster(this.position, this.facingVector);
-            var enemyMeshes = [];
-            for (var e = 0; e < enemyAmount; ++e) {
-                enemyMeshes.push(enemies[e].Mesh);
-            }
-            var intersects = raycaster.intersectObjects(enemyMeshes);
-
-            if (intersects.length > 0) {
-                var firstIntersectedObject = intersects[0].object;
-
-                for (var i = 0; i < enemyAmount; ++i) {
-                    if (firstIntersectedObject.id === enemies[i].id && enemies[i].HP > 0) {
-                        enemies[i].receiveDamage(this.damage);
-                    }
-                }
-
-            }
+            this.useWeapon();
             this.attackCounter = this.attackSpeed;
         }
     }
@@ -164,6 +147,48 @@ class Player extends Character {
         weapon.classList.add("changed-weapon-anim");
     }
 
+    useWeapon() {
+        this.weaponAnimation();
+    }
+
+
+    /**
+     * Check whether the bullet hit a target
+     * @param {THREE.Vector3} dirVector - Target direction of bullet
+     * @param {bool} resilient - Whether the bullet should go through enemies
+     */
+    bulletHitCheck(dirVector, resilient = false) {
+        var raycaster = new THREE.Raycaster(this.position, dirVector);
+        var enemyMeshes = [];
+        for (var e = 0; e < enemyAmount; ++e) {
+            enemyMeshes.push(enemies[e].Mesh);
+        }
+        var intersects = raycaster.intersectObjects(enemyMeshes);
+
+        if (intersects.length > 0) {
+
+            if (resilient) {
+                for (var j = 0; j < intersects.length; ++j) {
+                    for (var i = 0; i < enemyAmount; ++i) {
+                        if (intersects[j].object.id === enemies[i].id && enemies[i].HP > 0) {
+                            enemies[i].receiveDamage(this.damage);
+                        }
+                    }
+                }
+            }
+            else {
+                for (var i = 0; i < enemyAmount; ++i) {
+                    if (intersects[0].object.id === enemies[i].id && enemies[i].HP > 0) {
+                        enemies[i].receiveDamage(this.damage);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Make the animation for the different weapons
+     */
     weaponAnimation() {
         var bullet;
         switch (this.currentWeapon) {
@@ -172,12 +197,13 @@ class Player extends Character {
                 bullet = getNextBullet();
                 // bullet.prepareBulletForWeapons(weapons[this.currentWeapon]);
                 bullet.spawn(this.position, this.facingVector, this.accuracy);
+                this.bulletHitCheck(bullet.direction);
                 break;
             // Special cases
 
             // Shotgun: multiple shots in an outward direction
             case 2:
-            var dirVector, randX, randY, randZ;
+                var dirVector, randX, randY, randZ;
                 for (var i = 0; i < 5; ++i) {
                     bullet = getNextBullet();
                     // bullet.prepareBulletForWeapons(weapons[this.currentWeapon]);
@@ -188,10 +214,14 @@ class Player extends Character {
                     dirVector.add(new THREE.Vector3(randX, randY, randZ));
                     console.log(dirVector);
                     bullet.spawn(this.position, dirVector, this.accuracy);
+                    this.bulletHitCheck(bullet.direction);
                 }
                 break;
             // Laser: single, long ray. Damages everything in it's path
             case 3:
+                bullet = getNextBullet();
+                bullet.spawn(new THREE.Vector3(this.position.x + this.facingVector.x * 3, this.position.y + this.facingVector.y * 3, this.position.z + this.facingVector.z * 3), this.facingVector, this.accuracy, 0);
+                this.bulletHitCheck(bullet.direction, true);
                 break;
         }
     }

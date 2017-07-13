@@ -23,10 +23,11 @@ class Bullet {
      * @param {THREE.Vector3} dir - Facing direction of bullet
      * @param {number} acc - Shot accuracy
      */
-    spawn(pos, dir, acc) {
+    spawn(pos, dir, acc, sp = 1.8) {
         this.direction = dir;
         this.isAlive = true;
         this.lifeTime = this.initialLifeTime;
+        this.speed = sp;
         this.Mesh.position.set(pos.x, 1, pos.z);
         this.orient(acc);
     }
