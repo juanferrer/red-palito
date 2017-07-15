@@ -16,6 +16,9 @@ var bullets = [];
 var bulletsAmount = 30;
 
 var weapons = [];
+var gunFlareFalloffTime = [10, 10, 10, 1, 1];
+var gunFlareColor = [0xF7EFB1, 0xF7EFB1, 0xF7EFB1, 0x0000FF, 0x0];
+var gunFlare;
 
 var healthDropCounter, weaponDropCounter, healthDropTime = 25, weaponDropTime = 10;
 
@@ -51,13 +54,20 @@ function init() {
 	camera.position.set(0, 40, -40);
 	camera.rotateY(Math.degToRad(-180));
 	camera.rotateX(Math.degToRad(-45));
+	gunFlare = new THREE.PointLight(0x0, 0, 10, 2);
 
 	// Load player asynchronously
 	parseResult.then(function () {
 		player = new Player();
 		player.addToScene();
 		player.Mesh.add(camera);
+
+		gunFlare.position.add(new THREE.Vector3(0, 0.5, 1.3))
+		gunFlare.rotateY();
+		gunFlare.castShadow = true;
+		player.Mesh.add(gunFlare);
 	});
+
 
 	// Models
 	for (var i = 0; i < bulletsAmount; ++i) {
@@ -196,6 +206,10 @@ function updateBullet() {
 			bullets[i].reset();
 		}
 	}
+	if (gunFlare.intensity > 0) {
+		gunFlare.intensity -= frameTime * gunFlareFalloffTime[player.currentWeapon];
+		if (gunFlare.intensity < 0) gunFlare.intensity = 0;
+	}	
 }
 
 var lightFlickerCounter = 0;
@@ -203,7 +217,7 @@ var lightFlickerCounter = 0;
 function updateLightFlicker() {
 	if (lightFlickerCounter < 0) {
 		lights[0].intensity = 0;
-		lightFlickerCounter = Math.randomInterval(0, );
+		lightFlickerCounter = Math.randomInterval(0, 1);
 	}
 }
 
