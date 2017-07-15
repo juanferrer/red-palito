@@ -195,6 +195,7 @@ class Player extends Character {
             // Single shot weapons
             case 0: case 1:
                 bullet = getNextBullet();
+                bullet.Mesh.scale.y = 1;
                 // bullet.prepareBulletForWeapons(weapons[this.currentWeapon]);
                 bullet.spawn(this.position, this.facingVector, this.accuracy);
                 this.bulletHitCheck(bullet.direction);
@@ -206,6 +207,7 @@ class Player extends Character {
                 var dirVector, randX, randY, randZ;
                 for (var i = 0; i < 5; ++i) {
                     bullet = getNextBullet();
+                    bullet.Mesh.scale.y = 1;
                     // bullet.prepareBulletForWeapons(weapons[this.currentWeapon]);
                     dirVector = this.facingVector;
                     randX = (Math.random() / 5) - 0.1;
@@ -220,7 +222,11 @@ class Player extends Character {
             // Laser: single, long ray. Damages everything in it's path
             case 3:
                 bullet = getNextBullet();
-                bullet.spawn(new THREE.Vector3(this.position.x + this.facingVector.x * 3, this.position.y + this.facingVector.y * 3, this.position.z + this.facingVector.z * 3), this.facingVector, this.accuracy, 0);
+                bullet.Mesh.scale.y = 10;
+                bullet.Material.color.setHex(0x0000FF);
+                var posOffset = bullet.Mesh.scale.y * 2 + 5;
+                var laserBeamPos = new THREE.Vector3(this.position.x + this.facingVector.x * posOffset, this.position.y + this.facingVector.y * posOffset, this.position.z + this.facingVector.z * posOffset);
+                bullet.spawn(laserBeamPos, this.facingVector, this.accuracy, 0, 0.1);
                 this.bulletHitCheck(bullet.direction, true);
                 break;
         }

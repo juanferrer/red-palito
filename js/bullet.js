@@ -23,10 +23,10 @@ class Bullet {
      * @param {THREE.Vector3} dir - Facing direction of bullet
      * @param {number} acc - Shot accuracy
      */
-    spawn(pos, dir, acc, sp = 1.8) {
+    spawn(pos, dir, acc, sp = 1.8, lt = this.initialLifeTime) {
         this.direction = dir;
         this.isAlive = true;
-        this.lifeTime = this.initialLifeTime;
+        this.lifeTime = lt;
         this.speed = sp;
         this.Mesh.position.set(pos.x, 1, pos.z);
         this.orient(acc);
@@ -67,6 +67,8 @@ class Bullet {
      * Set bullet to its initial state
      */
     reset() {
+        this.Material.color.setHex(0x0);
+        this.Mesh.scale.y = 1;
         this.isAlive = false;
         this.direction = null;
         this.position.set(0, this.initialYPos, 0);
