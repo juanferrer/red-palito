@@ -15,7 +15,7 @@ class Drop {
         this.value = 0;
         this.isSpawned = false;
         this.Geometry = new THREE.BoxGeometry(1, 1, 1);
-        this.Material = new THREE.MeshLambertMaterial({ color: this.color });
+        this.Material = new THREE.MeshStandardMaterial({ color: this.color });
         this.Mesh = new THREE.Mesh(this.Geometry, this.Material);
         this.Mesh.receiveShadow = true;
         this.Mesh.castShadow = true;

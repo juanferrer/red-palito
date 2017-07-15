@@ -11,7 +11,7 @@ class Enemy extends Character {
         super();
         this.isPlayer = false;
         this.moveSpeed = 3;
-        this.color = 0xFFFFFF;
+        this.color = 0x4CAF50;
         this.initialHP = 4;
         this.initialSpawnCountDown = Math.random();
         this.shouldSpawn = true;
@@ -62,6 +62,6 @@ class Enemy extends Character {
         // 2. setTimeout(disappear, time);
         this.isSpawned = false;
         this.spawnCountDown = this.initialSpawnCountDown;
-        this.position.y = -2;
+        this.position.set(0, -2, 0);
     }
 }
