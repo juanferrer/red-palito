@@ -32,11 +32,12 @@ class Player extends Character {
      * Change current weapon to next owned weapon
      */
     nextWeapon() {
-        // DEBUG
-        if (!this.ownedWeapons[3]) {
-            console.log("DEBUG: add laser");
-            this.acquireWeapon(3);
-        }
+        // // DEBUG
+        // var w = 1;
+        // if (!this.ownedWeapons[w]) {
+        //     console.log("DEBUG: add " + weapons[w].name);
+        //     this.acquireWeapon(w);
+        // }
         this.triggerWeaponChangeAnim();
         // Update stats
         setTimeout(function () {
@@ -82,7 +83,7 @@ class Player extends Character {
             //this.ownedWeapons.slice(this.currentWeapon, 1);
             this.nextWeapon();
         }
-        if (this.attackCounter <= 0) {
+        else if (this.attackCounter <= 0) {
             if (this.weaponsAmmo[this.currentWeapon] > 0)
                 this.weaponsAmmo[this.currentWeapon]--;
             this.triggerBulletAnim();
@@ -149,6 +150,7 @@ class Player extends Character {
 
     useWeapon() {
         this.weaponAnimation();
+        this.gunFlareAnimation();
     }
 
 
@@ -195,10 +197,11 @@ class Player extends Character {
             // Single shot weapons
             case 0: case 1:
                 bullet = getNextBullet();
-                bullet.Mesh.scale.y = 1;
+                bullet.prepareForWeapon(this.currentWeapon);
                 // bullet.prepareBulletForWeapons(weapons[this.currentWeapon]);
                 bullet.spawn(this.position, this.facingVector, this.accuracy);
                 this.bulletHitCheck(bullet.direction);
+
                 break;
             // Special cases
 
@@ -207,14 +210,13 @@ class Player extends Character {
                 var dirVector, randX, randY, randZ;
                 for (var i = 0; i < 5; ++i) {
                     bullet = getNextBullet();
-                    bullet.Mesh.scale.y = 1;
+                    bullet.prepareForWeapon(this.currentWeapon);
                     // bullet.prepareBulletForWeapons(weapons[this.currentWeapon]);
                     dirVector = this.facingVector;
                     randX = (Math.random() / 5) - 0.1;
                     randY = (Math.random() / 5) - 0.1;
                     randZ = (Math.random() / 5) - 0.1;
                     dirVector.add(new THREE.Vector3(randX, randY, randZ));
-                    console.log(dirVector);
                     bullet.spawn(this.position, dirVector, this.accuracy);
                     this.bulletHitCheck(bullet.direction);
                 }
@@ -222,14 +224,18 @@ class Player extends Character {
             // Laser: single, long ray. Damages everything in it's path
             case 3:
                 bullet = getNextBullet();
-                bullet.Mesh.scale.y = 10;
-                bullet.Material.color.setHex(0x0000FF);
+                bullet.prepareForWeapon(this.currentWeapon);
                 var posOffset = bullet.Mesh.scale.y * 2 + 5;
                 var laserBeamPos = new THREE.Vector3(this.position.x + this.facingVector.x * posOffset, this.position.y + this.facingVector.y * posOffset, this.position.z + this.facingVector.z * posOffset);
                 bullet.spawn(laserBeamPos, this.facingVector, this.accuracy, 0, 0.1);
                 this.bulletHitCheck(bullet.direction, true);
                 break;
         }
+    }
+
+    gunFlareAnimation() {
+        gunFlare.intensity = 1;
+        gunFlare.color.setHex(gunFlareColor[this.currentWeapon]);
     }
 
     /**

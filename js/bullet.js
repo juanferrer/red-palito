@@ -51,12 +51,19 @@ class Bullet {
     prepareForWeapon(weaponIndex) {
         switch (weaponIndex) {
             case 0: // Pistol
+                this.Mesh.scale.y = 1;
+                this.Material.color.setHex(0xFFFFFF);
                 break;
             case 1: // Uzi
+                this.Mesh.scale.y = 1;
+                this.Material.color.setHex(0xFFFFFF);
                 break;
             case 2: // Shotgun 
+                this.Mesh.scale.y = 1;
+                this.Material.color.setHex(0xFFFFFF);
                 break;
-            case 4: // Laser
+            case 3: // Laser
+                this.Mesh.scale.y = 10;
                 this.Material.color.setHex(0x0000FF);
                 break;
         }
