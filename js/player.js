@@ -88,7 +88,7 @@ class Player extends Character {
                 this.weaponsAmmo[this.currentWeapon]--;
             this.triggerBulletAnim();
             this.useWeapon();
-            //weaponSounds[this.currentWeapon].play();
+            weaponSounds[this.currentWeapon].play();
             this.attackCounter = this.attackSpeed;
         }
     }
