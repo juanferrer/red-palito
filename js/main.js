@@ -65,7 +65,7 @@ function init() {
 		setupPlayer();
 		setGunFlare();
 
-		//loadWeaponSounds();
+		loadWeaponSounds();
 		player.Mesh.add(listener);
 	});
 
@@ -140,7 +140,7 @@ function loadWeaponSounds() {
 	for (var i = 0; i < weapons.length; ++i) {
 		weaponSounds.push(new THREE.Audio(listener));
 
-		audioLoader.load("D:/Juan/Programming/JavaScript/Survival/sounds/shotgun.wav", function (buffer) {
+		audioLoader.load("sounds/pistol.wav", function (buffer) {
 			// audioLoader.load(weaponSoundFile[i], function (buffer) {
 			weaponSounds[weaponSounds.length - 1].setBuffer(buffer);
 			weaponSounds[weaponSounds.length - 1].setLoop(false);
