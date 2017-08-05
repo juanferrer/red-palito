@@ -20,6 +20,9 @@ var gunFlareFalloffTime = [10, 10, 10, 1, 1];
 var gunFlareColor = [0xF7EFB1, 0xF7EFB1, 0xF7EFB1, 0x0000FF, 0x0];
 var gunFlare;
 
+var listener, audioLoader;
+var weaponSounds = [];
+
 var healthDropCounter, weaponDropCounter, healthDropTime = 25, weaponDropTime = 10;
 
 var hpDrops = [];
@@ -32,9 +35,7 @@ init();
 animate();
 
 
-/**
- * Initialise scene
- */
+/** Initialise scene */
 function init() {
 
 	clock = new THREE.Clock();
@@ -56,21 +57,21 @@ function init() {
 	camera.rotateX(Math.degToRad(-45));
 	gunFlare = new THREE.PointLight(0x0, 0, 10, 2);
 
+	listener = new THREE.AudioListener();
+	audioLoader = new THREE.AudioLoader();
+
 	// Load player asynchronously
 	parseResult.then(function () {
-		player = new Player();
-		player.addToScene();
-		player.Mesh.add(camera);
+		setupPlayer();
+		setGunFlare();
 
-		gunFlare.position.add(new THREE.Vector3(0, 0.5, 1.3))
-		gunFlare.rotateY();
-		gunFlare.castShadow = true;
-		player.Mesh.add(gunFlare);
+		//loadWeaponSounds();
+		player.Mesh.add(listener);
 	});
 
 
 	// Models
-	for (var i = 0; i < bulletsAmount; ++i) {
+	for (i = 0; i < bulletsAmount; ++i) {
 		bullets.push(new Bullet());
 	}
 
@@ -119,14 +120,41 @@ function init() {
 	plane.translateZ(0);
 }
 
+/** Prepare player for game */
+function setupPlayer() {
+	player = new Player();
+	player.addToScene();
+	player.Mesh.add(camera);
+}
+
+/** Set the position of the gun flare */
+function setGunFlare() {
+	gunFlare.position.add(new THREE.Vector3(0, 0.5, 1.3))
+	gunFlare.rotateY();
+	gunFlare.castShadow = true;
+	player.Mesh.add(gunFlare);
+}
+
+/** */
+function loadWeaponSounds() {
+	for (var i = 0; i < weapons.length; ++i) {
+		weaponSounds.push(new THREE.Audio(listener));
+
+		audioLoader.load("D:/Juan/Programming/JavaScript/Survival/sounds/shotgun.wav", function (buffer) {
+			// audioLoader.load(weaponSoundFile[i], function (buffer) {
+			weaponSounds[weaponSounds.length - 1].setBuffer(buffer);
+			weaponSounds[weaponSounds.length - 1].setLoop(false);
+			weaponSounds[weaponSounds.length - 1].setVolume(0.5);
+		});
+	}
+}
+
 function addEnemy() {
 	enemies.push(new Enemy());
 	enemies[enemies.length - 1].addToScene();
 }
 
-/**
- * Animate scene
- */
+/** Animate scene */
 function animate() {
 	requestAnimationFrame(animate);
 
@@ -162,9 +190,7 @@ function animate() {
 	frameTime = clock.getDelta();
 }
 
-/**
- * Update elements from the UI
- */
+/** Update elements from the UI */
 function updateUI() {
 	if (waveNumber > 0) {
 		document.getElementById("wave-number").innerHTML = waveNumber;
@@ -178,9 +204,7 @@ function updateUI() {
 	}
 }
 
-/**
- * Decrease attack cooldowns
- */
+/** Decrease attack cooldowns */
 function updateAttackCounters() {
 	for (var i = 0; i < enemyAmount; ++i) {
 		if (enemies[i].attackCounter > 0) {
@@ -192,9 +216,7 @@ function updateAttackCounters() {
 	}
 }
 
-/**
- * Decrease bullet lifetime and dispose of bullets
- */
+/** Decrease bullet lifetime and dispose of bullets */
 function updateBullet() {
 	for (var i = 0; i < bulletsAmount; ++i) {
 		if (bullets[i].isAlive) {
@@ -209,7 +231,7 @@ function updateBullet() {
 	if (gunFlare.intensity > 0) {
 		gunFlare.intensity -= frameTime * gunFlareFalloffTime[player.currentWeapon];
 		if (gunFlare.intensity < 0) gunFlare.intensity = 0;
-	}	
+	}
 }
 
 var lightFlickerCounter = 0;
@@ -221,9 +243,7 @@ function updateLightFlicker() {
 	}
 }
 
-/**
- * Move enemies towards player
- */
+/** Move enemies towards player */
 function moveEnemies() {
 	for (var i = 0; i < enemyAmount; ++i) {
 		if (enemies[i].isSpawned && enemies[i].HP > 0) {
@@ -253,9 +273,7 @@ function updateSpawnCounters() {
 	}
 }
 
-/**
- * Detect and resolve collisions between models
- */
+/** Detect and resolve collisions between models */
 function collisions() {
 	enemyCollisions();
 	objectCollisions();
@@ -312,16 +330,12 @@ function objectCollisions() {
 
 }
 
-/**
- * Check if character against the wals
- */
+/** Check if character against the walls */
 function wallCollisions() {
 
 }
 
-/**
- * Decrease weapon and health drop counters
- */
+/** Decrease weapon and health drop counters */
 function updateDropCounters() {
 	for (var i = 0; i < weaponDropAmount; ++i) {
 		weaponDrops[i].Mesh.rotateY(0.1);
@@ -390,9 +404,7 @@ function enemyAlive() {
 	return false;
 }
 
-/**
- * 
- */
+/** */
 function spawnWave() {
 	triggerIncomingWaveAnim();
 	isWaveSpawning = true;
