@@ -140,7 +140,7 @@ function loadWeaponSounds() {
 	for (var i = 0; i < weapons.length; ++i) {
 		weaponSounds.push(new THREE.Audio(listener));
 
-		audioLoader.load("https://raw.githubusercontent.com/JuanFerrer/Survival/develop/sounds/pistol.wav", function (buffer) {
+		audioLoader.load("sounds/pistol.wav", function (buffer) {
 			// audioLoader.load(weaponSoundFile[i], function (buffer) {
 			weaponSounds[weaponSounds.length - 1].setBuffer(buffer);
 			weaponSounds[weaponSounds.length - 1].setLoop(false);
