@@ -53,7 +53,7 @@ class Player extends Character {
      * Set stats to those of the weapon
      */
     updateWeaponStats() {
-        this.attackSpeed = weapons[this.currentWeapon].speed;
+        this.attackSpeed = weapons[this.currentWeapon].recharge;
         this.accuracy = weapons[this.currentWeapon].accuracy;
         this.damage = weapons[this.currentWeapon].damage;
     }
@@ -63,6 +63,9 @@ class Player extends Character {
      * @param {number} index - Weapon number to add
      */
     acquireWeapon(index) {
+        if (index != 0) {
+            pickupSound.play();
+        }
         if (!this.ownedWeapons[index]) {
             this.ownedWeapons[index] = true;
         }
@@ -112,6 +115,7 @@ class Player extends Character {
     heal(hpHealed) {
         this.HP += hpHealed;
         this.triggerGainedHPAnim();
+        gainHPSound.play();
     }
 
     /** Trigger CSS nimations */

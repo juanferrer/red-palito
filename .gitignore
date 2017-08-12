@@ -1,2 +1,5 @@
 # node_modules
 /[Nn]ode_[Mm]odules/
+
+# Temp sounds
+/sounds/temp/*
