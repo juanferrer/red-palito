@@ -5,7 +5,9 @@
             "damage": 2,
             "recharge": 0.5,
             "accuracy": 0.8,
-            "ammo": -1
+            "ammo": -1,
+            "gunflareColor": "0xF7EFB1",
+            "gunflareFalloff": 10
         },
         {
             "name": "AK-47",

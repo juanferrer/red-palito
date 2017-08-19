@@ -32,7 +32,7 @@ function keyboardInit() {
  * frame and react accordingly
  */
 function resolveInput() {
-	if (!isPaused) {
+	if (!isPaused && !isMainMenu) {
 
 		// DEBUG: Numpad +
 		if (keyState[107]) {

@@ -33,9 +33,12 @@ var weaponDrops = [];
 var hpDropAmount = 1;
 var weaponDropAmount = 4;
 
+var isShowingMenu = false;
+var isMainMenu = true;
 
 init();
 animate();
+
 
 
 /** Initialise scene */
@@ -43,7 +46,7 @@ function init() {
 
 	clock = new THREE.Clock();
 	frameTime = 0;
-	
+
 	// chrome.exe --allow-file-access-from-files --disable-web-security
 	var parseResult = parseJSONToVar("weapons.json", "weapons", weapons);
 
@@ -122,6 +125,18 @@ function init() {
 
 	plane.rotateX(Math.degToRad(-90));
 	plane.translateZ(0);
+
+	/* Button actions */
+	document.getElementById("start-button").addEventListener("click", function () {
+		isMainMenu = false;
+	});
+	document.getElementById("resume-button").addEventListener("click", function () {
+		isPaused = false;
+	});
+	document.getElementById("exit-button").addEventListener("click", function () {
+		isMainMenu = true;
+		isPaused = false;
+	});
 }
 
 /** Prepare player for game */
@@ -142,7 +157,7 @@ function setGunFlare() {
 /** */
 function loadWeaponSounds() {
 	for (var i = 0; i < weapons.length; ++i) {
-		weaponSounds.push(new THREE.Audio(listener));		
+		weaponSounds.push(new THREE.Audio(listener));
 		loadSoundFile(weaponSounds[i], weaponFiles[i]);
 	}
 	gainHPSound = new THREE.Audio(listener);
@@ -152,10 +167,10 @@ function loadWeaponSounds() {
 }
 
 function loadSoundFile(variable, file) {
-			audioLoader.load(file, function (buffer) {
-			// audioLoader.load(weaponSoundFile[i], function (buffer) {
-			variable.setBuffer(buffer);
-		});
+	audioLoader.load(file, function (buffer) {
+		// audioLoader.load(weaponSoundFile[i], function (buffer) {
+		variable.setBuffer(buffer);
+	});
 }
 
 function addEnemy() {
@@ -173,7 +188,7 @@ function animate() {
 
 		resolveInput();
 
-		if (!isPaused) {
+		if (!isPaused && !isMainMenu) {
 
 			updateAttackCounters();
 
@@ -201,15 +216,23 @@ function animate() {
 
 /** Update elements from the UI */
 function updateUI() {
-	if (waveNumber > 0) {
-		document.getElementById("wave-number").innerHTML = waveNumber;
-	}
-	if (player.HP >= 0) {
-		document.getElementById("hp-bar").innerHTML = player.HP;
-	}
-	if (weapons[1]) {
-		document.getElementById("current-weapon-name").innerHTML = weapons[player.currentWeapon].name;
-		document.getElementById("current-weapon-ammo").innerHTML = player.weaponsAmmo[player.currentWeapon];
+	if (isMainMenu) {
+		showMenu("main");
+
+	} else if (isPaused && !isShowingMenu) {
+		showMenu("pause");
+	} else {
+		hideMenu();
+		if (waveNumber > 0) {
+			document.getElementById("wave-number").innerHTML = waveNumber;
+		}
+		if (player.HP >= 0) {
+			document.getElementById("hp-bar").innerHTML = player.HP;
+		}
+		if (weapons[1]) {
+			document.getElementById("current-weapon-name").innerHTML = weapons[player.currentWeapon].name;
+			document.getElementById("current-weapon-ammo").innerHTML = player.weaponsAmmo[player.currentWeapon];
+		}
 	}
 }
 
@@ -429,4 +452,34 @@ function spawnWave() {
 	for (i = 0; i < enemyAmount; ++i) {
 		enemies[i].shouldSpawn = true;
 	}
+}
+
+/**
+ * Show menu if it's hidden
+ * @param {string} type 
+ */
+function showMenu(type) {
+	switch (type.toLowerCase()) {
+		case "main":
+			document.getElementById("main-menu").style.visibility = "visible";
+			document.getElementById("pause-menu").style.visibility = "hidden";
+			break;
+		case "pause":
+			document.getElementById("main-menu").style.visibility = "hidden";
+			document.getElementById("pause-menu").style.visibility = "visible";
+			break;
+		case "end":
+			break;
+
+
+	}
+}
+
+/**
+ * Hide menu if it's visible
+ * @param {string} type 
+ */
+function hideMenu() {
+	document.getElementById("main-menu").style.visibility = "hidden";
+	document.getElementById("pause-menu").style.visibility = "hidden";
 }
