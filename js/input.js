@@ -1,192 +1,196 @@
 //http://keycode.info/
+class Input {
 
-var modelRotSpeed = 0.05;
+	/**
+	 * Initialise keyboard to keep track what keys have
+	 * are pressed
+	 */
+	static keyboardInit() {
+		// https://stackoverflow.com/a/12273538/7179042
+		// Keep track of what keys are down and update in loop
+		window.addEventListener('keydown', function (e) {
+			Input.keyState[e.keyCode || e.which] = true;
+		}, true);
+		window.addEventListener('keyup', function (e) {
+			Input.keyState[e.keyCode || e.which] = false;
+		}, true);
+	}
 
-var camMoveSpeed = 0.1;
-var camRotSpeed = 0.01;
+	/**
+	 * Check what keys have been pressed since last
+	 * frame and react accordingly
+	 */
+	static resolveInput() {
+		if (!Menu.isMainMenu) {
+			if (!Input.isPaused) {
 
-var keyState = {};
+				// DEBUG: Numpad +
+				if (Input.keyState[107]) {
+				}
 
-var isPaused = false;
-var canTogglePause = true;
+				// Spacebar
+				if (Input.keyState[32]) {
+					player.attack();
+				}
 
-var canToggleShift = true;
+				// Shift
+				if (Input.keyState[16]) {
+					if (Input.canToggleShift) {
+						player.nextWeapon();
+						Input.canToggleShift = false;
+					}
+				}
 
-/**
- * Initialise keyboard to keep track what keys have
- * are pressed
- */
-function keyboardInit() {
-	// https://stackoverflow.com/a/12273538/7179042
-	// Keep track of what keys are down and update in loop
-	window.addEventListener('keydown', function (e) {
-		keyState[e.keyCode || e.which] = true;
-	}, true);
-	window.addEventListener('keyup', function (e) {
-		keyState[e.keyCode || e.which] = false;
-	}, true);
-}
+				// A
+				if (Input.keyState[65]) {
+					player.rotateLeft();
+				}
+				// D
+				if (Input.keyState[68]) {
+					player.rotateRight();
+				}
+				// W
+				if (Input.keyState[87]) {
+					player.moveForward();
+				}
+				// S
+				if (Input.keyState[83]) {
+					player.moveBackward();
+				}
 
-/**
- * Check what keys have been pressed since last
- * frame and react accordingly
- */
-function resolveInput() {
-	if (!isPaused && !isMainMenu) {
+				// unused
 
-		// DEBUG: Numpad +
-		if (keyState[107]) {
-		}
+				// Left
+				if (Input.keyState[37]) {
+					this.move(camera, "left");
+				}
+				// Right
+				if (Input.keyState[39]) {
+					this.move(camera, "right");
+				}
+				// Up
+				if (Input.keyState[38]) {
+					this.move(camera, "front");
+				}
+				// Down
+				if (Input.keyState[40]) {
+					this.move(camera, "back");
+				}
 
-		// Spacebar
-		if (keyState[32]) {
-			player.attack();
-		}
+				// 0
+				if (Input.keyState[96]) {
+					this.changeColor(0xFFFFFF);
+				}
 
-		// Shift
-		if (keyState[16]) {
-			if (canToggleShift) {
-				player.nextWeapon();
-				canToggleShift = false;
+				// 1
+				if (Input.keyState[97]) {
+					this.changeColor(0xF44336);
+				}
+
+				// 2
+				if (Input.keyState[98]) {
+					this.changeColor(lightColor2);
+				}
+
+				// 3
+				if (Input.keyState[99]) {
+					this.changeColor(lightColor3);
+				}
+
+				// End of unused
+			}
+
+			// P
+			if (Input.keyState[80]) {
+				if (Input.isPaused && Input.canTogglePause) {
+					Input.isPaused = false;
+					Input.canTogglePause = false;
+				}
+				else if (!Input.isPaused && Input.canTogglePause) {
+					Input.isPaused = true;
+					Input.canTogglePause = false;
+				}
 			}
 		}
-
-		// A
-		if (keyState[65]) {
-			player.rotateLeft();
-		}
-		// D
-		if (keyState[68]) {
-			player.rotateRight();
-		}
-		// W
-		if (keyState[87]) {
-			player.moveForward();
-		}
-		// S
-		if (keyState[83]) {
-			player.moveBackward();
+		if (!Input.keyState[80]) {
+			Input.canTogglePause = true;
 		}
 
-		// unused
-
-		// Left
-		if (keyState[37]) {
-			move(camera, "left");
+		// Release shift
+		if (!Input.keyState[16]) {
+			Input.canToggleShift = true;
 		}
-		// Right
-		if (keyState[39]) {
-			move(camera, "right");
-		}
-		// Up
-		if (keyState[38]) {
-			move(camera, "front");
-		}
-		// Down
-		if (keyState[40]) {
-			move(camera, "back");
-		}
-
-		// 0
-		if (keyState[96]) {
-			changeColor(0xFFFFFF);
-		}
-
-		// 1
-		if (keyState[97]) {
-			changeColor(0xF44336);
-		}
-
-		// 2
-		if (keyState[98]) {
-			changeColor(lightColor2);
-		}
-
-		// 3
-		if (keyState[99]) {
-			changeColor(lightColor3);
-		}
-
-		// End of unused
 	}
 
-	// P
-	if (keyState[80]) {
-		if (isPaused && canTogglePause) {
-			isPaused = false;
-			canTogglePause = false;
-		}
-		else if (!isPaused && canTogglePause) {
-			isPaused = true;
-			canTogglePause = false;
-		}
-	}
-	if (!keyState[80]) {
-		canTogglePause = true;
+	/**
+	 * Change the color of the cube
+	 * @param {number} color - Hex literal
+	 */
+	static changeColor(color) {
+		player.Material.color.setHex(color);
 	}
 
-	// Release shift
-	if (!keyState[16]) {
-		canToggleShift = true;
+	/**
+	 * 
+	 */
+	static rotateCube() {
+		player.rotation.x += modelRotSpeed;
+		player.rotation.y += modelRotSpeed;
+	}
+
+	/**
+	 * Move camera locally. TODO: global
+	 * @param {string} dir - Direction of movement
+	 * @param {THREE.Object3D} obj - Object to be moved
+	 */
+	static move(obj, dir) {
+		switch (dir) {
+			case "left":
+				obj.translateX(-camMoveSpeed);
+				break;
+			case "right":
+				obj.translateX(camMoveSpeed);
+				break;
+			case "front":
+				obj.translateZ(-camMoveSpeed);
+				break;
+			case "back":
+				obj.translateZ(camMoveSpeed);
+				break;
+		}
+	}
+
+	/**
+	 * Rotate camera locally. TODO: global
+	 * @param {string} dir - Direction of rotation
+	 * @param {THREE.Object3D} obj - Object to be moved
+	 */
+	static rotate(obj, dir) {
+		switch (dir) {
+			case "left":
+				obj.rotateY(camRotSpeed);
+				break;
+			case "right":
+				obj.rotateY(-camRotSpeed);
+				break;
+			case "up":
+				obj.rotateX(camRotSpeed);
+				break;
+			case "down":
+				obj.rotateX(-camRotSpeed);
+				break;
+		}
 	}
 }
 
-/**
- * Change the color of the cube
- * @param {number} color - Hex literal
- */
-function changeColor(color) {
-	player.Material.color.setHex(color);
-}
+Input.modelRotSpeed = 0.05;
 
-/**
- * 
- */
-function rotateCube() {
-	player.rotation.x += modelRotSpeed;
-	player.rotation.y += modelRotSpeed;
-}
+Input.camMoveSpeed = 0.1;
+Input.camRotSpeed = 0.01;
 
-/**
- * Move camera locally. TODO: global
- * @param {string} dir - Direction of movement
- * @param {THREE.Object3D} obj - Object to be moved
- */
-function move(obj, dir) {
-	switch (dir) {
-		case "left":
-			obj.translateX(-camMoveSpeed);
-			break;
-		case "right":
-			obj.translateX(camMoveSpeed);
-			break;
-		case "front":
-			obj.translateZ(-camMoveSpeed);
-			break;
-		case "back":
-			obj.translateZ(camMoveSpeed);
-			break;
-	}
-}
+Input.keyState = {};
 
-/**
- * Rotate camera locally. TODO: global
- * @param {string} dir - Direction of rotation
- * @param {THREE.Object3D} obj - Object to be moved
- */
-function rotate(obj, dir) {
-	switch (dir) {
-		case "left":
-			obj.rotateY(camRotSpeed);
-			break;
-		case "right":
-			obj.rotateY(-camRotSpeed);
-			break;
-		case "up":
-			obj.rotateX(camRotSpeed);
-			break;
-		case "down":
-			obj.rotateX(-camRotSpeed);
-			break;
-	}
-}
+Input.isPaused = false;
+Input.canTogglePause = true;
+
+Input.canToggleShift = true;

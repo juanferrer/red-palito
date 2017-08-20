@@ -21,20 +21,17 @@ var gunFlareColor = [0xF7EFB1, 0xF7EFB1, 0xF7EFB1, 0x0000FF, 0x0];
 var gunFlare;
 
 var listener, audioLoader;
-var weaponSounds = [];
-var weaponFiles = ["sounds/pistol.wav", "sounds/ak-47.wav", "sounds/shotgun.wav", "sounds/laser.wav"];
 
 var healthDropCounter, weaponDropCounter, healthDropTime = 25, weaponDropTime = 10;
-var gainHPSound, gainHPFile = "sounds/gain-hp.wav";
-var pickupSound, pickupFile = "sounds/pickup.wav";
 
 var hpDrops = [];
 var weaponDrops = [];
 var hpDropAmount = 1;
 var weaponDropAmount = 4;
 
-var isShowingMenu = false;
-var isMainMenu = true;
+var initiated = false;
+
+var lightFlickerCounter = 0;
 
 init();
 animate();
@@ -52,7 +49,7 @@ function init() {
 
 	healthDropCounter = healthDropTime;
 	weaponDropCounter = weaponDropTime;
-	keyboardInit();
+	Input.keyboardInit();
 	spawnPointsInit();
 
 	scene = new THREE.Scene();
@@ -69,7 +66,7 @@ function init() {
 
 	// Load player asynchronously
 	parseResult.then(function () {
-		loadWeaponSounds();
+		Audio.loadWeaponSounds();
 		setupPlayer();
 		setGunFlare();
 
@@ -128,15 +125,17 @@ function init() {
 
 	/* Button actions */
 	document.getElementById("start-button").addEventListener("click", function () {
-		isMainMenu = false;
+		Menu.isMainMenu = false;
 	});
 	document.getElementById("resume-button").addEventListener("click", function () {
-		isPaused = false;
+		Input.isPaused = false;
 	});
 	document.getElementById("exit-button").addEventListener("click", function () {
-		isMainMenu = true;
-		isPaused = false;
+		Menu.isMainMenu = true;
+		Input.isPaused = false;
 	});
+	//requestAnimationFrame(animate);
+	renderer.render(scene, camera);
 }
 
 /** Prepare player for game */
@@ -154,25 +153,6 @@ function setGunFlare() {
 	player.Mesh.add(gunFlare);
 }
 
-/** */
-function loadWeaponSounds() {
-	for (var i = 0; i < weapons.length; ++i) {
-		weaponSounds.push(new THREE.Audio(listener));
-		loadSoundFile(weaponSounds[i], weaponFiles[i]);
-	}
-	gainHPSound = new THREE.Audio(listener);
-	loadSoundFile(gainHPSound, gainHPFile);
-	pickupSound = new THREE.Audio(listener);
-	loadSoundFile(pickupSound, pickupFile);
-}
-
-function loadSoundFile(variable, file) {
-	audioLoader.load(file, function (buffer) {
-		// audioLoader.load(weaponSoundFile[i], function (buffer) {
-		variable.setBuffer(buffer);
-	});
-}
-
 function addEnemy() {
 	enemies.push(new Enemy());
 	enemies[enemies.length - 1].addToScene();
@@ -182,19 +162,20 @@ function addEnemy() {
 function animate() {
 	requestAnimationFrame(animate);
 
+	// if (player !== undefined) {
 	if (player !== undefined) {
 
 		updateUI();
 
-		resolveInput();
+		Input.resolveInput();
 
-		if (!isPaused && !isMainMenu) {
+		if (!Input.isPaused && !Menu.isMainMenu) {
 
 			updateAttackCounters();
 
 			updateBullet();
 
-			updateLightFlicker();
+			//updateLightFlicker();
 
 			moveEnemies();
 			updateSpawnCounters();
@@ -216,13 +197,13 @@ function animate() {
 
 /** Update elements from the UI */
 function updateUI() {
-	if (isMainMenu) {
-		showMenu("main");
+	if (Menu.isMainMenu && !Menu.isShowingMenu) {
+		Menu.showMenu("main");
 
-	} else if (isPaused && !isShowingMenu) {
-		showMenu("pause");
-	} else {
-		hideMenu();
+	} else if (Input.isPaused && !Menu.isShowingMenu) {
+		Menu.showMenu("pause");
+	} else if (!Input.isPaused && !Menu.isMainMenu) {
+		Menu.hideMenu();
 		if (waveNumber > 0) {
 			document.getElementById("wave-number").innerHTML = waveNumber;
 		}
@@ -265,8 +246,6 @@ function updateBullet() {
 		if (gunFlare.intensity < 0) gunFlare.intensity = 0;
 	}
 }
-
-var lightFlickerCounter = 0;
 
 function updateLightFlicker() {
 	if (lightFlickerCounter < 0) {
@@ -452,34 +431,4 @@ function spawnWave() {
 	for (i = 0; i < enemyAmount; ++i) {
 		enemies[i].shouldSpawn = true;
 	}
-}
-
-/**
- * Show menu if it's hidden
- * @param {string} type 
- */
-function showMenu(type) {
-	switch (type.toLowerCase()) {
-		case "main":
-			document.getElementById("main-menu").style.visibility = "visible";
-			document.getElementById("pause-menu").style.visibility = "hidden";
-			break;
-		case "pause":
-			document.getElementById("main-menu").style.visibility = "hidden";
-			document.getElementById("pause-menu").style.visibility = "visible";
-			break;
-		case "end":
-			break;
-
-
-	}
-}
-
-/**
- * Hide menu if it's visible
- * @param {string} type 
- */
-function hideMenu() {
-	document.getElementById("main-menu").style.visibility = "hidden";
-	document.getElementById("pause-menu").style.visibility = "hidden";
 }

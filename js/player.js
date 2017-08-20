@@ -64,7 +64,7 @@ class Player extends Character {
      */
     acquireWeapon(index) {
         if (index != 0) {
-            pickupSound.play();
+            Audio.pickupSound.play();
         }
         if (!this.ownedWeapons[index]) {
             this.ownedWeapons[index] = true;
@@ -91,7 +91,7 @@ class Player extends Character {
                 this.weaponsAmmo[this.currentWeapon]--;
             this.triggerBulletAnim();
             this.useWeapon();
-            weaponSounds[this.currentWeapon].play();
+            Audio.weaponSounds[this.currentWeapon].play();
             this.attackCounter = this.attackSpeed;
         }
     }
@@ -115,7 +115,7 @@ class Player extends Character {
     heal(hpHealed) {
         this.HP += hpHealed;
         this.triggerGainedHPAnim();
-        gainHPSound.play();
+        Audio.gainHPSound.play();
     }
 
     /** Trigger CSS nimations */
