@@ -3,3 +3,6 @@
 
 # Temp sounds
 /sounds/temp/*
+
+# Debug files
+debug-chrome.bat

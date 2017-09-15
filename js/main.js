@@ -2,6 +2,9 @@ var clock, scene, camera, renderer;
 var player;
 var planeG, planeM, plane, planeColor;
 var planeSize = 50;
+var walls = [],
+	wallYRot = [-90, 90, 180, 0],
+	wallPos = [new THREE.Vector3(planeSize / 2, 10, 0), new THREE.Vector3(-planeSize / 2, 10, 0), new THREE.Vector3(0, 10, planeSize / 2), new THREE.Vector3(0, 10, -planeSize / 2,)];
 var lights = [];
 var lightsAmount = 4;
 var frameTime;
@@ -29,14 +32,22 @@ var weaponDrops = [];
 var hpDropAmount = 1;
 var weaponDropAmount = 4;
 
-var initiated = false;
-
 var lightFlickerCounter = 0;
 
 init();
 animate();
 
+function reset() {
+	setupPlayer();
+	currentEnemyAmount = enemyAmount;
+	waveNumber = 1;
+	isWaveSpawning = true;
 
+	healthDropCounter = healthDropTime;
+	weaponDropCounter = weaponDropTime;
+
+
+}
 
 /** Initialise scene */
 function init() {
@@ -73,7 +84,6 @@ function init() {
 		player.Mesh.add(listener);
 	});
 
-
 	// Models
 	for (i = 0; i < bulletsAmount; ++i) {
 		bullets.push(new Bullet());
@@ -94,9 +104,21 @@ function init() {
 	planeG = new THREE.PlaneGeometry(planeSize, planeSize, 20, 20);
 	planeM = new THREE.MeshStandardMaterial({ color: planeColor });
 	plane = new THREE.Mesh(planeG, planeM);
+
 	plane.castShadow = false;
 	plane.receiveShadow = true;
 	scene.add(plane);
+
+	wallG = new THREE.PlaneGeometry(planeSize, 20, 20, 20);
+	wallM = new THREE.MeshStandardMaterial({ color: planeColor });
+	for (i = 0; i < 4; ++i) {		
+		walls.push(new THREE.Mesh(wallG, wallM));
+		scene.add(walls[i]);
+		walls[i].rotateY(Math.degToRad(wallYRot[i]));
+		walls[i].position.x = wallPos[i].x;
+		walls[i].position.y = wallPos[i].y;
+		walls[i].position.z = wallPos[i].z;
+	}
 
 	// Lights
 	var lightX = [15, 15, -15, -15];
@@ -184,7 +206,6 @@ function animate() {
 
 			updateDropCounters();
 
-			// TODO: Spawn new wave
 			if (!enemyAlive() && !isWaveSpawning) {
 				spawnWave();
 			}
@@ -348,12 +369,13 @@ function wallCollisions() {
 
 /** Decrease weapon and health drop counters */
 function updateDropCounters() {
-	for (var i = 0; i < weaponDropAmount; ++i) {
-		weaponDrops[i].Mesh.rotateY(0.1);
-	}
-	for (var i = 0; i < hpDropAmount; ++i) {
-		hpDrops[i].Mesh.rotateY(0.1);
-	}
+	weaponDrops.forEach(function (v) {
+		v.Mesh.rotateY(0.1);
+	})
+
+	hpDrops.forEach(function (v) {
+		v.Mesh.rotateY(0.1);
+	})
 
 	healthDropCounter -= frameTime;
 	weaponDropCounter -= frameTime;
