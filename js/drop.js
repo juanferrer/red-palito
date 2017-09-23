@@ -2,20 +2,21 @@ class Drop {
     constructor(type) {
         this.type = type;
         if (type == "HP") {
-            this.color = 0x4CAF50;
+            // this.color = 0x4CAF50;
+            this.Material = hpDropMaterial;
             this.pickUp = function () {
                 // TODO: Add HP to picker
             }
         } else {
-            this.color = 0xFF5722;
+            // this.color = 0xFF5722;
+            this.Material = weaponDropMaterial;
             this.pickUp = function () {
                 // TODO: Add weapon and ammo to picker
             }
         }
         this.value = 0;
         this.isSpawned = false;
-        this.Geometry = new THREE.BoxGeometry(1, 1, 1);
-        this.Material = new THREE.MeshStandardMaterial({ color: this.color });
+        this.Geometry = dropGeometry;
         this.Mesh = new THREE.Mesh(this.Geometry, this.Material);
         this.Mesh.receiveShadow = true;
         this.Mesh.castShadow = true;

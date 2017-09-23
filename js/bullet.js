@@ -1,6 +1,6 @@
 class Bullet {
     constructor() {
-        this.Geometry = new THREE.CylinderGeometry(0.05, 0.05, 5, 5, 1);
+        this.Geometry = new THREE.CylinderBufferGeometry(0.05, 0.05, 5, 5, 1);
         this.Material = new THREE.MeshBasicMaterial();
         this.Mesh = new THREE.Mesh(this.Geometry, this.Material);
         this.isAlive = false;

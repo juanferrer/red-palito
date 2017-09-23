@@ -21,6 +21,7 @@ class Player extends Character {
         }
         this.currentWeapon = 0;
         super.init();
+        this.Mesh.material = playerMaterial;
         this.attackSpeed = 1;
         this.accuracy = 0.5;
         this.damage = 2;

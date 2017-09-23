@@ -15,6 +15,7 @@ class Enemy extends Character {
         this.initialHP = 4;
         this.initialSpawnCountDown = Math.random();
         this.shouldSpawn = true;
+        this.isSpawned = false;
         super.init();
     }
 

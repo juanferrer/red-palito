@@ -1,5 +1,5 @@
 /**
- * Single class meant to be used by this.Meshs and enemies alike.
+ * Single class meant to be used by this.Players and enemies alike.
  * It has a THREE.Geometry, THREE.Material and THREE.Mesh among others.
  */
 class Character {
@@ -23,8 +23,8 @@ class Character {
     }
 
     init() {
-        this.Geometry = new THREE.BoxGeometry(1, 2, 1);
-        this.Material = new THREE.MeshStandardMaterial({ color: this.color });
+        this.Geometry = characterGeometry;
+        this.Material = enemyMaterial;
         this.Mesh = new THREE.Mesh(this.Geometry, this.Material);
         this.Mesh.castShadow = true;
         this.Mesh.receiveShadow = true;
