@@ -8,10 +8,10 @@ class Input {
 	static keyboardInit() {
 		// https://stackoverflow.com/a/12273538/7179042
 		// Keep track of what keys are down and update in loop
-		window.addEventListener('keydown', function (e) {
+		window.addEventListener('keydown', e => {
 			Input.keyState[e.keyCode || e.which] = true;
 		}, true);
-		window.addEventListener('keyup', function (e) {
+		window.addEventListener('keyup', e => {
 			Input.keyState[e.keyCode || e.which] = false;
 		}, true);
 	}

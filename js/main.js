@@ -2,7 +2,8 @@ let clock, scene, camera, renderer;
 let player;
 const playerColour = 0xF44336,
 	planeColor = 0xFFFFFF;
-let planeG, planeM, plane, planeSize = 50;
+let planeG, planeM, plane;
+const planeSize = 50;
 
 let lights = [];
 const lightsAmount = 4;
@@ -64,8 +65,6 @@ function reset() {
 
 	healthDropCounter = healthDropTime;
 	weaponDropCounter = weaponDropTime;
-
-
 }
 
 /** Initialise scene */
@@ -128,17 +127,6 @@ function init() {
 	plane.receiveShadow = true;
 	scene.add(plane);
 
-	// wallG = new THREE.PlaneBufferGeometry(planeSize, 20, 20, 20);
-	// wallM = new THREE.MeshLambertMaterial({ color: planeColor });
-	// for (i = 0; i < 4; ++i) {		
-	// 	walls.push(new THREE.Mesh(wallG, wallM));
-	// 	scene.add(walls[i]);
-	// 	walls[i].rotateY(Math.degToRad(wallYRot[i]));
-	// 	walls[i].position.x = wallPos[i].x;
-	// 	walls[i].position.y = wallPos[i].y;
-	// 	walls[i].position.z = wallPos[i].z;
-	// }
-
 	// Lights
 	const lightX = [15, 15, -15, -15],
 	lightY = 20,
@@ -165,14 +153,15 @@ function init() {
 	plane.translateY(planeSize / 4);
 
 	/* Button actions */
-	$("#start-button").click(function () {
+	$("#start-button").click( () => {
 		Menu.isMainMenu = false;
 	});
-	$("#resume-button").click(function () {
+	$("#resume-button").click(() => {
 		Input.isPaused = false;
 	});
-	$("#exit-button").click(function () {
+	$("#exit-button").click(() => {
 		Menu.isMainMenu = true;
+		Menu.hideMenu();
 		Input.isPaused = false;
 	});
 	//requestAnimationFrame(animate);
