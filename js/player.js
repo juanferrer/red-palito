@@ -30,6 +30,30 @@ class Player extends Character {
     }
 
     /**
+     * Set new player
+     */
+    reset() {
+        this.HP = this.initialHP;
+        this.ownedWeapons = [];
+        this.weaponsAmmo = [];
+        for (var i = 0; i < weapons.length; ++i) {
+            this.ownedWeapons.push(false);
+            this.weaponsAmmo.push(0);
+        }
+        this.currentWeapon = 0;
+        this.Mesh.material = playerMaterial;
+        this.attackSpeed = 1;
+        this.accuracy = 0.5;
+        this.damage = 2;
+        this.acquireWeapon(0);
+        this.updateWeaponStats();
+
+        this.position.x = 0;
+        this.position.z = 0;
+        this.Mesh.rotation.y = 0;   
+    }
+
+    /**
      * Change current weapon to next owned weapon
      */
     nextWeapon() {

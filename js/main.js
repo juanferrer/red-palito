@@ -129,9 +129,9 @@ function init() {
 
 	// Lights
 	const lightX = [15, 15, -15, -15],
-	lightY = 20,
-	lightZ = [15, -15, -15, 15],
-	lightIntensity = 2;
+		lightY = 20,
+		lightZ = [15, -15, -15, 15],
+		lightIntensity = 2;
 	lightColor = 0xFFFFFF;
 	let light = new THREE.AmbientLight(0xFFFFFF, 0.1);
 	scene.add(light);
@@ -153,8 +153,9 @@ function init() {
 	plane.translateY(planeSize / 4);
 
 	/* Button actions */
-	$("#start-button").click( () => {
+	$("#start-button").click(() => {
 		Menu.isMainMenu = false;
+		reset();
 	});
 	$("#resume-button").click(() => {
 		Input.isPaused = false;
@@ -170,9 +171,28 @@ function init() {
 
 /** Prepare player for game */
 function setupPlayer() {
-	player = new Player();
-	player.addToScene();
-	player.Mesh.add(camera);
+	if (player === undefined) {
+		player = new Player();
+		player.addToScene();
+		player.Mesh.add(camera);
+	}
+
+	player.reset();
+
+	waveNumber = 0;
+	currentEnemyAmount = initialEnemyAmount;
+	
+	hpDrops.forEach(drop => {
+		drop.reset();
+	});
+
+	weaponDrops.forEach(drop => {
+		drop.reset();
+	});
+
+	enemies.forEach(enemy => {
+		enemy.reset();
+	});
 }
 
 /** Set the position of the gun flare */

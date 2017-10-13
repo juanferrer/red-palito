@@ -20,6 +20,17 @@ class Enemy extends Character {
     }
 
     /**
+     * Set enemy to its initial state
+     */
+    reset() {
+        this.HP = this.initialHP;
+        this.shouldSpawn = true;
+        this.isSpawned = false;
+        this.position.set(0, -10, 0);
+        this.Mesh.rotation.y = 0;
+    }
+
+    /**
      * Reduce HP of enemy by an amount
      * @param {number} damageDealt - Amount by which HP is reduced 
      */

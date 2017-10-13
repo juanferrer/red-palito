@@ -26,6 +26,14 @@ class Drop {
         this.position.set(0, -10, 0);
     }
 
+    /**
+     * Set the drop to its initial state
+     */
+    reset() {
+        this.isSpawned = false;
+        this.position.set(0, -10, 0);
+    }
+
     get position() {
         return this.Mesh.position;
     }
