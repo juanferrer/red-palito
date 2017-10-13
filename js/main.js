@@ -38,6 +38,8 @@ const hpDropAmount = 1,
 
 let lightFlickerCounter = 0;
 
+let enemyMeshes;
+
 /* Materials */
 const playerMaterial = new THREE.MeshPhongMaterial({ color: playerColour }),
 	enemyMaterial = new THREE.MeshPhongMaterial({ color: 0x4CAF50 }),
@@ -256,14 +258,14 @@ function updateUI() {
 	} else if (!Input.isPaused && !Menu.isMainMenu) {
 		Menu.hideMenu();
 		if (waveNumber > 0) {
-			document.getElementById("wave-number").innerHTML = waveNumber;
+			$("#wave-number")[0].innerHTML = waveNumber;
 		}
 		if (player.HP >= 0) {
-			document.getElementById("hp-bar").innerHTML = player.HP;
+			$("#hp-bar")[0].innerHTML = player.HP;
 		}
 		if (weapons[1]) {
-			document.getElementById("current-weapon-name").innerHTML = weapons[player.currentWeapon].name;
-			document.getElementById("current-weapon-ammo").innerHTML = player.weaponsAmmo[player.currentWeapon];
+			$("#current-weapon-name")[0].innerHTML = weapons[player.currentWeapon].name;
+			$("#current-weapon-ammo")[0].innerHTML = player.weaponsAmmo[player.currentWeapon];
 		}
 	}
 }
@@ -448,7 +450,7 @@ function makeDrop(type) {
 
 /** Trigger CSS animations */
 function triggerIncomingWaveAnim() {
-	let wave = document.getElementById("wave-number");
+	let wave = $("#wave-number")[0];
 	wave.classList.remove("incoming-wave-anim");
 	void wave.offsetWidth;
 	wave.classList.add("incoming-wave-anim");

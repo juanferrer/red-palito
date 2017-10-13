@@ -54,11 +54,11 @@ class Enemy extends Character {
      */
     attack() {
         if (this.attackCounter <= 0 && this.HP > 0) {
-            var raycaster = new THREE.Raycaster(this.position, this.facingVector);
-            var intersects = raycaster.intersectObjects([player.Mesh]);
+            let raycaster = new THREE.Raycaster(this.position, this.facingVector);
+            let intersects = raycaster.intersectObjects([player.Mesh]);
 
             if (intersects.length > 0) {
-                var firstIntersectedObject = intersects[0].object;
+                const firstIntersectedObject = intersects[0].object;
                 if (firstIntersectedObject.id === player.id && player.HP > 0) {
                     player.receiveDamage(this.damage);
                 }

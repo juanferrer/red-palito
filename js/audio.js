@@ -2,7 +2,7 @@ class Audio {
 
     /** */
 static loadWeaponSounds() {
-	for (var i = 0; i < weapons.length; ++i) {
+	for (let i = 0; i < weapons.length; ++i) {
 		Audio.weaponSounds.push(new THREE.Audio(listener));
 		this.loadSoundFile(Audio.weaponSounds[i], Audio.weaponFiles[i]);
 	}

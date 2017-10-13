@@ -7,12 +7,12 @@ class Menu{
    static showMenu(type) {
        switch (type.toLowerCase()) {
            case "main":
-               document.getElementById("main-menu").style.visibility = "visible";
-               document.getElementById("pause-menu").style.visibility = "hidden";
+               $("#main-menu")[0].style.visibility = "visible";
+               $("#pause-menu")[0].style.visibility = "hidden";
                break;
            case "pause":
-               document.getElementById("main-menu").style.visibility = "hidden";
-               document.getElementById("pause-menu").style.visibility = "visible";
+               $("#main-menu")[0].style.visibility = "hidden";
+               $("#pause-menu")[0].style.visibility = "visible";
                break;
            case "end":
                break;  
@@ -25,8 +25,8 @@ class Menu{
     * @param {string} type 
     */
    static hideMenu() {
-       document.getElementById("main-menu").style.visibility = "hidden";
-       document.getElementById("pause-menu").style.visibility = "hidden";
+       $("#main-menu")[0].style.visibility = "hidden";
+       $("#pause-menu")[0].style.visibility = "hidden";
        Menu.isShowingMenu = false;
    }
 }

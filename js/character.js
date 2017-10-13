@@ -57,10 +57,10 @@ class Character {
      * @returns {THREE.Vector3}
      */
     get facingVector() {
-        var matrix = new THREE.Matrix4();
+        let matrix = new THREE.Matrix4();
         matrix.extractRotation(this.Mesh.matrix);
 
-        var direction = new THREE.Vector3(0, 0, 1);
+        let direction = new THREE.Vector3(0, 0, 1);
         return direction.applyMatrix4(matrix).normalize();
     }
 
@@ -80,14 +80,14 @@ class Character {
     }
 
     moveForward() {
-        var newPos = this.Mesh.position;
+        let newPos = this.Mesh.position;
         newPos.add(this.facingVector.normalize().multiplyScalar(this.moveSpeed * frameTime));
         this.Mesh.position.set(newPos.x, newPos.y, newPos.z);
         this.correctOutOfBounds();
     }
 
     moveBackward() {
-        var newPos = this.Mesh.position;
+        let newPos = this.Mesh.position;
         newPos.add(this.facingVector.normalize().multiplyScalar(-this.moveSpeed * frameTime));
         this.Mesh.position.set(newPos.x, newPos.y, newPos.z);
         this.correctOutOfBounds();
@@ -116,7 +116,7 @@ class Character {
         this.HP = this.initialHP;
         this.spawnCountDown = this.initialSpawnCountDown;
         // 2. Find spawnPoint
-        var spawnPoint = getRandomPosition(planeSize);
+        let spawnPoint = getRandomPosition(planeSize);
         // 3. Move to spawnPoint
         this.Mesh.position.set(spawnPoint.x, spawnPoint.y, spawnPoint.z);
         // 4. Allow yourself to check if it is spawned or not

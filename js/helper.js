@@ -19,16 +19,16 @@ Math.randomInterval = function (min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-var currentSpawnPoint = 0;
-var spawnPoints = [];
-var spawnPointsX = [15, -5, -12, 10];
-var spawnPointsZ = [6, -8, 9, -3];
+let currentSpawnPoint = 0;
+let spawnPoints = [];
+let spawnPointsX = [15, -5, -12, 10];
+let spawnPointsZ = [6, -8, 9, -3];
 
 /**
  * 
  */
 function spawnPointsInit() {
-    for (var i = 0; i < spawnPointsX.length; ++i) {
+    for (let i = 0; i < spawnPointsX.length; ++i) {
         spawnPoints[i] = new THREE.Vector3(spawnPointsX[i], 1, spawnPointsZ[i]);
     }
 }
@@ -38,15 +38,15 @@ function spawnPointsInit() {
  * @return {THREE.Object3D}
  */
 function getNextSpawnPoint() {
-    var spawnPoint = spawnPoints[currentSpawnPoint];
+    const spawnPoint = spawnPoints[currentSpawnPoint];
     currentSpawnPoint = currentSpawnPoint < spawnPoints.length - 1 ? currentSpawnPoint + 1 : 0;
     return spawnPoint;
 }
 
-var currentBullet = 0;
+let currentBullet = 0;
 
 function getNextBullet() {
-    var bullet = bullets[currentBullet];
+    let bullet = bullets[currentBullet];
     bullet.isAlive = true;
     currentBullet = currentBullet < bullets.length - 1 ? currentBullet + 1 : 0;
     return bullet;
@@ -54,36 +54,36 @@ function getNextBullet() {
 
 /**
  * Put JSON in a var and allow the caller to wait until the execution is finished
- * @param {*} file - URI to JSON file to be read
- * @param {*} object - Object in JSOn to be extracted
- * @param {*} copyTo - Reference to object to be copied to
+ * @param {string} file - URI to JSON file to be read
+ * @param {Object} object - Object in JSOn to be extracted
+ * @param {Object} copyTo - Reference to object to be copied to
  */
 function parseJSONToVar(file, object, copyTo) {
     return $.getJSON(file, function (data) {
-        for (var i = 0; i < data[object].length; ++i) {
-            copyTo.push(data[object][i]);
-        }
+        data[object].forEach(v => {
+            copyTo.push(v);
+        });
     });
 }
 
-var currentWeaponDrop = 0;
+let currentWeaponDrop = 0;
 
 function getNextWeaponDrop() {
-    var wd = weaponDrops[currentWeaponDrop];
+    const wd = weaponDrops[currentWeaponDrop];
     currentWeaponDrop = currentWeaponDrop < weaponDropAmount - 1 ? currentWeaponDrop + 1 : 0;
     return wd;
 }
 
-var currentHPDrop = 0;
+let currentHPDrop = 0;
 
 function getNextHPDrop() {
-    var hpd = hpDrops[currentHPDrop];
+    const hpd = hpDrops[currentHPDrop];
     currentHPDrop = currentHPDrop < hpDropAmount - 1 ? currentHPDrop + 1 : 0;
     return hpd;
 }
 
 function getRandomPosition(maxSize) {
-    	return new THREE.Vector3(((Math.random() * maxSize) - (maxSize / 2.0)),
-		1,
-		((Math.random() * maxSize) - (maxSize / 2.0)));
+    return new THREE.Vector3(((Math.random() * maxSize) - (maxSize / 2.0)),
+                            1,
+                            ((Math.random() * maxSize) - (maxSize / 2.0)));
 }

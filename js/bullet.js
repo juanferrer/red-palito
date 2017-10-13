@@ -37,8 +37,8 @@ class Bullet {
      * @param {number} acc - Shot accuracy
      */
     orient(acc) {
-        var randX = Math.max((Math.random() - acc) / 20, 0);
-        var randZ = Math.max((Math.random() - acc) / 20, 0);
+        const randX = Math.max((Math.random() - acc) / 20, 0);
+        const randZ = Math.max((Math.random() - acc) / 20, 0);
 
         this.direction.add(new THREE.Vector3(randX, 0, randZ));
         this.Mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), this.direction.normalize());
@@ -86,10 +86,10 @@ class Bullet {
     * @returns {THREE.Vector3}
     */
     get frontVector() {
-        var matrix = new THREE.Matrix4();
+        let matrix = new THREE.Matrix4();
         matrix.extractRotation(this.Mesh.matrix);
 
-        var dir = new THREE.Vector3(0, 0, 1);
+        let dir = new THREE.Vector3(0, 0, 1);
         return dir.applyMatrix4(matrix).normalize();
     }
 

@@ -50,7 +50,7 @@ class Player extends Character {
 
         this.position.x = 0;
         this.position.z = 0;
-        this.Mesh.rotation.y = 0;   
+        this.Mesh.rotation.y = 0;
     }
 
     /**
@@ -145,7 +145,7 @@ class Player extends Character {
 
     /** Trigger CSS nimations */
     triggerLostHPAnim() {
-        var element = document.getElementById("hp-bar");
+        let element = $("#hp-bar")[0];
         element.classList.remove("gained-hp-anim");
         element.classList.remove("lost-hp-anim");
         void element.offsetWidth;
@@ -154,7 +154,7 @@ class Player extends Character {
 
     /** Trigger CSS nimations */
     triggerGainedHPAnim() {
-        var element = document.getElementById("hp-bar");
+        let element = $("#hp-bar")[0];
         element.classList.remove("gained-hp-anim");
         element.classList.remove("lost-hp-anim");
         void element.offsetWidth;
@@ -163,7 +163,7 @@ class Player extends Character {
 
     /** Trigger CSS nimations */
     triggerBulletAnim() {
-        var element = document.getElementById("current-weapon-ammo");
+        let element = $("#current-weapon-ammo")[0];
         element.classList.remove("changed-weapon-anim");
         element.classList.remove("used-bullet-anim");
         void element.offsetWidth;
@@ -172,7 +172,7 @@ class Player extends Character {
 
     /** Trigger CSS nimations */
     triggerWeaponChangeAnim() {
-        var weapon = document.getElementById("current-weapon-stats");
+        let weapon = $("#current-weapon-stats")[0];
         weapon.classList.remove("changed-weapon-anim");
         void weapon.offsetWidth;
         weapon.classList.add("changed-weapon-anim");
@@ -190,30 +190,32 @@ class Player extends Character {
      * @param {bool} resilient - Whether the bullet should go through enemies
      */
     bulletHitCheck(dirVector, resilient = false) {
-        var raycaster = new THREE.Raycaster(this.position, dirVector);
-        var enemyMeshes = [];
-        for (var e = 0; e < enemyAmount; ++e) {
-            enemyMeshes.push(enemies[e].Mesh);
+        let raycaster = new THREE.Raycaster(this.position, dirVector);
+        if (enemyMeshes === undefined) {
+            enemyMeshes = [];
+            for (let e = 0; e < enemyAmount; ++e) {
+                enemyMeshes.push(enemies[e].Mesh);
+            }
         }
-        var intersects = raycaster.intersectObjects(enemyMeshes);
+        let intersects = raycaster.intersectObjects(enemyMeshes);
 
         if (intersects.length > 0) {
 
             if (resilient) {
-                for (var j = 0; j < intersects.length; ++j) {
-                    for (var i = 0; i < enemyAmount; ++i) {
-                        if (intersects[j].object.id === enemies[i].id && enemies[i].HP > 0) {
-                            enemies[i].receiveDamage(this.damage);
+                intersects.forEach(item => {
+                    enemies.forEach(enemy => {
+                        if (item.object.id === enemy.id && enemy.HP > 0) {
+                            enemy.receiveDamage(this.damage);
                         }
-                    }
-                }
+                    });
+                });
             }
             else {
-                for (var i = 0; i < enemyAmount; ++i) {
-                    if (intersects[0].object.id === enemies[i].id && enemies[i].HP > 0) {
-                        enemies[i].receiveDamage(this.damage);
+                enemies.forEach(enemy => {
+                    if (intersects[0].object.id === enemy.id && enemy.HP > 0) {
+                        enemy.receiveDamage(this.damage);
                     }
-                }
+                });
             }
         }
     }
@@ -222,7 +224,7 @@ class Player extends Character {
      * Make the animation for the different weapons
      */
     weaponAnimation() {
-        var bullet;
+        let bullet;
         switch (this.currentWeapon) {
             // Single shot weapons
             case 0: case 1:
@@ -237,8 +239,8 @@ class Player extends Character {
 
             // Shotgun: multiple shots in an outward direction
             case 2:
-                var dirVector, randX, randY, randZ;
-                for (var i = 0; i < 5; ++i) {
+                let dirVector, randX, randY, randZ;
+                for (let i = 0; i < 5; ++i) {
                     bullet = getNextBullet();
                     bullet.prepareForWeapon(this.currentWeapon);
                     // bullet.prepareBulletForWeapons(weapons[this.currentWeapon]);
@@ -255,8 +257,8 @@ class Player extends Character {
             case 3:
                 bullet = getNextBullet();
                 bullet.prepareForWeapon(this.currentWeapon);
-                var posOffset = bullet.Mesh.scale.y * 2 + 5;
-                var laserBeamPos = new THREE.Vector3(this.position.x + this.facingVector.x * posOffset, this.position.y + this.facingVector.y * posOffset, this.position.z + this.facingVector.z * posOffset);
+                const posOffset = bullet.Mesh.scale.y * 2 + 5;
+                let laserBeamPos = new THREE.Vector3(this.position.x + this.facingVector.x * posOffset, this.position.y + this.facingVector.y * posOffset, this.position.z + this.facingVector.z * posOffset);
                 bullet.spawn(laserBeamPos, this.facingVector, this.accuracy, 0, 0.1);
                 this.bulletHitCheck(bullet.direction, true);
                 break;
