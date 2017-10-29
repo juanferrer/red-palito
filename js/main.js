@@ -1,3 +1,8 @@
+/*global THREE, Stats, $
+parseJSONToVar, spawnPointsInit, getRandomPosition, getNextHPDrop, getNextWeaponDrop
+Bullet, Drop, Input, Menu, Player, Enemy
+*/
+
 let clock, scene, camera, renderer;
 let player;
 const playerColour = 0xF44336,
@@ -37,8 +42,6 @@ const hpDropAmount = 1,
 	weaponDropAmount = 4;
 
 let lightFlickerCounter = 0;
-
-let enemyMeshes;
 
 /* Materials */
 const playerMaterial = new THREE.MeshPhongMaterial({ color: playerColour }),
@@ -105,18 +108,18 @@ function init() {
 	});
 
 	// Models
-	for (i = 0; i < bulletsAmount; ++i) {
+	for (let i = 0; i < bulletsAmount; ++i) {
 		bullets.push(new Bullet());
 	}
 
-	for (i = 0; i < enemyAmount; ++i) {
+	for (let i = 0; i < enemyAmount; ++i) {
 		addEnemy();
 	}
 
-	for (i = 0; i < hpDropAmount; ++i) {
+	for (let i = 0; i < hpDropAmount; ++i) {
 		hpDrops.push(new Drop("HP"));
 	}
-	for (i = 0; i < weaponDropAmount; ++i) {
+	for (let i = 0; i < weaponDropAmount; ++i) {
 		weaponDrops.push(new Drop("weapon"));
 	}
 
@@ -133,11 +136,11 @@ function init() {
 	const lightX = [15, 15, -15, -15],
 		lightY = 20,
 		lightZ = [15, -15, -15, 15],
-		lightIntensity = 2;
-	lightColor = 0xFFFFFF;
+		lightIntensity = 2,
+		lightColor = 0xFFFFFF;
 	let light = new THREE.AmbientLight(0xFFFFFF, 0.1);
 	scene.add(light);
-	for (i = 0; i < lightsAmount; ++i) {
+	for (let i = 0; i < lightsAmount; ++i) {
 		lights.push(new THREE.PointLight(lightColor, lightIntensity, 30, 2));
 		lights[lights.length - 1].castShadow = true;
 		scene.add(lights[lights.length - 1]);
@@ -183,7 +186,7 @@ function setupPlayer() {
 
 	waveNumber = 0;
 	currentEnemyAmount = initialEnemyAmount;
-	
+
 	hpDrops.forEach(drop => {
 		drop.reset();
 	});
@@ -199,7 +202,7 @@ function setupPlayer() {
 
 /** Set the position of the gun flare */
 function setGunFlare() {
-	gunFlare.position.add(new THREE.Vector3(0, 0.5, 1.3))
+	gunFlare.position.add(new THREE.Vector3(0, 0.5, 1.3));
 	gunFlare.rotateY();
 	gunFlare.castShadow = true;
 	player.Mesh.add(gunFlare);
@@ -240,6 +243,9 @@ function animate() {
 			if (!enemyAlive() && !isWaveSpawning) {
 				spawnWave();
 			}
+		}
+		if (player.HP === 0) {
+			Menu.showMenu("end");
 		}
 
 		renderer.render(scene, camera);
@@ -300,12 +306,12 @@ function updateBullet() {
 	}
 }
 
-function updateLightFlicker() {
+/*function updateLightFlicker() {
 	if (lightFlickerCounter < 0) {
 		lights[0].intensity = 0;
 		lightFlickerCounter = Math.randomInterval(0, 1);
 	}
-}
+}*/
 
 /** Move enemies towards player */
 function moveEnemies() {
@@ -331,7 +337,7 @@ function updateSpawnCounters() {
 				if (isWaveSpawning && i == currentEnemyAmount - 1) {
 					isWaveSpawning = false;
 				}
-				console.log("Spawning");
+				//console.log("Spawning");
 			}
 		}
 	}
@@ -403,11 +409,11 @@ function wallCollisions() {
 function updateDropCounters() {
 	weaponDrops.forEach(function (v) {
 		v.Mesh.rotateY(0.1);
-	})
+	});
 
 	hpDrops.forEach(function (v) {
 		v.Mesh.rotateY(0.1);
-	})
+	});
 
 	healthDropCounter -= frameTime;
 	weaponDropCounter -= frameTime;
@@ -424,7 +430,7 @@ function updateDropCounters() {
 
 /**
  * Make a drop from the specified type
- * @param {string} type - Type of drop to be made 
+ * @param {string} type - Type of drop to be made
  */
 function makeDrop(type) {
 	// TODO:
@@ -436,7 +442,7 @@ function makeDrop(type) {
 		let weapon = getNextWeaponDrop();
 		if (!weapon.isSpawned) {
 			weapon.spawn(position, value);
-			console.log(type + " dropped. " + value);
+			//console.log(type + " dropped. " + value);
 		}
 	}
 
@@ -482,7 +488,7 @@ function spawnWave() {
 	// 	addEnemy();
 	// }
 
-	for (i = 0; i < currentEnemyAmount; ++i) {
+	for (let i = 0; i < currentEnemyAmount; ++i) {
 		enemies[i].shouldSpawn = true;
 	}
 }
