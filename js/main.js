@@ -1,3 +1,8 @@
+/*global THREE, Stats, $
+parseJSONToVar, spawnPointsInit, getRandomPosition, getNextHPDrop, getNextWeaponDrop
+Bullet, Drop, Input, Menu, Player, Enemy
+*/
+
 let clock, scene, camera, renderer;
 let player;
 const playerColour = 0xF44336,
@@ -5,7 +10,7 @@ const playerColour = 0xF44336,
 let planeG, planeM, plane;
 const planeSize = 50;
 
-let lights = [];
+let light;
 const lightsAmount = 4;
 let frameTime;
 
@@ -15,8 +20,16 @@ const enemyAmount = 300,
 	initialEnemyAmount = 3;
 let currentEnemyAmount = initialEnemyAmount;
 
-let waveNumber = 1;
+let game = {
+
+	waveNumber: 1,
+	enemiesKilled: 0,
+	packagesReceived: 0,
+	bulletsUsed: 0
+};
+
 let isWaveSpawning = true;
+
 
 let bullets = [];
 const bulletsAmount = 30;
@@ -38,8 +51,6 @@ const hpDropAmount = 1,
 
 let lightFlickerCounter = 0;
 
-let enemyMeshes;
-
 /* Materials */
 const playerMaterial = new THREE.MeshPhongMaterial({ color: playerColour }),
 	enemyMaterial = new THREE.MeshPhongMaterial({ color: 0x4CAF50 }),
@@ -56,13 +67,26 @@ let stats = new Stats();
 stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
 document.body.appendChild(stats.dom);
 
+/**
+ * Window resize event handler
+ */
+window.addEventListener("resize", onWindowResize, false);
+
+function onWindowResize() {
+	camera.aspect = window.innerWidth / window.innerHeight;
+	camera.updateProjectionMatrix();
+
+	renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
 init();
 animate();
 
 function reset() {
 	setupPlayer();
 	currentEnemyAmount = initialEnemyAmount;
-	waveNumber = 1;
+	game.waveNumber = 1;
+	game.bulletsUsed = game.enemiesKilled = game.packagesReceived = 0;
 	isWaveSpawning = true;
 
 	healthDropCounter = healthDropTime;
@@ -105,18 +129,18 @@ function init() {
 	});
 
 	// Models
-	for (i = 0; i < bulletsAmount; ++i) {
+	for (let i = 0; i < bulletsAmount; ++i) {
 		bullets.push(new Bullet());
 	}
 
-	for (i = 0; i < enemyAmount; ++i) {
+	for (let i = 0; i < enemyAmount; ++i) {
 		addEnemy();
 	}
 
-	for (i = 0; i < hpDropAmount; ++i) {
+	for (let i = 0; i < hpDropAmount; ++i) {
 		hpDrops.push(new Drop("HP"));
 	}
-	for (i = 0; i < weaponDropAmount; ++i) {
+	for (let i = 0; i < weaponDropAmount; ++i) {
 		weaponDrops.push(new Drop("weapon"));
 	}
 
@@ -130,19 +154,15 @@ function init() {
 	scene.add(plane);
 
 	// Lights
-	const lightX = [15, 15, -15, -15],
-		lightY = 20,
-		lightZ = [15, -15, -15, 15],
-		lightIntensity = 2;
-	lightColor = 0xFFFFFF;
-	let light = new THREE.AmbientLight(0xFFFFFF, 0.1);
+	const lightIntensity = 2,
+		lightColor = 0xFFFFFF;
+	let ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.1);
+	scene.add(ambientLight);
+
+	light = new THREE.PointLight(lightColor, lightIntensity, 50, 2);
+	light.castShadow = true;
 	scene.add(light);
-	for (i = 0; i < lightsAmount; ++i) {
-		lights.push(new THREE.PointLight(lightColor, lightIntensity, 30, 2));
-		lights[lights.length - 1].castShadow = true;
-		scene.add(lights[lights.length - 1]);
-		lights[lights.length - 1].position.set(lightX[i], lightY, lightZ[i]);
-	}
+	light.position.set(0, 20, 0);
 
 	renderer = new THREE.WebGLRenderer();
 	renderer.setSize(window.innerWidth, window.innerHeight);
@@ -151,7 +171,6 @@ function init() {
 	renderer.shadowMap.type = THREE.PCFShadowMap;
 	document.body.appendChild(renderer.domElement);
 
-	//plane.rotateX(Math.degToRad(-90));
 	plane.translateY(planeSize / 4);
 
 	/* Button actions */
@@ -167,6 +186,13 @@ function init() {
 		Menu.hideMenu();
 		Input.isPaused = false;
 	});
+
+	$("#play-again-button").click(() => {
+		Menu.isMainMenu = false;
+		Menu.hideMenu();
+		Input.isPaused = false;
+		reset();
+	});
 	//requestAnimationFrame(animate);
 	renderer.render(scene, camera);
 }
@@ -181,9 +207,9 @@ function setupPlayer() {
 
 	player.reset();
 
-	waveNumber = 0;
+	game.waveNumber = 0;
 	currentEnemyAmount = initialEnemyAmount;
-	
+
 	hpDrops.forEach(drop => {
 		drop.reset();
 	});
@@ -199,7 +225,7 @@ function setupPlayer() {
 
 /** Set the position of the gun flare */
 function setGunFlare() {
-	gunFlare.position.add(new THREE.Vector3(0, 0.5, 1.3))
+	gunFlare.position.add(new THREE.Vector3(0, 0.5, 1.3));
 	gunFlare.rotateY();
 	gunFlare.castShadow = true;
 	player.Mesh.add(gunFlare);
@@ -215,7 +241,6 @@ function animate() {
 	stats.begin();
 	requestAnimationFrame(animate);
 
-	// if (player !== undefined) {
 	if (player !== undefined) {
 
 		updateUI();
@@ -232,7 +257,6 @@ function animate() {
 
 			moveEnemies();
 			updateSpawnCounters();
-
 			collisions();
 
 			updateDropCounters();
@@ -241,7 +265,14 @@ function animate() {
 				spawnWave();
 			}
 		}
-
+		if (player.HP === 0) {
+			Menu.showMenu("end");
+			Input.isPaused = true;
+			$("#wave-num-stat").html(game.waveNumber);
+			$("#enemies-killed-stat").html(game.enemiesKilled);
+			$("#packages-received-stat").html(game.packagesReceived);
+			$("#bullets-used-stat").html(game.bulletsUsed);
+		}
 		renderer.render(scene, camera);
 	}
 	frameTime = clock.getDelta();
@@ -257,8 +288,8 @@ function updateUI() {
 		Menu.showMenu("pause");
 	} else if (!Input.isPaused && !Menu.isMainMenu) {
 		Menu.hideMenu();
-		if (waveNumber > 0) {
-			$("#wave-number")[0].innerHTML = waveNumber;
+		if (game.waveNumber > 0) {
+			$("#wave-number")[0].innerHTML = game.waveNumber;
 		}
 		if (player.HP >= 0) {
 			$("#hp-bar")[0].innerHTML = player.HP;
@@ -272,11 +303,11 @@ function updateUI() {
 
 /** Decrease attack cooldowns */
 function updateAttackCounters() {
-	for (let i = 0; i < enemyAmount; ++i) {
-		if (enemies[i].attackCounter > 0) {
-			enemies[i].attackCounter -= frameTime;
+	enemies.forEach(e => {
+		if (e.attackCounter > 0) {
+			e.attackCounter -= frameTime;
 		}
-	}
+	});
 	if (player.attackCounter > 0) {
 		player.attackCounter -= frameTime;
 	}
@@ -284,41 +315,35 @@ function updateAttackCounters() {
 
 /** Decrease bullet lifetime and dispose of bullets */
 function updateBullet() {
-	for (let i = 0; i < bulletsAmount; ++i) {
-		if (bullets[i].isAlive) {
-			bullets[i].lifeTime -= frameTime;
-			bullets[i].position.add(bullets[i].direction.multiplyScalar(bullets[i].speed));
+	bullets.forEach(b => {
+		if (b.isAlive) {
+			b.lifeTime -= frameTime;
+			b.position.add(b.direction.multiplyScalar(b.speed));
 			//console.log(bullets[i].position);
 		}
-		if (bullets[i].lifeTime < 0) {
-			bullets[i].reset();
+		if (b.lifeTime < 0) {
+			b.reset();
 		}
-	}
+	});
+
 	if (gunFlare.intensity > 0) {
 		gunFlare.intensity -= frameTime * gunFlareFalloffTime[player.currentWeapon];
 		if (gunFlare.intensity < 0) gunFlare.intensity = 0;
 	}
 }
 
-function updateLightFlicker() {
-	if (lightFlickerCounter < 0) {
-		lights[0].intensity = 0;
-		lightFlickerCounter = Math.randomInterval(0, 1);
-	}
-}
-
 /** Move enemies towards player */
 function moveEnemies() {
-	for (let i = 0; i < enemyAmount; ++i) {
-		if (enemies[i].isSpawned && enemies[i].HP > 0) {
-			enemies[i].moveTowardPlayer();
+	enemies.forEach(e => {
+		if (e.isSpawned && e.HP > 0) {
+			e.moveTowardPlayer();
 		}
-		else if (enemies[i].HP <= 0 && enemies[i].isSpawned) {
+		else if (e.HP <= 0 && e.isSpawned) {
 			// Enemy died
 			// TODO: add death counter
-			enemies[i].die();
+			e.die();
 		}
-	}
+	});
 }
 
 function updateSpawnCounters() {
@@ -331,7 +356,6 @@ function updateSpawnCounters() {
 				if (isWaveSpawning && i == currentEnemyAmount - 1) {
 					isWaveSpawning = false;
 				}
-				console.log("Spawning");
 			}
 		}
 	}
@@ -347,27 +371,25 @@ function collisions() {
 /** Collisions between enemy and player models */
 function enemyCollisions() {
 	// Check every active enemy...
-	for (let i = 0; i < enemyAmount; ++i) {
-		if (enemies[i].isSpawned) {
-			// ...against every other active enemy...
-			for (let j = i + 1; j < enemyAmount; ++j) {
-				if (enemies[j].isSpawned) {
-					while (enemies[j].position.distanceTo(enemies[i].position) < (enemies[i].radius + enemies[j].radius)) {
-						let direction = enemies[i].position.clone().sub(enemies[j].position).normalize();
-						enemies[i].position.add(direction.clone().multiplyScalar(enemies[i].moveSpeed * frameTime));
-						enemies[j].position.add(direction.clone().multiplyScalar(-enemies[j].moveSpeed * frameTime));
+	enemies.forEach(a => {
+		if (a.isSpawned) {
+			enemies.forEach(b => {
+				if (b.isSpawned) {
+					if (b.position.distanceTo(a.position) < (a.radius + b.radius)) {
+						let direction = a.position.clone().sub(b.position).normalize();
+						a.position.add(direction.clone().multiplyScalar(a.moveSpeed * frameTime));
+						b.position.add(direction.clone().multiplyScalar(-b.moveSpeed * frameTime));
 					}
 				}
-			}
-			//...and then the player
-			while (enemies[i].position.distanceTo(player.position) < (enemies[i].radius + player.radius)) {
-				let direction = enemies[i].position.clone().sub(player.position).normalize();
-				enemies[i].position.add(direction.clone().multiplyScalar(enemies[i].moveSpeed * frameTime));
+			});
+			while (a.position.distanceTo(player.position) < (a.radius + player.radius)) {
+				let direction = a.position.clone().sub(player.position).normalize();
+				a.position.add(direction.clone().multiplyScalar(a.moveSpeed * frameTime));
 				//player.position.add(direction.clone().multiplyScalar(-player.radius / 10));
-				enemies[i].attack();
+				a.attack();
 			}
 		}
-	}
+	});
 }
 
 /** Collisions between characters and objects */
@@ -375,23 +397,24 @@ function objectCollisions() {
 	// TODO: Health packs, weapon drops, walls, etc
 
 	// Check each object against the player
-	for (let i = 0; i < hpDropAmount; ++i) {
-		if (hpDrops[i].isSpawned) {
-			if (hpDrops[i].position.distanceTo(player.position) < (player.radius * 2)) {
-				player.heal(hpDrops[i].value);
-				hpDrops[i].unspawn();
+	hpDrops.forEach(d => {
+		if (d.isSpawned) {
+			if (d.position.distanceTo(player.position) < (player.radius * 2)) {
+				player.heal(d.value);
+				d.unspawn();
+				game.packagesReceived++;
 			}
 		}
-	}
-	for (let i = 0; i < weaponDropAmount; ++i) {
-		if (weaponDrops[i].isSpawned) {
-			if (weaponDrops[i].position.distanceTo(player.position) < (player.radius * 2)) {
-				player.acquireWeapon(weaponDrops[i].value);
-				weaponDrops[i].unspawn();
+	});
+	weaponDrops.forEach(d => {
+		if (d.isSpawned) {
+			if (d.position.distanceTo(player.position) < (player.radius * 2)) {
+				player.acquireWeapon(d.value);
+				d.unspawn();
+				game.packagesReceived++;
 			}
 		}
-	}
-
+	});
 }
 
 /** Check if character against the walls */
@@ -403,11 +426,11 @@ function wallCollisions() {
 function updateDropCounters() {
 	weaponDrops.forEach(function (v) {
 		v.Mesh.rotateY(0.1);
-	})
+	});
 
 	hpDrops.forEach(function (v) {
 		v.Mesh.rotateY(0.1);
-	})
+	});
 
 	healthDropCounter -= frameTime;
 	weaponDropCounter -= frameTime;
@@ -424,7 +447,7 @@ function updateDropCounters() {
 
 /**
  * Make a drop from the specified type
- * @param {string} type - Type of drop to be made 
+ * @param {string} type - Type of drop to be made
  */
 function makeDrop(type) {
 	// TODO:
@@ -436,7 +459,6 @@ function makeDrop(type) {
 		let weapon = getNextWeaponDrop();
 		if (!weapon.isSpawned) {
 			weapon.spawn(position, value);
-			console.log(type + " dropped. " + value);
 		}
 	}
 
@@ -473,16 +495,12 @@ function enemyAlive() {
 function spawnWave() {
 	triggerIncomingWaveAnim();
 	isWaveSpawning = true;
-	waveNumber++;
+	game.waveNumber++;
 
 	// TODO: increase number of enemies to spawn
 	currentEnemyAmount += 2;
 
-	// for (let i = 0; i < enemyAmount - currentEnemyAmount; ++i) {
-	// 	addEnemy();
-	// }
-
-	for (i = 0; i < currentEnemyAmount; ++i) {
+	for (let i = 0; i < currentEnemyAmount; ++i) {
 		enemies[i].shouldSpawn = true;
 	}
 }
