@@ -20,8 +20,16 @@ const enemyAmount = 300,
 	initialEnemyAmount = 3;
 let currentEnemyAmount = initialEnemyAmount;
 
-let waveNumber = 1;
+let game = {
+
+	waveNumber: 1,
+	enemiesKilled: 0,
+	packagesReceived: 0,
+	bulletsUsed: 0
+};
+
 let isWaveSpawning = true;
+
 
 let bullets = [];
 const bulletsAmount = 30;
@@ -77,7 +85,7 @@ animate();
 function reset() {
 	setupPlayer();
 	currentEnemyAmount = initialEnemyAmount;
-	waveNumber = 1;
+	game.waveNumber = 1;
 	isWaveSpawning = true;
 
 	healthDropCounter = healthDropTime;
@@ -177,6 +185,13 @@ function init() {
 		Menu.hideMenu();
 		Input.isPaused = false;
 	});
+
+	$("#play-again-button").click(() => {
+		Menu.isMainMenu = false;
+		Menu.hideMenu();
+		Input.isPaused = false;
+		reset();
+	});
 	//requestAnimationFrame(animate);
 	renderer.render(scene, camera);
 }
@@ -191,7 +206,7 @@ function setupPlayer() {
 
 	player.reset();
 
-	waveNumber = 0;
+	game.waveNumber = 0;
 	currentEnemyAmount = initialEnemyAmount;
 
 	hpDrops.forEach(drop => {
@@ -252,6 +267,10 @@ function animate() {
 		if (player.HP === 0) {
 			Menu.showMenu("end");
 			Input.isPaused = true;
+			$("#wave-num-stat").html(game.waveNumber);
+			$("#enemies-killed-stat").html(game.enemiesKilled);
+			$("#packages-received-stat").html(game.packagesReceived);
+			$("#bullets-used-stat").html(game.bulletsUsed);
 		}
 		renderer.render(scene, camera);
 	}
@@ -268,8 +287,8 @@ function updateUI() {
 		Menu.showMenu("pause");
 	} else if (!Input.isPaused && !Menu.isMainMenu) {
 		Menu.hideMenu();
-		if (waveNumber > 0) {
-			$("#wave-number")[0].innerHTML = waveNumber;
+		if (game.waveNumber > 0) {
+			$("#wave-number")[0].innerHTML = game.waveNumber;
 		}
 		if (player.HP >= 0) {
 			$("#hp-bar")[0].innerHTML = player.HP;
@@ -382,6 +401,7 @@ function objectCollisions() {
 			if (d.position.distanceTo(player.position) < (player.radius * 2)) {
 				player.heal(d.value);
 				d.unspawn();
+				game.packagesReceived++;
 			}
 		}
 	});
@@ -390,6 +410,7 @@ function objectCollisions() {
 			if (d.position.distanceTo(player.position) < (player.radius * 2)) {
 				player.acquireWeapon(d.value);
 				d.unspawn();
+				game.packagesReceived++;
 			}
 		}
 	});
@@ -473,7 +494,7 @@ function enemyAlive() {
 function spawnWave() {
 	triggerIncomingWaveAnim();
 	isWaveSpawning = true;
-	waveNumber++;
+	game.waveNumber++;
 
 	// TODO: increase number of enemies to spawn
 	currentEnemyAmount += 2;

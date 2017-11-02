@@ -1,4 +1,4 @@
-/* globals THREE, Character, player,  */
+/* globals THREE, Character, player, game */
 
 /**
  * Single class meant to be used by players and enemies alike.
@@ -77,5 +77,6 @@ class Enemy extends Character {
 		this.isSpawned = false;
 		this.spawnCountDown = this.initialSpawnCountDown;
 		this.position.set(0, -2, 0);
+		game.enemiesKilled++;
 	}
 }

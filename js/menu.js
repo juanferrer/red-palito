@@ -34,6 +34,7 @@ class Menu {
 	static hideMenu() {
 		$("#main-menu")[0].style.visibility = "hidden";
 		$("#pause-menu")[0].style.visibility = "hidden";
+		$("#end-menu")[0].style.visibility = "hidden";
 		Menu.isShowingMenu = false;
 	}
 }

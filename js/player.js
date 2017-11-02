@@ -1,6 +1,6 @@
 /* globals $, THREE, Character, weapons,
 playerMaterial, player, enemyAmount, enemies
-getNextBullet, gunFlare, gunFlareColor*/
+getNextBullet, gunFlare, gunFlareColor, game*/
 
 /**
  * Single class meant to be used by players and enemies alike.
@@ -185,6 +185,7 @@ class Player extends Character {
 	useWeapon() {
 		this.weaponAnimation();
 		this.gunFlareAnimation();
+		game.bulletsUsed++;
 	}
 
 
