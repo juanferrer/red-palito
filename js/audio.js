@@ -1,23 +1,25 @@
+/* global THREE, weapons, listener, audioLoader */
+
 class Audio {
 
-    /** */
-static loadWeaponSounds() {
-	for (let i = 0; i < weapons.length; ++i) {
-		Audio.weaponSounds.push(new THREE.Audio(listener));
-		this.loadSoundFile(Audio.weaponSounds[i], Audio.weaponFiles[i]);
+	/** */
+	static loadWeaponSounds() {
+		for (let i = 0; i < weapons.length; ++i) {
+			Audio.weaponSounds.push(new THREE.Audio(listener));
+			this.loadSoundFile(Audio.weaponSounds[i], Audio.weaponFiles[i]);
+		}
+		Audio.gainHPSound = new THREE.Audio(listener);
+		this.loadSoundFile(Audio.gainHPSound, Audio.gainHPFile);
+		Audio.pickupSound = new THREE.Audio(listener);
+		this.loadSoundFile(Audio.pickupSound, Audio.pickupFile);
 	}
-	Audio.gainHPSound = new THREE.Audio(listener);
-	this.loadSoundFile(Audio.gainHPSound, Audio.gainHPFile);
-	Audio.pickupSound = new THREE.Audio(listener);
-	this.loadSoundFile(Audio.pickupSound, Audio.pickupFile);
-}
 
-static loadSoundFile(variable, file) {
-	audioLoader.load(file, function (buffer) {
-		// audioLoader.load(weaponSoundFile[i], function (buffer) {
-		variable.setBuffer(buffer);
-	});
-}
+	static loadSoundFile(variable, file) {
+		audioLoader.load(file, function (buffer) {
+			// audioLoader.load(weaponSoundFile[i], function (buffer) {
+			variable.setBuffer(buffer);
+		});
+	}
 
 }
 

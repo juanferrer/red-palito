@@ -1,3 +1,7 @@
+/*global Menu, player, camera, lightColor2, lightColor3,
+modelRotSpeed, camMoveSpeed, camRotSpeed
+*/
+
 //http://keycode.info/
 class Input {
 
@@ -8,10 +12,10 @@ class Input {
 	static keyboardInit() {
 		// https://stackoverflow.com/a/12273538/7179042
 		// Keep track of what keys are down and update in loop
-		window.addEventListener('keydown', e => {
+		window.addEventListener("keydown", e => {
 			Input.keyState[e.keyCode || e.which] = true;
 		}, true);
-		window.addEventListener('keyup', e => {
+		window.addEventListener("keyup", e => {
 			Input.keyState[e.keyCode || e.which] = false;
 		}, true);
 	}
@@ -26,6 +30,7 @@ class Input {
 
 				// DEBUG: Numpad +
 				if (Input.keyState[107]) {
+					//
 				}
 
 				// Spacebar
@@ -131,7 +136,7 @@ class Input {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	static rotateCube() {
 		player.rotation.x += modelRotSpeed;
