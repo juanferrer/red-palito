@@ -350,7 +350,7 @@ function enemyCollisions() {
 					}
 				}
 			});
-			if (a.position.distanceTo(player.position) < (a.radius + player.radius)) {
+			while (a.position.distanceTo(player.position) < (a.radius + player.radius)) {
 				let direction = a.position.clone().sub(player.position).normalize();
 				a.position.add(direction.clone().multiplyScalar(a.moveSpeed * frameTime));
 				//player.position.add(direction.clone().multiplyScalar(-player.radius / 10));
