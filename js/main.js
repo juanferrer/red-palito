@@ -86,6 +86,7 @@ function reset() {
 	setupPlayer();
 	currentEnemyAmount = initialEnemyAmount;
 	game.waveNumber = 1;
+	game.bulletsUsed = game.enemiesKilled = game.packagesReceived = 0;
 	isWaveSpawning = true;
 
 	healthDropCounter = healthDropTime;
