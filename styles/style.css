@@ -2,6 +2,7 @@ body {
   margin: 0;
   overflow: hidden;
   position: absolute;
+  min-height: 600px;
 }
 
 canvas {
@@ -26,7 +27,7 @@ canvas {
 
 
 /************************************************
-Menu 
+Menu
 ************************************************/
 
 #menu {
@@ -44,6 +45,8 @@ Menu
   z-index: 2;
   width: 30vw;
   height: 50vh;
+  min-height: 400px;
+  min-width: 300px;
   margin: auto;
   display: flow-root;
   box-shadow: 0px 0px 40px 25px rgba(0, 0, 0, 0.5);
@@ -52,19 +55,36 @@ Menu
 
 .button-container {
   width: 75%;
-  margin: 10% auto 10% auto;
+  height: 100%;
+  margin: 5vh auto 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .button-container::before {
   content: "Survival";
   font-size: 50px;
   line-height: 100px;
+  position: absolute;
+  top: 0;
 }
 
 .menu button {
   width: 100%;
+  min-height: 50px;
   height: 5vh;
-  margin: 10% 0 10% 0
+  margin: 5vh 0 5vh 0;
+}
+
+.end-game-stat {
+	margin: 2vh 0 2vh 0;
+	font-size: 20px;
+}
+
+.stat-value {
+	color: rgb(173, 1, 1)
 }
 
 
@@ -106,7 +126,7 @@ Menu
 
 
 /************************************************
-Animations 
+Animations
 ************************************************/
 
 @keyframes lost-hp {
