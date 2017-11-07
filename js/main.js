@@ -99,7 +99,6 @@ function init() {
 	clock = new THREE.Clock();
 	frameTime = 0;
 
-	// chrome.exe --allow-file-access-from-files --disable-web-security
 	let parseResult = parseJSONToVar("weapons.json", "weapons", weapons);
 
 	healthDropCounter = healthDropTime;
@@ -122,6 +121,8 @@ function init() {
 	// Load player asynchronously
 	parseResult.then(function () {
 		Audio.loadWeaponSounds();
+		Audio.loadPickupSounds();
+		Audio.loadEnemySounds();
 		setupPlayer();
 		setGunFlare();
 

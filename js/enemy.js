@@ -1,4 +1,4 @@
-/* globals THREE, Character, player, game */
+/* globals THREE, Character, player, game, Input */
 
 /**
  * Single class meant to be used by players and enemies alike.
@@ -78,5 +78,25 @@ class Enemy extends Character {
 		this.spawnCountDown = this.initialSpawnCountDown;
 		this.position.set(0, -2, 0);
 		game.enemiesKilled++;
+	}
+
+	/**
+	 *
+	 */
+	startSoundCountdown(that) {
+		setTimeout(() => {
+			let randomIndex = Math.randomInterval(0, 28);
+			Audio.enemySounds[randomIndex].play();
+			if (that.isSpawned && !Input.isPaused)
+				that.startSoundCountdown(that);
+		}, Math.randomInterval(2000, 8000));
+	}
+
+	/**
+	 *
+	 */
+	spawn() {
+		super.spawn();
+		this.startSoundCountdown(this);
 	}
 }
