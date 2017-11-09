@@ -252,7 +252,11 @@ function animate() {
 
 			updateAttackCounters();
 
+			updateSoundCounters();
+
 			updateBullet();
+
+			console.log(enemies[0].soundCounter);
 
 			//updateLightFlicker();
 
@@ -305,13 +309,26 @@ function updateUI() {
 /** Decrease attack cooldowns */
 function updateAttackCounters() {
 	enemies.forEach(e => {
-		if (e.attackCounter > 0) {
+		if (e.isSpawned && e.attackCounter > 0) {
 			e.attackCounter -= frameTime;
 		}
 	});
 	if (player.attackCounter > 0) {
 		player.attackCounter -= frameTime;
 	}
+}
+
+function updateSoundCounters() {
+	enemies.forEach(e => {
+		if (e.isSpawned) {
+			if (e.soundCounter > 0) {
+				e.soundCounter -= frameTime;
+			} else if (e.soundCounter < 0) {
+				e.playSound();
+			}
+		}
+	});
+
 }
 
 /** Decrease bullet lifetime and dispose of bullets */
