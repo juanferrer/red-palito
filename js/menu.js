@@ -44,6 +44,7 @@ class Menu {
 		$("#current-weapon-stats").show();*/
 		$(".gui-hud").show();
 		$("canvas").css("filter", "blur(0px)");
+		$("canvas").css("transform", "scale(1");
 	}
 
 	static hideUI() {
@@ -51,7 +52,8 @@ class Menu {
 		$("#hp-bar").hide();
 		$("#current-weapon-stats").hide();*/
 		$(".gui-hud").hide();
-		$("canvas").css("filter", "blur(2px)");
+		$("canvas").css("filter", "blur(3px)");
+		$("canvas").css("transform", "scale(1.03");
 	}
 }
 
