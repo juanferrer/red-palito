@@ -37,6 +37,22 @@ class Menu {
 		$("#end-menu")[0].style.visibility = "hidden";
 		Menu.isShowingMenu = false;
 	}
+
+	static showUI() {
+		/*$("#wave-number").show();
+		$("#hp-bar").show();
+		$("#current-weapon-stats").show();*/
+		$(".gui-hud").show();
+		$("canvas").css("filter", "blur(0px)");
+	}
+
+	static hideUI() {
+		/*$("#wave-number").hide();
+		$("#hp-bar").hide();
+		$("#current-weapon-stats").hide();*/
+		$(".gui-hud").hide();
+		$("canvas").css("filter", "blur(2px)");
+	}
 }
 
 Menu.isShowingMenu = false;

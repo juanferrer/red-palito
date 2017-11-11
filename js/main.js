@@ -42,7 +42,7 @@ let gunFlare;
 let listener, audioLoader;
 
 let healthDropCounter, weaponDropCounter;
-const healthDropTime = 25, weaponDropTime = 10;
+const healthDropTime = 30, weaponDropTime = 20;
 
 let hpDrops = [],
 	weaponDrops = [];
@@ -123,6 +123,8 @@ function init() {
 		Audio.loadWeaponSounds();
 		Audio.loadPickupSounds();
 		Audio.loadEnemySounds();
+		Audio.loadPlayerSounds();
+		listener.setMasterVolume(0.2);
 		setupPlayer();
 		setGunFlare();
 
@@ -177,6 +179,7 @@ function init() {
 	/* Button actions */
 	$("#start-button").click(() => {
 		Menu.isMainMenu = false;
+		Menu.showUI();
 		reset();
 	});
 	$("#resume-button").click(() => {
@@ -186,16 +189,20 @@ function init() {
 		Menu.isMainMenu = true;
 		Menu.hideMenu();
 		Input.isPaused = false;
+		Menu.hideUI();
+		reset();
 	});
 
 	$("#play-again-button").click(() => {
 		Menu.isMainMenu = false;
 		Menu.hideMenu();
 		Input.isPaused = false;
+		Menu.showUI();
 		reset();
 	});
 	//requestAnimationFrame(animate);
 	renderer.render(scene, camera);
+	Menu.hideUI();
 }
 
 /** Prepare player for game */
@@ -256,8 +263,6 @@ function animate() {
 
 			updateBullet();
 
-			console.log(enemies[0].soundCounter);
-
 			//updateLightFlicker();
 
 			moveEnemies();
@@ -270,7 +275,7 @@ function animate() {
 				spawnWave();
 			}
 		}
-		if (player.HP === 0) {
+		if (player.isDead) {
 			Menu.showMenu("end");
 			Input.isPaused = true;
 			$("#wave-num-stat").html(game.waveNumber);
@@ -450,8 +455,12 @@ function updateDropCounters() {
 		v.Mesh.rotateY(0.1);
 	});
 
-	healthDropCounter -= frameTime;
-	weaponDropCounter -= frameTime;
+	if (Drop.weaponDropSpawnedThisWave) {
+		weaponDropCounter -= frameTime;
+	}
+	if (player.HP < 10) {
+		healthDropCounter -= frameTime;
+	}
 
 	if (healthDropCounter < 0) {
 		healthDropCounter = healthDropTime;
@@ -460,6 +469,7 @@ function updateDropCounters() {
 	if (weaponDropCounter < 0) {
 		weaponDropCounter = weaponDropTime;
 		makeDrop("weapon");
+		Drop.weaponDropSpawnedThisWave = true;
 	}
 }
 
@@ -473,7 +483,7 @@ function makeDrop(type) {
 	const position = getRandomPosition(planeSize);
 	// 3. Set drop to position and calculate random index if weapon
 	if (type == "weapon") {
-		const value = Math.randomInterval(0, weapons.length - 1);
+		const value = Math.randomInterval(1, weapons.length - 1);
 		let weapon = getNextWeaponDrop();
 		if (!weapon.isSpawned) {
 			weapon.spawn(position, value);
@@ -483,7 +493,7 @@ function makeDrop(type) {
 	if (type == "HP") {
 		let hp = getNextHPDrop();
 		if (!hp.isSpawned) {
-			hp.spawn(position, 3);
+			hp.spawn(position, 2);
 		}
 	}
 }
@@ -512,8 +522,14 @@ function enemyAlive() {
 /** */
 function spawnWave() {
 	triggerIncomingWaveAnim();
+	Audio.waveChangeSound.play();
 	isWaveSpawning = true;
 	game.waveNumber++;
+
+	if (!Drop.weaponDropSpawnedThisWave) {
+		makeDrop("weapon");
+	}
+	Drop.weaponDropSpawnedThisWave = false;
 
 	// TODO: increase number of enemies to spawn
 	currentEnemyAmount += 2;

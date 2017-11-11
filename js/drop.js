@@ -61,3 +61,5 @@ class Drop {
 		this.isSpawned = false;
 	}
 }
+
+Drop.weaponDropSpawnedThisWave = false;

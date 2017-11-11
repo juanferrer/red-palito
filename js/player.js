@@ -14,6 +14,7 @@ class Player extends Character {
 	constructor() {
 		super();
 		this.isPlayer = true;
+		this.isDead = false;
 		this.moveSpeed = 10;
 		this.color = 0xF44336;
 		this.initialHP = 10;
@@ -38,6 +39,7 @@ class Player extends Character {
      */
 	reset() {
 		this.HP = this.initialHP;
+		this.isDead = false;
 		this.ownedWeapons = [];
 		this.weaponsAmmo = [];
 		for (var i = 0; i < weapons.length; ++i) {
@@ -275,12 +277,17 @@ class Player extends Character {
 		gunFlare.color.setHex(gunFlareColor[this.currentWeapon]);
 	}
 
+	playDeathSound() {
+		Audio.playerDeathSounds[Math.randomInterval(0, 2)].play();
+	}
 	/**
      *
      */
 	die() {
 		// TODO:
 		// 1. Animation + sound
+		this.playDeathSound();
+		this.isDead = true;
 		// 2. setTimeout(disappear, time);
 	}
 }

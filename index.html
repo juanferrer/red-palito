@@ -13,14 +13,14 @@
 	<div id="menu" class="gui">
 		<div id="main-menu" class="menu">
 			<div id="main-menu-buttons" class="button-container">
-				<button id="start-button" class="">Start</button>
-				<button id="settings-button" class="">Settings</button>
+				<button id="start-button" class="menu-button">START</button>
+				<button id="settings-button" class="menu-button">SETTINGS</button>
 			</div>
 		</div>
 		<div id="pause-menu" class="menu">
 			<div id="pause-menu-buttons" class="button-container">
-				<button id="resume-button" class="">Resume</button>
-				<button id="exit-button" class="">Exit</button>
+				<button id="resume-button" class="menu-button">RESUME</button>
+				<button id="exit-button" class="menu-button">EXIT</button>
 			</div>
 		</div>
 		<div id="end-menu" class="menu">
@@ -41,18 +41,18 @@
 					<span class="stat-name">Bullets used</span>
 					<span id="bullets-used-stat" class="stat-value">0000</span>
 				</div>
-				<button id="play-again-button" class="">Play again</button>
+				<button id="play-again-button" class="menu-button">PLAY AGAIN</button>
 			</div>
 		</div>
 	</div>
 
 	<!-- GUI -->
-	<div id="wave-number" class="gui gui-main">0</div>
-	<div id="hp-bar" class="gui gui-main">XX</div>
+	<div id="wave-number" class="gui gui-main gui-hud">0</div>
+	<div id="hp-bar" class="gui gui-main gui-hud">XX</div>
 
-	<div id="current-weapon-stats" class="gui">
-		<div id="current-weapon-name" class="gui stats">XX</div>
-		<div id="current-weapon-ammo" class="gui stats">XX</div>
+	<div id="current-weapon-stats" class="gui gui-hud">
+		<div id="current-weapon-name" class="gui stats gui-hud">XX</div>
+		<div id="current-weapon-ammo" class="gui stats gui-hud">XX</div>
 	</div>
 
 	<script src="https://rawgit.com/mrdoob/stats.js/master/build/stats.min.js"></script>
