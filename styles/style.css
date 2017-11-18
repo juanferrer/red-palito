@@ -2,6 +2,7 @@
 	--main-color: rgb(2, 3, 12);
 	--secondary-color: white;
 	--semi-transparent-color: rgba(200, 200, 200, 0.2);
+	--version-number: "v0.1";
 }
 
 body {
@@ -40,7 +41,7 @@ canvas {
 	width: 100%;
 	min-height: 50px;
 	height: 5vh;
-	margin: 5vh 0 5vh 0;
+	margin: 10% 0 10% 0;
 
 	font-size: 30px;
     background-color: transparent;
@@ -88,8 +89,8 @@ Menu
 
 .button-container {
   width: 75%;
-  height: 100%;
-  margin: 5vh auto 0 auto;
+  height: 75%;
+  margin: 25% auto 14% auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -102,6 +103,23 @@ Menu
   line-height: 100px;
   position: absolute;
   top: 0;
+}
+
+.button-container::after {
+	font-family: Arial, Helvetica, sans-serif;
+	text-shadow: none;
+	content: var(--version-number);
+	font-size: 15px;
+	position: absolute;
+	bottom: 10px;
+}
+
+.row-button-container {
+	display: flex;
+	height: 70%;
+	justify-content: flex-end;
+	align-content: space-around;
+	flex-direction: column;
 }
 
 .end-game-stat {

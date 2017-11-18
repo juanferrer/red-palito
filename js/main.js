@@ -1,6 +1,6 @@
 /*global THREE, Stats, $
 parseJSONToVar, spawnPointsInit, getRandomPosition, getNextHPDrop, getNextWeaponDrop
-Bullet, Drop, Input, Menu, Player, Enemy
+Bullet, Drop, Input, Menu, Player, Enemy, settings
 */
 
 let clock, scene, camera, renderer;
@@ -62,6 +62,7 @@ const playerMaterial = new THREE.MeshPhongMaterial({ color: playerColour }),
 const characterGeometry = new THREE.BoxBufferGeometry(1, 2, 1),
 	dropGeometry = new THREE.BoxBufferGeometry(1, 1, 1);
 
+
 // DEBUG
 let stats = new Stats();
 stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
@@ -95,7 +96,6 @@ function reset() {
 
 /** Initialise scene */
 function init() {
-
 	clock = new THREE.Clock();
 	frameTime = 0;
 
@@ -124,7 +124,7 @@ function init() {
 		Audio.loadPickupSounds();
 		Audio.loadEnemySounds();
 		Audio.loadPlayerSounds();
-		listener.setMasterVolume(0.2);
+		listener.setMasterVolume(settings.masterVolume);
 		setupPlayer();
 		setGunFlare();
 
@@ -200,9 +200,40 @@ function init() {
 		Menu.showUI();
 		reset();
 	});
+
+	$("#settings-button").click(() => {
+		applySettings();
+		Menu.isMainMenu = false;
+		Menu.showMenu("settings");
+		Input.isPaused = true;
+		Menu.hideUI();
+	});
+
+	$("#save-settings-button").click(() => {
+		saveSettings();
+		applySettings();
+		$("#exit-button").click();
+	});
+
+	$("#cancel-settings-button").click(() => {
+		$("#exit-button").click();
+	});
 	//requestAnimationFrame(animate);
 	renderer.render(scene, camera);
 	Menu.hideUI();
+}
+
+/** Save settings in settings object */
+function saveSettings() {
+	settings.masterVolume = parseFloat($("#volume-slider").val());
+
+	localStorage.setItem("settings", JSON.stringify(settings));
+}
+
+/** Pass setting values to controls and game logic */
+function applySettings() {
+	listener.setMasterVolume(settings.masterVolume);
+	$("#volume-slider").val(settings.masterVolume);
 }
 
 /** Prepare player for game */
