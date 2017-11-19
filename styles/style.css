@@ -1,8 +1,19 @@
+:root{
+	--main-color: rgb(2, 3, 12);
+	--secondary-color: white;
+	--semi-transparent-color: rgba(200, 200, 200, 0.2);
+	--version-number: "v0.1";
+}
+
 body {
   margin: 0;
   overflow: hidden;
   position: absolute;
   min-height: 600px;
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
 }
 
 canvas {
@@ -17,12 +28,38 @@ canvas {
   font-family: 'Anton', sans-serif;
   text-align: center;
   /*DEBUG*/
-  text-shadow: 0 0 4px #FFFFFF;
+  text-shadow: 0 0 1px var(--secondary-color);
+  color: var(--main-color);
 }
 
 .gui-main {
   font-size: 50px;
   line-height: 100px;
+}
+
+.gui-hud {
+	display: none;
+}
+
+.menu-button {
+	width: 100%;
+	min-height: 50px;
+	height: 5vh;
+	margin: 10% 0 10% 0;
+
+	font-size: 30px;
+    background-color: transparent;
+    border-color: var(--main-color);
+    border-style: solid;
+    border-width: 3px;
+	color: var(--main-color);
+	transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+	border-radius: 2px;
+}
+
+.menu-button:hover {
+	color: var(--secondary-color);
+	background-color: var(--main-color);
 }
 
 
@@ -36,7 +73,7 @@ Menu
 }
 
 .menu {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--semi-transparent-color);
   position: absolute;
   left: 25%;
   right: 25%;
@@ -49,17 +86,18 @@ Menu
   min-width: 300px;
   margin: auto;
   display: flow-root;
-  box-shadow: 0px 0px 40px 25px rgba(0, 0, 0, 0.5);
+  /*box-shadow: 0px 0px 40px 25px var(--semi-transparent-color);*/
   visibility: hidden;
+  filter: blur(5);
 }
 
 .button-container {
   width: 75%;
-  height: 100%;
-  margin: 5vh auto 0 auto;
+  height: calc(100% - 15vh);
+  margin: 10vh auto 5vh auto;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
 }
 
@@ -71,20 +109,46 @@ Menu
   top: 0;
 }
 
-.menu button {
-  width: 100%;
-  min-height: 50px;
-  height: 5vh;
-  margin: 5vh 0 5vh 0;
+.button-container::after {
+	font-family: Arial, Helvetica, sans-serif;
+	text-shadow: none;
+	content: var(--version-number);
+	font-size: 15px;
+	position: absolute;
+	bottom: 10px;
+}
+
+.row-button-container {
+	display: flex;
+	height: 70%;
+	justify-content: flex-end;
+	align-content: space-around;
+	flex-direction: column;
 }
 
 .end-game-stat {
-	margin: 2vh 0 2vh 0;
-	font-size: 20px;
+	font-size: 25px;
 }
 
 .stat-value {
 	color: rgb(173, 1, 1)
+}
+
+.slider {
+	-webkit-appearance: none;
+	height: 7px;
+	border-radius: 5px;
+    outline: none;
+	background: var(--secondary-color);
+}
+
+.slider::-webkit-slider-thumb {
+	-webkit-appearance: none;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: var(--main-color);
+    cursor: pointer;
 }
 
 

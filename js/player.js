@@ -14,6 +14,7 @@ class Player extends Character {
 	constructor() {
 		super();
 		this.isPlayer = true;
+		this.isDead = false;
 		this.moveSpeed = 10;
 		this.color = 0xF44336;
 		this.initialHP = 10;
@@ -26,9 +27,11 @@ class Player extends Character {
 		this.currentWeapon = 0;
 		super.init();
 		this.Mesh.material = playerMaterial;
-		this.attackSpeed = 1;
+		this.attackSpeed = [];
+		this.attackCounter = [0, 0, 0, 0];
 		this.accuracy = 0.5;
 		this.damage = 2;
+		this.onWeaponAnim = false;
 		this.acquireWeapon(0);
 		this.updateWeaponStats();
 	}
@@ -38,6 +41,7 @@ class Player extends Character {
      */
 	reset() {
 		this.HP = this.initialHP;
+		this.isDead = false;
 		this.ownedWeapons = [];
 		this.weaponsAmmo = [];
 		for (var i = 0; i < weapons.length; ++i) {
@@ -46,7 +50,8 @@ class Player extends Character {
 		}
 		this.currentWeapon = 0;
 		this.Mesh.material = playerMaterial;
-		this.attackSpeed = 1;
+		this.attackSpeed = [];
+		this.attackCounter = [0, 0, 0, 0];
 		this.accuracy = 0.5;
 		this.damage = 2;
 		this.acquireWeapon(0);
@@ -67,22 +72,26 @@ class Player extends Character {
 		//     console.log("DEBUG: add " + weapons[w].name);
 		//     this.acquireWeapon(w);
 		// }
-		this.triggerWeaponChangeAnim();
-		// Update stats
-		setTimeout(function () {
-			do {
-				// player instead of this because it's a callback
-				player.currentWeapon = player.currentWeapon < player.ownedWeapons.length - 1 ? player.currentWeapon + 1 : 0;
-			} while (!player.ownedWeapons[player.currentWeapon] && !player.currentWeapon == 0);
-			player.updateWeaponStats();
-		}, 200);
+		if (!this.onWeaponAnim) {
+			this.triggerWeaponChangeAnim();
+			this.onWeaponAnim = true;
+			// Update stats
+			setTimeout(function () {
+				do {
+					// player instead of this because it's a callback
+					player.currentWeapon = player.currentWeapon < player.ownedWeapons.length - 1 ? player.currentWeapon + 1 : 0;
+				} while (!player.ownedWeapons[player.currentWeapon] && !player.currentWeapon == 0);
+				player.updateWeaponStats();
+				player.onWeaponAnim = false;
+			}, 200);
+		}
 	}
 
 	/**
      * Set stats to those of the weapon
      */
 	updateWeaponStats() {
-		this.attackSpeed = weapons[this.currentWeapon].recharge;
+		this.attackSpeed[this.currentWeapon] = weapons[this.currentWeapon].recharge;
 		this.accuracy = weapons[this.currentWeapon].accuracy;
 		this.damage = weapons[this.currentWeapon].damage;
 	}
@@ -115,13 +124,13 @@ class Player extends Character {
 			//this.ownedWeapons.slice(this.currentWeapon, 1);
 			this.nextWeapon();
 		}
-		else if (this.attackCounter <= 0) {
+		else if (this.attackCounter[this.currentWeapon] <= 0) {
 			if (this.weaponsAmmo[this.currentWeapon] > 0)
 				this.weaponsAmmo[this.currentWeapon]--;
 			this.triggerBulletAnim();
 			this.useWeapon();
 			Audio.weaponSounds[this.currentWeapon].play();
-			this.attackCounter = this.attackSpeed;
+			this.attackCounter[this.currentWeapon] = this.attackSpeed[this.currentWeapon];
 		}
 	}
 
@@ -262,7 +271,7 @@ class Player extends Character {
 			case 3:
 				bullet = getNextBullet();
 				bullet.prepareForWeapon(this.currentWeapon);
-				posOffset = bullet.Mesh.scale.y * 2 + 5;
+				posOffset = bullet.Mesh.scale.y * 2;
 				laserBeamPos = new THREE.Vector3(this.position.x + this.facingVector.x * posOffset, this.position.y + this.facingVector.y * posOffset, this.position.z + this.facingVector.z * posOffset);
 				bullet.spawn(laserBeamPos, this.facingVector, this.accuracy, 0, 0.1);
 				this.bulletHitCheck(bullet.direction, true);
@@ -275,12 +284,17 @@ class Player extends Character {
 		gunFlare.color.setHex(gunFlareColor[this.currentWeapon]);
 	}
 
+	playDeathSound() {
+		Audio.playerDeathSounds[Math.randomInterval(0, 2)].play();
+	}
 	/**
      *
      */
 	die() {
 		// TODO:
 		// 1. Animation + sound
+		this.playDeathSound();
+		this.isDead = true;
 		// 2. setTimeout(disappear, time);
 	}
 }

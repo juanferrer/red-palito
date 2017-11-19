@@ -12,17 +12,27 @@ class Menu {
 				$("#main-menu")[0].style.visibility = "visible";
 				$("#pause-menu")[0].style.visibility = "hidden";
 				$("#end-menu")[0].style.visibility = "hidden";
+				$("#settings-menu")[0].style.visibility = "hidden";
 				break;
 			case "pause":
 				$("#main-menu")[0].style.visibility = "hidden";
 				$("#pause-menu")[0].style.visibility = "visible";
 				$("#end-menu")[0].style.visibility = "hidden";
+				$("#settings-menu")[0].style.visibility = "hidden";
 				break;
 			case "end":
 				$("#main-menu")[0].style.visibility = "hidden";
 				$("#pause-menu")[0].style.visibility = "hidden";
 				$("#end-menu")[0].style.visibility = "visible";
+				$("#settings-menu")[0].style.visibility = "hidden";
 				break;
+			case "settings":
+				$("#main-menu")[0].style.visibility = "hidden";
+				$("#pause-menu")[0].style.visibility = "hidden";
+				$("#end-menu")[0].style.visibility = "hidden";
+				$("#settings-menu")[0].style.visibility = "visible";
+				break;
+
 		}
 		Menu.isShowingMenu = true;
 	}
@@ -35,7 +45,26 @@ class Menu {
 		$("#main-menu")[0].style.visibility = "hidden";
 		$("#pause-menu")[0].style.visibility = "hidden";
 		$("#end-menu")[0].style.visibility = "hidden";
+		$("#settings-menu")[0].style.visibility = "hidden";
 		Menu.isShowingMenu = false;
+	}
+
+	static showUI() {
+		/*$("#wave-number").show();
+		$("#hp-bar").show();
+		$("#current-weapon-stats").show();*/
+		$(".gui-hud").show();
+		$("canvas").css("filter", "blur(0px)");
+		$("canvas").css("transform", "scale(1");
+	}
+
+	static hideUI() {
+		/*$("#wave-number").hide();
+		$("#hp-bar").hide();
+		$("#current-weapon-stats").hide();*/
+		$(".gui-hud").hide();
+		$("canvas").css("filter", "blur(3px)");
+		$("canvas").css("transform", "scale(1.03");
 	}
 }
 

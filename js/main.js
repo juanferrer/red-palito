@@ -1,6 +1,6 @@
 /*global THREE, Stats, $
 parseJSONToVar, spawnPointsInit, getRandomPosition, getNextHPDrop, getNextWeaponDrop
-Bullet, Drop, Input, Menu, Player, Enemy
+Bullet, Drop, Input, Menu, Player, Enemy, settings
 */
 
 let clock, scene, camera, renderer;
@@ -42,7 +42,7 @@ let gunFlare;
 let listener, audioLoader;
 
 let healthDropCounter, weaponDropCounter;
-const healthDropTime = 25, weaponDropTime = 10;
+const healthDropTime = 30, weaponDropTime = 20;
 
 let hpDrops = [],
 	weaponDrops = [];
@@ -61,6 +61,7 @@ const playerMaterial = new THREE.MeshPhongMaterial({ color: playerColour }),
 /* Geometries */
 const characterGeometry = new THREE.BoxBufferGeometry(1, 2, 1),
 	dropGeometry = new THREE.BoxBufferGeometry(1, 1, 1);
+
 
 // DEBUG
 let stats = new Stats();
@@ -95,11 +96,9 @@ function reset() {
 
 /** Initialise scene */
 function init() {
-
 	clock = new THREE.Clock();
 	frameTime = 0;
 
-	// chrome.exe --allow-file-access-from-files --disable-web-security
 	let parseResult = parseJSONToVar("weapons.json", "weapons", weapons);
 
 	healthDropCounter = healthDropTime;
@@ -122,6 +121,10 @@ function init() {
 	// Load player asynchronously
 	parseResult.then(function () {
 		Audio.loadWeaponSounds();
+		Audio.loadPickupSounds();
+		Audio.loadEnemySounds();
+		Audio.loadPlayerSounds();
+		listener.setMasterVolume(settings.masterVolume);
 		setupPlayer();
 		setGunFlare();
 
@@ -176,6 +179,7 @@ function init() {
 	/* Button actions */
 	$("#start-button").click(() => {
 		Menu.isMainMenu = false;
+		Menu.showUI();
 		reset();
 	});
 	$("#resume-button").click(() => {
@@ -185,16 +189,51 @@ function init() {
 		Menu.isMainMenu = true;
 		Menu.hideMenu();
 		Input.isPaused = false;
+		Menu.hideUI();
+		reset();
 	});
 
 	$("#play-again-button").click(() => {
 		Menu.isMainMenu = false;
 		Menu.hideMenu();
 		Input.isPaused = false;
+		Menu.showUI();
 		reset();
+	});
+
+	$("#settings-button").click(() => {
+		applySettings();
+		Menu.isMainMenu = false;
+		Menu.showMenu("settings");
+		Input.isPaused = true;
+		Menu.hideUI();
+	});
+
+	$("#save-settings-button").click(() => {
+		saveSettings();
+		applySettings();
+		$("#exit-button").click();
+	});
+
+	$("#cancel-settings-button").click(() => {
+		$("#exit-button").click();
 	});
 	//requestAnimationFrame(animate);
 	renderer.render(scene, camera);
+	Menu.hideUI();
+}
+
+/** Save settings in settings object */
+function saveSettings() {
+	settings.masterVolume = parseFloat($("#volume-slider").val());
+
+	localStorage.setItem("settings", JSON.stringify(settings));
+}
+
+/** Pass setting values to controls and game logic */
+function applySettings() {
+	listener.setMasterVolume(settings.masterVolume);
+	$("#volume-slider").val(settings.masterVolume);
 }
 
 /** Prepare player for game */
@@ -251,6 +290,8 @@ function animate() {
 
 			updateAttackCounters();
 
+			updateSoundCounters();
+
 			updateBullet();
 
 			//updateLightFlicker();
@@ -265,7 +306,7 @@ function animate() {
 				spawnWave();
 			}
 		}
-		if (player.HP === 0) {
+		if (player.isDead) {
 			Menu.showMenu("end");
 			Input.isPaused = true;
 			$("#wave-num-stat").html(game.waveNumber);
@@ -304,13 +345,28 @@ function updateUI() {
 /** Decrease attack cooldowns */
 function updateAttackCounters() {
 	enemies.forEach(e => {
-		if (e.attackCounter > 0) {
+		if (e.isSpawned && e.attackCounter > 0) {
 			e.attackCounter -= frameTime;
 		}
 	});
-	if (player.attackCounter > 0) {
-		player.attackCounter -= frameTime;
-	}
+	for (let i = 0; i < weapons.length; ++i) {
+		if (player.attackCounter[i] > 0) {
+			player.attackCounter[i] -= frameTime;
+		}
+	};
+}
+
+function updateSoundCounters() {
+	enemies.forEach(e => {
+		if (e.isSpawned) {
+			if (e.soundCounter > 0) {
+				e.soundCounter -= frameTime;
+			} else if (e.soundCounter < 0) {
+				e.playSound();
+			}
+		}
+	});
+
 }
 
 /** Decrease bullet lifetime and dispose of bullets */
@@ -432,8 +488,12 @@ function updateDropCounters() {
 		v.Mesh.rotateY(0.1);
 	});
 
-	healthDropCounter -= frameTime;
-	weaponDropCounter -= frameTime;
+	if (Drop.weaponDropSpawnedThisWave) {
+		weaponDropCounter -= frameTime;
+	}
+	if (player.HP < 10) {
+		healthDropCounter -= frameTime;
+	}
 
 	if (healthDropCounter < 0) {
 		healthDropCounter = healthDropTime;
@@ -442,6 +502,7 @@ function updateDropCounters() {
 	if (weaponDropCounter < 0) {
 		weaponDropCounter = weaponDropTime;
 		makeDrop("weapon");
+		Drop.weaponDropSpawnedThisWave = true;
 	}
 }
 
@@ -455,7 +516,7 @@ function makeDrop(type) {
 	const position = getRandomPosition(planeSize);
 	// 3. Set drop to position and calculate random index if weapon
 	if (type == "weapon") {
-		const value = Math.randomInterval(0, weapons.length - 1);
+		const value = Math.randomInterval(1, weapons.length - 1);
 		let weapon = getNextWeaponDrop();
 		if (!weapon.isSpawned) {
 			weapon.spawn(position, value);
@@ -465,7 +526,7 @@ function makeDrop(type) {
 	if (type == "HP") {
 		let hp = getNextHPDrop();
 		if (!hp.isSpawned) {
-			hp.spawn(position, 3);
+			hp.spawn(position, 2);
 		}
 	}
 }
@@ -494,8 +555,14 @@ function enemyAlive() {
 /** */
 function spawnWave() {
 	triggerIncomingWaveAnim();
+	Audio.waveChangeSound.play();
 	isWaveSpawning = true;
 	game.waveNumber++;
+
+	if (!Drop.weaponDropSpawnedThisWave) {
+		makeDrop("weapon");
+	}
+	Drop.weaponDropSpawnedThisWave = false;
 
 	// TODO: increase number of enemies to spawn
 	currentEnemyAmount += 2;

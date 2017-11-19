@@ -18,6 +18,7 @@ class Enemy extends Character {
 		this.initialSpawnCountDown = Math.random();
 		this.shouldSpawn = true;
 		this.isSpawned = false;
+		this.soundCounter = Math.randomInterval(2, 8);
 		super.init();
 	}
 
@@ -70,6 +71,9 @@ class Enemy extends Character {
 	}
 
 
+	/**
+	 *
+	 */
 	die() {
 		// TODO:
 		// 1. Animation + sound
@@ -78,5 +82,20 @@ class Enemy extends Character {
 		this.spawnCountDown = this.initialSpawnCountDown;
 		this.position.set(0, -2, 0);
 		game.enemiesKilled++;
+	}
+
+	/**
+	 *
+	 */
+	playSound() {
+		this.soundCounter = Math.randomInterval(2, 8);
+		Audio.enemySounds[Math.randomInterval(0, 28)].play();
+	}
+
+	/**
+	 *
+	 */
+	spawn() {
+		super.spawn();
 	}
 }
