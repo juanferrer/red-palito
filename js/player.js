@@ -31,6 +31,7 @@ class Player extends Character {
 		this.attackCounter = [0, 0, 0, 0];
 		this.accuracy = 0.5;
 		this.damage = 2;
+		this.onWeaponAnim = false;
 		this.acquireWeapon(0);
 		this.updateWeaponStats();
 	}
@@ -71,15 +72,19 @@ class Player extends Character {
 		//     console.log("DEBUG: add " + weapons[w].name);
 		//     this.acquireWeapon(w);
 		// }
-		this.triggerWeaponChangeAnim();
-		// Update stats
-		setTimeout(function () {
-			do {
-				// player instead of this because it's a callback
-				player.currentWeapon = player.currentWeapon < player.ownedWeapons.length - 1 ? player.currentWeapon + 1 : 0;
-			} while (!player.ownedWeapons[player.currentWeapon] && !player.currentWeapon == 0);
-			player.updateWeaponStats();
-		}, 200);
+		if (!this.onWeaponAnim) {
+			this.triggerWeaponChangeAnim();
+			this.onWeaponAnim = true;
+			// Update stats
+			setTimeout(function () {
+				do {
+					// player instead of this because it's a callback
+					player.currentWeapon = player.currentWeapon < player.ownedWeapons.length - 1 ? player.currentWeapon + 1 : 0;
+				} while (!player.ownedWeapons[player.currentWeapon] && !player.currentWeapon == 0);
+				player.updateWeaponStats();
+				player.onWeaponAnim = false;
+			}, 200);
+		}
 	}
 
 	/**
