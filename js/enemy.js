@@ -89,7 +89,7 @@ class Enemy extends Character {
 	 */
 	playSound() {
 		this.soundCounter = Math.randomInterval(2, 8);
-		Audio.enemySounds[Math.randomInterval(0, 28)].play();
+		Audio.enemySounds[Math.randomInterval(0, 27)].play();
 	}
 
 	/**
