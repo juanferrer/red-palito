@@ -64,9 +64,9 @@ const characterGeometry = new THREE.BoxBufferGeometry(1, 2, 1),
 
 
 // DEBUG
-let stats = new Stats();
-stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-document.body.appendChild(stats.dom);
+//let stats = new Stats();
+//stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+//document.body.appendChild(stats.dom);
 
 /**
  * Window resize event handler
@@ -277,7 +277,7 @@ function addEnemy() {
 
 /** Animate scene */
 function animate() {
-	stats.begin();
+	//stats.begin();
 	requestAnimationFrame(animate);
 
 	if (player !== undefined) {
@@ -317,7 +317,7 @@ function animate() {
 		renderer.render(scene, camera);
 	}
 	frameTime = clock.getDelta();
-	stats.end();
+	//stats.end();
 }
 
 /** Update elements from the UI */
@@ -353,7 +353,7 @@ function updateAttackCounters() {
 		if (player.attackCounter[i] > 0) {
 			player.attackCounter[i] -= frameTime;
 		}
-	};
+	}
 }
 
 function updateSoundCounters() {
