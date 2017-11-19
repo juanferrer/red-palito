@@ -349,9 +349,11 @@ function updateAttackCounters() {
 			e.attackCounter -= frameTime;
 		}
 	});
-	if (player.attackCounter > 0) {
-		player.attackCounter -= frameTime;
-	}
+	for (let i = 0; i < weapons.length; ++i) {
+		if (player.attackCounter[i] > 0) {
+			player.attackCounter[i] -= frameTime;
+		}
+	};
 }
 
 function updateSoundCounters() {

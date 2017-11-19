@@ -27,7 +27,8 @@ class Player extends Character {
 		this.currentWeapon = 0;
 		super.init();
 		this.Mesh.material = playerMaterial;
-		this.attackSpeed = 1;
+		this.attackSpeed = [];
+		this.attackCounter = [0, 0, 0, 0];
 		this.accuracy = 0.5;
 		this.damage = 2;
 		this.acquireWeapon(0);
@@ -48,7 +49,8 @@ class Player extends Character {
 		}
 		this.currentWeapon = 0;
 		this.Mesh.material = playerMaterial;
-		this.attackSpeed = 1;
+		this.attackSpeed = [];
+		this.attackCounter = [0, 0, 0, 0];
 		this.accuracy = 0.5;
 		this.damage = 2;
 		this.acquireWeapon(0);
@@ -84,7 +86,7 @@ class Player extends Character {
      * Set stats to those of the weapon
      */
 	updateWeaponStats() {
-		this.attackSpeed = weapons[this.currentWeapon].recharge;
+		this.attackSpeed[this.currentWeapon] = weapons[this.currentWeapon].recharge;
 		this.accuracy = weapons[this.currentWeapon].accuracy;
 		this.damage = weapons[this.currentWeapon].damage;
 	}
@@ -117,13 +119,13 @@ class Player extends Character {
 			//this.ownedWeapons.slice(this.currentWeapon, 1);
 			this.nextWeapon();
 		}
-		else if (this.attackCounter <= 0) {
+		else if (this.attackCounter[this.currentWeapon] <= 0) {
 			if (this.weaponsAmmo[this.currentWeapon] > 0)
 				this.weaponsAmmo[this.currentWeapon]--;
 			this.triggerBulletAnim();
 			this.useWeapon();
 			Audio.weaponSounds[this.currentWeapon].play();
-			this.attackCounter = this.attackSpeed;
+			this.attackCounter[this.currentWeapon] = this.attackSpeed[this.currentWeapon];
 		}
 	}
 

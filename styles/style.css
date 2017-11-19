@@ -10,6 +10,10 @@ body {
   overflow: hidden;
   position: absolute;
   min-height: 600px;
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
 }
 
 canvas {
@@ -89,11 +93,11 @@ Menu
 
 .button-container {
   width: 75%;
-  height: 75%;
-  margin: 25% auto 14% auto;
+  height: calc(100% - 15vh);
+  margin: 10vh auto 5vh auto;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
 }
 
@@ -123,12 +127,28 @@ Menu
 }
 
 .end-game-stat {
-	margin: 2vh 0 2vh 0;
-	font-size: 20px;
+	font-size: 25px;
 }
 
 .stat-value {
 	color: rgb(173, 1, 1)
+}
+
+.slider {
+	-webkit-appearance: none;
+	height: 7px;
+	border-radius: 5px;
+    outline: none;
+	background: var(--secondary-color);
+}
+
+.slider::-webkit-slider-thumb {
+	-webkit-appearance: none;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: var(--main-color);
+    cursor: pointer;
 }
 
 
