@@ -266,7 +266,7 @@ class Player extends Character {
 			case 3:
 				bullet = getNextBullet();
 				bullet.prepareForWeapon(this.currentWeapon);
-				posOffset = bullet.Mesh.scale.y * 2 + 5;
+				posOffset = bullet.Mesh.scale.y * 2;
 				laserBeamPos = new THREE.Vector3(this.position.x + this.facingVector.x * posOffset, this.position.y + this.facingVector.y * posOffset, this.position.z + this.facingVector.z * posOffset);
 				bullet.spawn(laserBeamPos, this.facingVector, this.accuracy, 0, 0.1);
 				this.bulletHitCheck(bullet.direction, true);
