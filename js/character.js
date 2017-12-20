@@ -19,7 +19,7 @@ class Character {
 		this.initialHP = 0;
 		this.isPlayer = false;
 		this.initialSpawnCountDown = 0;
-		this.radius = 0.5;
+		this.radius = 0.6;
 		this.spawnCountDown = this.initialSpawnCountDown;
 		this.isSpawned = false;
 		this.rotSpeed = 60;
@@ -28,6 +28,7 @@ class Character {
 	}
 
 	init() {
+		// http://www.cgdev.net/blog/482.html Load models from 3DS Max
 		this.Geometry = characterGeometry;
 		this.Material = enemyMaterial;
 		this.Mesh = new THREE.Mesh(this.Geometry, this.Material);
@@ -38,7 +39,7 @@ class Character {
 	}
 
 	addToScene() {
-		this.Mesh.translateY(this.isPlayer ? 1 : -10);
+		this.Mesh.translateY(this.isPlayer ? 0 : -10);
 		scene.add(this.Mesh);
 	}
 

@@ -204,7 +204,8 @@ class Player extends Character {
      * @param {bool} resilient - Whether the bullet should go through enemies
      */
 	bulletHitCheck(dirVector, resilient = false) {
-		let raycaster = new THREE.Raycaster(this.position, dirVector);
+		let posVector = new THREE.Vector3(this.position.x, 1, this.position.z);
+		let raycaster = new THREE.Raycaster(posVector, dirVector);
 		let enemyMeshes = [];
 		for (let e = 0; e < enemyAmount; ++e) {
 			enemyMeshes.push(enemies[e].Mesh);

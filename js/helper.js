@@ -21,30 +21,6 @@ Math.randomInterval = function (min, max) {
 	return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
-let currentSpawnPoint = 0;
-let spawnPoints = [];
-let spawnPointsX = [15, -5, -12, 10];
-let spawnPointsZ = [6, -8, 9, -3];
-
-/**
- *
- */
-function spawnPointsInit() {
-	for (let i = 0; i < spawnPointsX.length; ++i) {
-		spawnPoints[i] = new THREE.Vector3(spawnPointsX[i], 1, spawnPointsZ[i]);
-	}
-}
-
-/**
- * Get next available spawn point
- * @return {THREE.Object3D}
- */
-function getNextSpawnPoint() {
-	const spawnPoint = spawnPoints[currentSpawnPoint];
-	currentSpawnPoint = currentSpawnPoint < spawnPoints.length - 1 ? currentSpawnPoint + 1 : 0;
-	return spawnPoint;
-}
-
 let currentBullet = 0;
 
 function getNextBullet() {
@@ -86,6 +62,6 @@ function getNextHPDrop() {
 
 function getRandomPosition(maxSize) {
 	return new THREE.Vector3(((Math.random() * maxSize) - (maxSize / 2.0)),
-		1,
+		0,
 		((Math.random() * maxSize) - (maxSize / 2.0)));
 }

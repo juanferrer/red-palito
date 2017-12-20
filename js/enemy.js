@@ -56,8 +56,9 @@ class Enemy extends Character {
      * Attack whatever is ahead.
      */
 	attack() {
+		let posVector = new THREE.Vector3(this.position.x, 1, this.position.z);
 		if (this.attackCounter <= 0 && this.HP > 0) {
-			let raycaster = new THREE.Raycaster(this.position, this.facingVector);
+			let raycaster = new THREE.Raycaster(posVector, this.facingVector);
 			let intersects = raycaster.intersectObjects([player.Mesh]);
 
 			if (intersects.length > 0) {
@@ -80,7 +81,7 @@ class Enemy extends Character {
 		// 2. setTimeout(disappear, time);
 		this.isSpawned = false;
 		this.spawnCountDown = this.initialSpawnCountDown;
-		this.position.set(0, -2, 0);
+		this.position.set(0, -10, 0);
 		game.enemiesKilled++;
 	}
 
@@ -97,5 +98,6 @@ class Enemy extends Character {
 	 */
 	spawn() {
 		super.spawn();
+		//this.position.set(this.position.x, 1, this.position.y);
 	}
 }

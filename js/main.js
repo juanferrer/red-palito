@@ -1,5 +1,5 @@
 /*global THREE, Stats, $
-parseJSONToVar, spawnPointsInit, getRandomPosition, getNextHPDrop, getNextWeaponDrop
+parseJSONToVar, getRandomPosition, getNextHPDrop, getNextWeaponDrop
 Bullet, Drop, Input, Menu, Player, Enemy, settings
 */
 
@@ -59,7 +59,7 @@ const playerMaterial = new THREE.MeshPhongMaterial({ color: playerColour }),
 	planeMaterial = new THREE.MeshPhongMaterial({ color: planeColor });
 
 /* Geometries */
-const characterGeometry = new THREE.BoxBufferGeometry(1, 2, 1),
+let characterGeometry = new THREE.BoxBufferGeometry(1, 2, 1),
 	dropGeometry = new THREE.BoxBufferGeometry(1, 1, 1);
 
 
@@ -67,6 +67,8 @@ const characterGeometry = new THREE.BoxBufferGeometry(1, 2, 1),
 let stats = new Stats();
 stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
 document.body.appendChild(stats.dom);
+
+let modelLoader = new THREE.JDLoader();
 
 /**
  * Window resize event handler
@@ -80,7 +82,8 @@ function onWindowResize() {
 	renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-init();
+//init();
+loadModels(init);
 animate();
 
 function reset() {
@@ -94,17 +97,39 @@ function reset() {
 	weaponDropCounter = weaponDropTime;
 }
 
+function loadModels(callback) {
+	modelLoader.load("./models/enemy.jd", data => {
+		characterGeometry = data.geometries[0];
+		callback();
+	});
+}
+
+function getWeapons() {
+	let parseResult = parseJSONToVar("weapons.json", "weapons", weapons);
+	parseResult.then(() => {
+		Audio.loadWeaponSounds();
+		Audio.loadPickupSounds();
+		Audio.loadEnemySounds();
+		Audio.loadPlayerSounds();
+		listener.setMasterVolume(settings.masterVolume);
+		setupPlayer();
+		setGunFlare();
+
+		player.Mesh.add(listener);
+	});
+}
+
 /** Initialise scene */
 function init() {
 	clock = new THREE.Clock();
 	frameTime = 0;
 
-	let parseResult = parseJSONToVar("weapons.json", "weapons", weapons);
+	//loadModels(getWeapons);
+
 
 	healthDropCounter = healthDropTime;
 	weaponDropCounter = weaponDropTime;
 	Input.keyboardInit();
-	spawnPointsInit();
 
 	scene = new THREE.Scene();
 
@@ -119,6 +144,7 @@ function init() {
 	audioLoader = new THREE.AudioLoader();
 
 	// Load player asynchronously
+	let parseResult = parseJSONToVar("weapons.json", "weapons", weapons);
 	parseResult.then(function () {
 		Audio.loadWeaponSounds();
 		Audio.loadPickupSounds();
@@ -315,8 +341,8 @@ function animate() {
 			$("#bullets-used-stat").html(game.bulletsUsed);
 		}
 		renderer.render(scene, camera);
+		frameTime = clock.getDelta();
 	}
-	frameTime = clock.getDelta();
 	stats.end();
 }
 
@@ -353,7 +379,7 @@ function updateAttackCounters() {
 		if (player.attackCounter[i] > 0) {
 			player.attackCounter[i] -= frameTime;
 		}
-	};
+	}
 }
 
 function updateSoundCounters() {

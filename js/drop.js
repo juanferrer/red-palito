@@ -49,7 +49,7 @@ class Drop {
      */
 	spawn(pos, value) {
 		this.value = value;
-		this.Mesh.position.set(pos.x, pos.y, pos.z);
+		this.Mesh.position.set(pos.x, 1, pos.z);
 		this.isSpawned = true;
 	}
 
