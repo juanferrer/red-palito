@@ -1,4 +1,4 @@
-/* globals THREE, Character, player, game */
+/* globals THREE, Character, player, game, invisibleYPos */
 
 /**
  * Single class meant to be used by players and enemies alike.
@@ -29,7 +29,7 @@ class Enemy extends Character {
 		this.HP = this.initialHP;
 		this.shouldSpawn = true;
 		this.isSpawned = false;
-		this.position.set(0, -10, 0);
+		this.position.set(0, invisibleYPos, 0);
 		this.Mesh.rotation.y = 0;
 	}
 
@@ -50,6 +50,7 @@ class Enemy extends Character {
 	moveTowardPlayer() {
 		this.Mesh.lookAt(player.position);
 		this.moveForward();
+		this.animationMixer.clipAction(this.Mesh.geometry.animations[0]).play();
 	}
 
 	/**
@@ -81,7 +82,7 @@ class Enemy extends Character {
 		// 2. setTimeout(disappear, time);
 		this.isSpawned = false;
 		this.spawnCountDown = this.initialSpawnCountDown;
-		this.position.set(0, -10, 0);
+		this.position.set(0, invisibleYPos, 0);
 		game.enemiesKilled++;
 	}
 

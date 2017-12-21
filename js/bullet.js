@@ -7,7 +7,7 @@ class Bullet {
 		this.Mesh = new THREE.Mesh(this.Geometry, this.Material);
 		this.isAlive = false;
 		scene.add(this.Mesh);
-		this.initialYPos = -10;
+		this.initialYPos = invisibleYPos;
 		this.Mesh.position.y = this.initialYPos;
 		this.initialLifeTime = 1;
 		this.lifeTime = this.initialLifeTime;

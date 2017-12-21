@@ -1,6 +1,6 @@
 /* globals THREE, characterGeometry, enemyMaterial, scene,
 planeSize, frameTime,
-getRandomPosition
+getRandomPosition, invisibleYPos
 */
 
 /**
@@ -31,15 +31,16 @@ class Character {
 		// http://www.cgdev.net/blog/482.html Load models from 3DS Max
 		this.Geometry = characterGeometry;
 		this.Material = enemyMaterial;
-		this.Mesh = new THREE.Mesh(this.Geometry, this.Material);
+		this.Mesh = new THREE.SkinnedMesh(this.Geometry, this.Material);
 		this.Mesh.castShadow = true;
 		this.Mesh.receiveShadow = true;
 		this.HP = this.initialHP;
 		this.damage = 1;
+		this.animationMixer = new THREE.AnimationMixer(this.Mesh);
 	}
 
 	addToScene() {
-		this.Mesh.translateY(this.isPlayer ? 0 : -10);
+		this.Mesh.translateY(this.isPlayer ? 0 : invisibleYPos);
 		scene.add(this.Mesh);
 	}
 

@@ -49,11 +49,13 @@ let hpDrops = [],
 const hpDropAmount = 1,
 	weaponDropAmount = 4;
 
+const invisibleYPos = 100;
+
 let lightFlickerCounter = 0;
 
 /* Materials */
-const playerMaterial = new THREE.MeshPhongMaterial({ color: playerColour }),
-	enemyMaterial = new THREE.MeshPhongMaterial({ color: 0x4CAF50 }),
+const playerMaterial = new THREE.MeshPhongMaterial({ color: playerColour, skinning: true }),
+	enemyMaterial = new THREE.MeshPhongMaterial({ color: 0x4CAF50, skinning: true }),
 	weaponDropMaterial = new THREE.MeshPhongMaterial({ color: 0xFF5722 }),
 	hpDropMaterial = new THREE.MeshPhongMaterial({ color: 0x4CAF50 }),
 	planeMaterial = new THREE.MeshPhongMaterial({ color: planeColor });
@@ -320,6 +322,8 @@ function animate() {
 
 			updateBullet();
 
+			updateAnimationMixers();
+
 			//updateLightFlicker();
 
 			moveEnemies();
@@ -412,6 +416,16 @@ function updateBullet() {
 		gunFlare.intensity -= frameTime * gunFlareFalloffTime[player.currentWeapon];
 		if (gunFlare.intensity < 0) gunFlare.intensity = 0;
 	}
+}
+
+/**
+ * Go through all mixers and update their state
+ */
+function updateAnimationMixers() {
+	player.animationMixer.update(frameTime);
+	enemies.forEach(e => {
+		if (e.isSpawned) e.animationMixer.update(frameTime);
+	});
 }
 
 /** Move enemies towards player */
