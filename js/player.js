@@ -34,6 +34,7 @@ class Player extends Character {
 		this.onWeaponAnim = false;
 		this.acquireWeapon(0);
 		this.updateWeaponStats();
+		this.raycaster = new THREE.Raycaster(new THREE.Vector3(this.position.x, 1, this.position.z), THREE.Vector3(0, 1, 0));
 	}
 
 	/**
@@ -204,13 +205,12 @@ class Player extends Character {
      * @param {bool} resilient - Whether the bullet should go through enemies
      */
 	bulletHitCheck(dirVector, resilient = false) {
-		let posVector = new THREE.Vector3(this.position.x, 1, this.position.z);
-		let raycaster = new THREE.Raycaster(posVector, dirVector);
+		this.raycaster.set(new THREE.Vector3(this.position.x, 1, this.position.z), dirVector);
 		let enemyMeshes = [];
 		for (let e = 0; e < enemyAmount; ++e) {
 			enemyMeshes.push(enemies[e].Mesh);
 		}
-		let intersects = raycaster.intersectObjects(enemyMeshes);
+		let intersects = this.raycaster.intersectObjects(enemyMeshes);
 
 		if (intersects.length > 0) {
 

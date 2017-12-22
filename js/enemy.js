@@ -50,7 +50,7 @@ class Enemy extends Character {
 	moveTowardPlayer() {
 		this.Mesh.lookAt(player.position);
 		this.moveForward();
-		this.animationMixer.clipAction(this.Mesh.geometry.animations[0]).play();
+		this.animationMixer.clipAction(this.animations.walk).play();
 	}
 
 	/**

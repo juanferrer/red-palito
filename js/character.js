@@ -25,18 +25,20 @@ class Character {
 		this.rotSpeed = 60;
 		this.attackCounter = 0;
 		this.attackSpeed = 1;
+		this.animations = {};
 	}
 
 	init() {
 		// http://www.cgdev.net/blog/482.html Load models from 3DS Max
-		this.Geometry = characterGeometry;
-		this.Material = enemyMaterial;
-		this.Mesh = new THREE.SkinnedMesh(this.Geometry, this.Material);
+		this.Mesh = new THREE.SkinnedMesh(characterGeometry, enemyMaterial);
 		this.Mesh.castShadow = true;
 		this.Mesh.receiveShadow = true;
 		this.HP = this.initialHP;
 		this.damage = 1;
 		this.animationMixer = new THREE.AnimationMixer(this.Mesh);
+
+		this.animations.walk = this.Mesh.geometry.animations.filter(a => a.name === "walk")[0];
+		this.animations.attack = this.Mesh.geometry.animations.filter(a => a.name === "attack")[0];
 	}
 
 	addToScene() {
