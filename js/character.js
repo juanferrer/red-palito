@@ -17,7 +17,7 @@ class Character { // eslint-disable-line no-unused-vars
 		this.initialHP = 0;
 		this.isPlayer = false;
 		this.initialSpawnCountDown = 0;
-		this.radius = settings.modeslEnabled? 0.6 : 0.5;
+		this.radius = settings.modeslEnabled ? 0.6 : 0.5;
 		this.spawnCountDown = this.initialSpawnCountDown;
 		this.isSpawned = false;
 		this.rotSpeed = 60;
