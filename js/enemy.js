@@ -4,7 +4,7 @@
  * Single class meant to be used by players and enemies alike.
  * It has a THREE.Geometry, THREE.Material and THREE.Mesh among others.
  */
-class Enemy extends Character { // eslint-disable-line no-unused-vars 
+class Enemy extends Character { // eslint-disable-line no-unused-vars
 	/**
      *
      * @param {string} charType - Type of character it is.
@@ -99,6 +99,6 @@ class Enemy extends Character { // eslint-disable-line no-unused-vars
 	 */
 	spawn() {
 		super.spawn();
-		if (!settings.modelsEnabled) this.position.set(this.position.x, 1, this.position.y);
+		if (!settings.modelsEnabled) this.position.y = 1;
 	}
 }
