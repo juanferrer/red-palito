@@ -1,6 +1,7 @@
 /* globals THREE, characterGeometry, enemyMaterial, scene,
 planeSize, frameTime,
-getRandomPosition, invisibleYPos
+getRandomPosition, invisibleYPos,
+settings
 */
 
 /**
@@ -30,19 +31,21 @@ class Character {
 
 	init() {
 		// http://www.cgdev.net/blog/482.html Load models from 3DS Max
-		this.Mesh = new THREE.SkinnedMesh(characterGeometry, enemyMaterial);
+		if (settings.modelsEnabled) this.Mesh = new THREE.SkinnedMesh(characterGeometry, enemyMaterial);
+		else this.Mesh = new THREE.Mesh(characterGeometry, enemyMaterial);
 		this.Mesh.castShadow = true;
 		this.Mesh.receiveShadow = true;
 		this.HP = this.initialHP;
 		this.damage = 1;
-		this.animationMixer = new THREE.AnimationMixer(this.Mesh);
-
-		this.animations.walk = this.Mesh.geometry.animations.filter(a => a.name === "walk")[0];
-		this.animations.attack = this.Mesh.geometry.animations.filter(a => a.name === "attack")[0];
+		if (settings.modelsEnabled) {
+			this.animationMixer = new THREE.AnimationMixer(this.Mesh);
+			this.animations.walk = this.Mesh.geometry.animations.filter(a => a.name === "walk")[0];
+			this.animations.attack = this.Mesh.geometry.animations.filter(a => a.name === "attack")[0];
+		}
 	}
 
 	addToScene() {
-		this.Mesh.translateY(this.isPlayer ? 0 : invisibleYPos);
+		this.Mesh.translateY(this.isPlayer ? (settings.modelsEnabled? 0 : 1) : invisibleYPos);
 		scene.add(this.Mesh);
 	}
 

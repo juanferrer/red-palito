@@ -83,9 +83,8 @@ function onWindowResize() {
 
 	renderer.setSize(window.innerWidth, window.innerHeight);
 }
-
-//init();
-loadModels(init);
+if (settings.modelsEnabled) loadModels(init);
+else init();
 animate();
 
 function reset() {
@@ -322,7 +321,7 @@ function animate() {
 
 			updateBullet();
 
-			updateAnimationMixers();
+			if (settings.modelsEnabled) updateAnimationMixers();
 
 			//updateLightFlicker();
 
