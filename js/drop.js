@@ -6,17 +6,9 @@ class Drop {
 	constructor(type) {
 		this.type = type;
 		if (type == "HP") {
-			// this.color = 0x4CAF50;
 			this.Material = hpDropMaterial;
-			this.pickUp = function () {
-				// TODO: Add HP to picker
-			};
 		} else {
-			// this.color = 0xFF5722;
 			this.Material = weaponDropMaterial;
-			this.pickUp = function () {
-				// TODO: Add weapon and ammo to picker
-			};
 		}
 		this.value = 0;
 		this.isSpawned = false;
@@ -25,8 +17,6 @@ class Drop {
 		this.Mesh.receiveShadow = true;
 		this.Mesh.castShadow = true;
 		scene.add(this.Mesh);
-		//this.Mesh.rotateY(Math.degToRad(45));
-		//this.Mesh.rotateX(Math.degToRad(45));
 		this.position.set(0, -10, 0);
 	}
 
@@ -63,3 +53,5 @@ class Drop {
 }
 
 Drop.weaponDropSpawnedThisWave = false;
+Drop.wavesSinceHPDrop = 0;		// Increased at the end of each wave and reset after spawning an HP drop
+Drop.wavesBetweenHPDrop = 5; 	// Waves that can go on between HP drops

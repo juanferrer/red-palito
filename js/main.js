@@ -62,7 +62,7 @@ const playerMaterial = new THREE.MeshPhongMaterial({ color: playerColour, skinni
 
 /* Geometries */
 let characterGeometry = new THREE.BoxBufferGeometry(1, 2, 1), // eslint-disable-line no-unused-vars
-	dropGeometry = new THREE.BoxBufferGeometry(1, 1, 1); // eslint-disable-line no-unused-vars 
+	dropGeometry = new THREE.BoxBufferGeometry(1, 1, 1); // eslint-disable-line no-unused-vars
 
 
 // DEBUG
@@ -530,7 +530,7 @@ function updateDropCounters() {
 	if (Drop.weaponDropSpawnedThisWave) {
 		weaponDropCounter -= frameTime;
 	}
-	if (player.HP < 10) {
+	if (player.HP < 10 && Drop.wavesSinceHPDrop >= Drop.wavesBetweenHPDrop) {
 		healthDropCounter -= frameTime;
 	}
 
@@ -550,10 +550,9 @@ function updateDropCounters() {
  * @param {string} type - Type of drop to be made
  */
 function makeDrop(type) {
-	// TODO:
 	// 1. Calculate random position
 	const position = getRandomPosition(planeSize);
-	// 3. Set drop to position and calculate random index if weapon
+	// 2. Set drop to position and calculate random index if weapon
 	if (type == "weapon") {
 		const value = Math.randomInterval(1, weapons.length - 1);
 		let weapon = getNextWeaponDrop();
@@ -565,6 +564,7 @@ function makeDrop(type) {
 	if (type == "HP") {
 		let hp = getNextHPDrop();
 		if (!hp.isSpawned) {
+			Drop.wavesSinceHPDrop = 0;
 			hp.spawn(position, 2);
 		}
 	}
@@ -602,6 +602,7 @@ function spawnWave() {
 		makeDrop("weapon");
 	}
 	Drop.weaponDropSpawnedThisWave = false;
+	Drop.wavesSinceHPDrop++;
 
 	// TODO: increase number of enemies to spawn
 	currentEnemyAmount += 2;
