@@ -8,19 +8,16 @@ settings
  * Single class meant to be used by this.Players and enemies alike.
  * It has a THREE.Geometry, THREE.Material and THREE.Mesh among others.
  */
-class Character {
-	/**
-     *
-     * @param {string} charType - Type of character it is.
-     */
-	constructor(charType) {
+class Character { // eslint-disable-line no-unused-vars
+
+	constructor() {
 
 		this.moveSpeed = 0;
 		this.color = 0;
 		this.initialHP = 0;
 		this.isPlayer = false;
 		this.initialSpawnCountDown = 0;
-		this.radius = 0.6;
+		this.radius = settings.modeslEnabled? 0.6 : 0.5;
 		this.spawnCountDown = this.initialSpawnCountDown;
 		this.isSpawned = false;
 		this.rotSpeed = 60;
@@ -45,7 +42,7 @@ class Character {
 	}
 
 	addToScene() {
-		this.Mesh.translateY(this.isPlayer ? (settings.modelsEnabled? 0 : 1) : invisibleYPos);
+		this.Mesh.translateY(this.isPlayer ? (settings.modelsEnabled ? 0 : 1) : invisibleYPos);
 		scene.add(this.Mesh);
 	}
 

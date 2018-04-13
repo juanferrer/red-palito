@@ -1,6 +1,6 @@
-/*global THREE, scene */
+/*global THREE, scene, invisibleYPos */
 
-class Bullet {
+class Bullet { // eslint-disable-line no-unused-vars
 	constructor() {
 		this.Geometry = new THREE.CylinderBufferGeometry(0.05, 0.05, 4, 5, 1);
 		this.Material = new THREE.MeshBasicMaterial();

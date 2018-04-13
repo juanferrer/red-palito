@@ -11,7 +11,7 @@ let planeG, planeM, plane;
 const planeSize = 50;
 
 let light;
-const lightsAmount = 4;
+const lightsAmount = 4; // eslint-disable-line no-unused-vars
 let frameTime;
 
 let enemies = [];
@@ -36,10 +36,10 @@ const bulletsAmount = 30;
 
 let weapons = [];
 const gunFlareFalloffTime = [10, 10, 10, 1, 1];
-const gunFlareColor = [0xF7EFB1, 0xF7EFB1, 0xF7EFB1, 0x0000FF, 0x0];
+const gunFlareColor = [0xF7EFB1, 0xF7EFB1, 0xF7EFB1, 0x0000FF, 0x0]; // eslint-disable-line no-unused-vars
 let gunFlare;
 
-let listener, audioLoader;
+let listener, audioLoader; // eslint-disable-line no-unused-vars
 
 let healthDropCounter, weaponDropCounter;
 const healthDropTime = 30, weaponDropTime = 20;
@@ -49,20 +49,20 @@ let hpDrops = [],
 const hpDropAmount = 1,
 	weaponDropAmount = 4;
 
-const invisibleYPos = 100;
+const invisibleYPos = 100; // eslint-disable-line no-unused-vars
 
-let lightFlickerCounter = 0;
+let lightFlickerCounter = 0; // eslint-disable-line no-unused-vars
 
 /* Materials */
-const playerMaterial = new THREE.MeshPhongMaterial({ color: playerColour, skinning: true }),
-	enemyMaterial = new THREE.MeshPhongMaterial({ color: 0x4CAF50, skinning: true }),
-	weaponDropMaterial = new THREE.MeshPhongMaterial({ color: 0xFF5722 }),
-	hpDropMaterial = new THREE.MeshPhongMaterial({ color: 0x4CAF50 }),
-	planeMaterial = new THREE.MeshPhongMaterial({ color: planeColor });
+const playerMaterial = new THREE.MeshPhongMaterial({ color: playerColour, skinning: true }), // eslint-disable-line no-unused-vars
+	enemyMaterial = new THREE.MeshPhongMaterial({ color: 0x4CAF50, skinning: true }), // eslint-disable-line no-unused-vars
+	weaponDropMaterial = new THREE.MeshPhongMaterial({ color: 0xFF5722 }), // eslint-disable-line no-unused-vars
+	hpDropMaterial = new THREE.MeshPhongMaterial({ color: 0x4CAF50 }), // eslint-disable-line no-unused-vars
+	planeMaterial = new THREE.MeshPhongMaterial({ color: planeColor }); // eslint-disable-line no-unused-vars
 
 /* Geometries */
-let characterGeometry = new THREE.BoxBufferGeometry(1, 2, 1),
-	dropGeometry = new THREE.BoxBufferGeometry(1, 1, 1);
+let characterGeometry = new THREE.BoxBufferGeometry(1, 2, 1), // eslint-disable-line no-unused-vars
+	dropGeometry = new THREE.BoxBufferGeometry(1, 1, 1); // eslint-disable-line no-unused-vars 
 
 
 // DEBUG
@@ -105,7 +105,7 @@ function loadModels(callback) {
 	});
 }
 
-function getWeapons() {
+function getWeapons() { // eslint-disable-line no-unused-vars
 	let parseResult = parseJSONToVar("weapons.json", "weapons", weapons);
 	parseResult.then(() => {
 		Audio.loadWeaponSounds();

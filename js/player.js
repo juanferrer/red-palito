@@ -6,7 +6,7 @@ getNextBullet, gunFlare, gunFlareColor, game*/
  * Single class meant to be used by players and enemies alike.
  * It has a THREE.Geometry, THREE.Material and THREE.Mesh among others.
  */
-class Player extends Character {
+class Player extends Character { // eslint-disable-line no-unused-vars 
 	/**
      *
      * @param {string} charType - Type of character it is.
