@@ -29,6 +29,7 @@ let game = {
 };
 
 let isWaveSpawning = true;
+const spawnAnimationTime = 3;
 
 
 let bullets = [];
@@ -451,6 +452,12 @@ function updateSpawnCounters() {
 				if (isWaveSpawning && i == currentEnemyAmount - 1) {
 					isWaveSpawning = false;
 				}
+			}
+		} else if (enemies[i].isPlayingSpawnAnimation && enemies[i].position.y < 1) {
+			enemies[i].Mesh.translateY(0.2);
+			if (enemies[i].position.y > 1) {
+				enemies[i].position.y = settings.modelsEnabled ? 0 : 1;
+				enemies[i].isPlayingSpawnAnimation = false;
 			}
 		}
 	}

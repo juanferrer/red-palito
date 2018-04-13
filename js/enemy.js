@@ -1,4 +1,4 @@
-/* globals THREE, Character, player, game, invisibleYPos, settings*/
+/* globals THREE, Character, player, game, invisibleYPos, settings */
 
 /**
  * Single class meant to be used by players and enemies alike.
@@ -99,6 +99,7 @@ class Enemy extends Character { // eslint-disable-line no-unused-vars
 	 */
 	spawn() {
 		super.spawn();
-		if (!settings.modelsEnabled) this.position.y = 1;
+		if (!settings.modelsEnabled) this.position.y = -1;
+		this.isPlayingSpawnAnimation = true;
 	}
 }
