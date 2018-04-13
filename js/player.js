@@ -1,12 +1,12 @@
-/* globals $, THREE, Character, weapons,
-playerMaterial, player, enemyAmount, enemies
+/* globals $, THREE, Character, weapons, characterGeometry,
+playerMaterial, player, enemyAmount, enemies, settings,
 getNextBullet, gunFlare, gunFlareColor, game*/
 
 /**
  * Single class meant to be used by players and enemies alike.
  * It has a THREE.Geometry, THREE.Material and THREE.Mesh among others.
  */
-class Player extends Character { // eslint-disable-line no-unused-vars 
+class Player extends Character { // eslint-disable-line no-unused-vars
 	/**
      *
      * @param {string} charType - Type of character it is.
@@ -25,8 +25,9 @@ class Player extends Character { // eslint-disable-line no-unused-vars
 			this.weaponsAmmo.push(0);
 		}
 		this.currentWeapon = 0;
+		this.geometry = characterGeometry;
+		this.material = playerMaterial;
 		super.init();
-		this.Mesh.material = playerMaterial;
 		this.attackSpeed = [];
 		this.attackCounter = [0, 0, 0, 0];
 		this.accuracy = 0.5;

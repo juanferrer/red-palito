@@ -1,6 +1,6 @@
 /*global THREE, Stats, $
 parseJSONToVar, getRandomPosition, getNextHPDrop, getNextWeaponDrop
-Bullet, Drop, Input, Menu, Player, Enemy, settings
+Bullet, Drop, Input, Menu, Player, Zombie, BigZombie, settings
 */
 
 let clock, scene, camera, renderer;
@@ -15,6 +15,7 @@ const lightsAmount = 4; // eslint-disable-line no-unused-vars
 let frameTime;
 
 let enemies = [];
+let bigEnemies = [];
 
 const enemyAmount = 300,
 	initialEnemyAmount = 3;
@@ -56,13 +57,16 @@ let lightFlickerCounter = 0; // eslint-disable-line no-unused-vars
 
 /* Materials */
 const playerMaterial = new THREE.MeshPhongMaterial({ color: playerColour, skinning: true }), // eslint-disable-line no-unused-vars
-	enemyMaterial = new THREE.MeshPhongMaterial({ color: 0x4CAF50, skinning: true }), // eslint-disable-line no-unused-vars
+	zombieMaterial = new THREE.MeshPhongMaterial({ color: 0x4CAF50, skinning: true }), // eslint-disable-line no-unused-vars
+	bigZombieMaterial = new THREE.MeshPhongMaterial({ color: 0x724CAE, skinning: true }), // eslint-disable-line no-unused-vars
 	weaponDropMaterial = new THREE.MeshPhongMaterial({ color: 0xFF5722 }), // eslint-disable-line no-unused-vars
 	hpDropMaterial = new THREE.MeshPhongMaterial({ color: 0x4CAF50 }), // eslint-disable-line no-unused-vars
 	planeMaterial = new THREE.MeshPhongMaterial({ color: planeColor }); // eslint-disable-line no-unused-vars
 
 /* Geometries */
 let characterGeometry = new THREE.BoxBufferGeometry(1, 2, 1), // eslint-disable-line no-unused-vars
+	zombieGeometry = new THREE.BoxBufferGeometry(1, 2, 1), // eslint-disable-line no-unused-vars
+	bigZombieGeometry = new THREE.BoxBufferGeometry(2, 4, 2), // eslint-disable-line no-unused-vars
 	dropGeometry = new THREE.BoxBufferGeometry(1, 1, 1); // eslint-disable-line no-unused-vars
 
 
@@ -165,7 +169,10 @@ function init() {
 	}
 
 	for (let i = 0; i < enemyAmount; ++i) {
-		addEnemy();
+		if (i % 20 == 0) enemies.push(new BigZombie());
+		else enemies.push(new Zombie());
+
+		enemies[enemies.length - 1].addToScene();
 	}
 
 	for (let i = 0; i < hpDropAmount; ++i) {
@@ -299,8 +306,8 @@ function setGunFlare() {
 }
 
 function addEnemy() {
-	enemies.push(new Enemy());
-	enemies[enemies.length - 1].addToScene();
+	enemies.push(new Zombie());
+	//enemies[enemies.length - 1].addToScene();
 }
 
 /** Animate scene */

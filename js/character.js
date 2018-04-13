@@ -28,12 +28,10 @@ class Character { // eslint-disable-line no-unused-vars
 
 	init() {
 		// http://www.cgdev.net/blog/482.html Load models from 3DS Max
-		if (settings.modelsEnabled) this.Mesh = new THREE.SkinnedMesh(characterGeometry, enemyMaterial);
-		else this.Mesh = new THREE.Mesh(characterGeometry, enemyMaterial);
-		this.Mesh.castShadow = true;
-		this.Mesh.receiveShadow = true;
+		if (settings.modelsEnabled) this.Mesh = new THREE.SkinnedMesh(this.geometry, this.material);
+		else this.Mesh = new THREE.Mesh(this.geometry, this.material);
 		this.HP = this.initialHP;
-		this.damage = 1;
+
 		if (settings.modelsEnabled) {
 			this.animationMixer = new THREE.AnimationMixer(this.Mesh);
 			this.animations.walk = this.Mesh.geometry.animations.filter(a => a.name === "walk")[0];

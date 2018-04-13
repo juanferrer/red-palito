@@ -5,20 +5,15 @@
  * It has a THREE.Geometry, THREE.Material and THREE.Mesh among others.
  */
 class Enemy extends Character { // eslint-disable-line no-unused-vars
-	/**
-     *
-     * @param {string} charType - Type of character it is.
-     */
+
 	constructor() {
 		super();
 		this.isPlayer = false;
-		this.moveSpeed = 3;
-		this.color = 0x4CAF50;
-		this.initialHP = 4;
-		this.initialSpawnCountDown = Math.random();
-		this.shouldSpawn = true;
 		this.isSpawned = false;
 		this.soundCounter = Math.randomInterval(2, 8);
+	}
+
+	init() {
 		super.init();
 	}
 
