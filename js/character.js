@@ -1,4 +1,4 @@
-/* globals THREE, characterGeometry, enemyMaterial, scene,
+/* globals THREE, scene,
 planeSize, frameTime,
 getRandomPosition, invisibleYPos,
 settings

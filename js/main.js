@@ -15,7 +15,6 @@ const lightsAmount = 4; // eslint-disable-line no-unused-vars
 let frameTime;
 
 let enemies = [];
-let bigEnemies = [];
 
 const enemyAmount = 300,
 	initialEnemyAmount = 3;
@@ -302,11 +301,6 @@ function setGunFlare() {
 	gunFlare.rotateY();
 	gunFlare.castShadow = true;
 	player.Mesh.add(gunFlare);
-}
-
-function addEnemy() {
-	enemies.push(new Zombie());
-	//enemies[enemies.length - 1].addToScene();
 }
 
 /** Animate scene */

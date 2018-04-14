@@ -1,4 +1,4 @@
-/* globals THREE, Enemy, player, game, invisibleYPos, settings,
+/* globals Enemy, player, settings,
 bigZombieGeometry, bigZombieMaterial */
 
 /**
