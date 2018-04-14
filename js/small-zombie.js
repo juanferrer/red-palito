@@ -1,5 +1,5 @@
 /* globals THREE, Enemy, player, settings, frameTime,
-smallZombieGeometry, smallZombieMaterial */
+smallZombieGeometry, smallZombieMaterial, smallZombiePrepareMaterial, smallZombieDashMaterial*/
 
 /**
  * Single class meant to be used by players and enemies alike.
@@ -9,10 +9,12 @@ class SmallZombie extends Enemy { // eslint-disable-line no-unused-vars
 
 	constructor() {
 		super();
-		this.moveSpeed = 3;// + Math.random();
+		this.moveSpeed = 4;// + Math.random();
 		this.dashSpeed = 50;
 		this.dashDistance = 15;
 		this.distanceTraveled = 0;
+		this.dashTime = 2;
+		this.dashCountDown = this.dashTime;
 		this.targetPosition = new THREE.Vector3();
 		this.color = 0xAE9F4C; // Three stages: #ae9f4c, #d15629, #fa0000
 		this.initialHP = 1;
@@ -29,6 +31,7 @@ class SmallZombie extends Enemy { // eslint-disable-line no-unused-vars
      */
 	moveTowardPlayer() {
 		if (!this.isDashing) {
+			this.Mesh.material = smallZombieMaterial;
 			this.Mesh.lookAt(player.position);
 			this.moveForward();
 			if (settings.modelsEnabled) this.animationMixer.clipAction(this.animations.walk).play();
@@ -36,12 +39,25 @@ class SmallZombie extends Enemy { // eslint-disable-line no-unused-vars
 			if (this.position.distanceTo(player.position) <= this.dashDistance) {
 				this.isDashing = true;
 				this.distanceTraveled = 0;
-				this.targetPosition = new THREE.Vector3(player.position.x, 0, player.position.z);
+				this.targetPosition = new THREE.Vector3(player.position.x, player.position.y, player.position.z);
 			}
 		} else {
-			this.dashForward();
-			if (this.distanceTraveled >= this.dashDistance) {
-				this.isDashing = false;
+			if (this.dashCountDown > 1) {
+				this.Mesh.material = smallZombiePrepareMaterial;
+			} else {
+				this.Mesh.material = smallZombieDashMaterial;
+			}
+
+
+			if (this.dashCountDown > 0) {
+				this.Mesh.lookAt(this.targetPosition);
+				this.dashCountDown -= frameTime;
+			} else {
+				this.dashForward();
+				if (this.distanceTraveled >= this.dashDistance) {
+					this.isDashing = false;
+					this.dashCountDown = this.dashTime;
+				}
 			}
 		}
 	}
@@ -56,6 +72,10 @@ class SmallZombie extends Enemy { // eslint-disable-line no-unused-vars
 
 	attack() {
 		super.attack();
+		this.dashCountDown = this.dashTime;
+		this.distanceTraveled = 0;
+		this.targetPosition = new THREE.Vector3();
+		this.isDashing = false;
 		this.die();
 	}
 

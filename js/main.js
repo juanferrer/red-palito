@@ -58,6 +58,8 @@ const playerMaterial = new THREE.MeshPhongMaterial({ color: playerColour, skinni
 	zombieMaterial = new THREE.MeshPhongMaterial({ color: 0x4CAF50, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
 	bigZombieMaterial = new THREE.MeshPhongMaterial({ color: 0x724CAE, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
 	smallZombieMaterial = new THREE.MeshPhongMaterial({ color: 0xAE9F4C, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
+	smallZombiePrepareMaterial = new THREE.MeshPhongMaterial({ color: 0xD15629, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
+	smallZombieDashMaterial = new THREE.MeshPhongMaterial({ color: 0xFA0000, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
 	weaponDropMaterial = new THREE.MeshPhongMaterial({ color: 0xFF5722 }), // eslint-disable-line no-unused-vars
 	hpDropMaterial = new THREE.MeshPhongMaterial({ color: 0x4CAF50 }), // eslint-disable-line no-unused-vars
 	planeMaterial = new THREE.MeshPhongMaterial({ color: planeColor }); // eslint-disable-line no-unused-vars
@@ -170,7 +172,7 @@ function init() {
 
 	for (let i = 0; i < enemyAmount; ++i) {
 		if (i !== 0 && i % 15 === 0) enemies.push(new BigZombie());
-		else if (/*i !== 0 && */i % 5 === 0) enemies.push(new SmallZombie());
+		else if (i !== 0 && i % 5 === 0) enemies.push(new SmallZombie());
 		else enemies.push(new Zombie());
 
 		enemies[enemies.length - 1].addToScene();
