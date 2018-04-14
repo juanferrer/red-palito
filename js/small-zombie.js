@@ -16,7 +16,7 @@ class SmallZombie extends Enemy { // eslint-disable-line no-unused-vars
 		this.dashTime = 2;
 		this.dashCountDown = this.dashTime;
 		this.targetPosition = new THREE.Vector3();
-		this.color = 0xAE9F4C; // Three stages: #ae9f4c, #d15629, #fa0000
+		this.color = 0xd1b829; // Three stages: #D1B829, #D16729, #FF0000
 		this.initialHP = 1;
 		this.initialSpawnCountDown = Math.random();
 		this.shouldSpawn = true;
