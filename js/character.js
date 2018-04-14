@@ -31,6 +31,8 @@ class Character { // eslint-disable-line no-unused-vars
 		if (settings.modelsEnabled) this.Mesh = new THREE.SkinnedMesh(this.geometry, this.material);
 		else this.Mesh = new THREE.Mesh(this.geometry, this.material);
 		this.HP = this.initialHP;
+		this.Mesh.castShadow = true;
+		this.Mesh.receiveShadow = true;
 
 		if (settings.modelsEnabled) {
 			this.animationMixer = new THREE.AnimationMixer(this.Mesh);
