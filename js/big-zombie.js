@@ -10,7 +10,7 @@ class BigZombie extends Enemy { // eslint-disable-line no-unused-vars
 	constructor() {
 		super();
 		this.moveSpeed = 2;// + Math.random();
-		this.color = 0x724cae;
+		this.color = 0x724CAE;
 		this.initialHP = 15;
 		this.initialSpawnCountDown = Math.random();
 		this.shouldSpawn = true;
