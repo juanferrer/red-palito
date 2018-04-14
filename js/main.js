@@ -30,7 +30,6 @@ let game = {
 };
 
 let isWaveSpawning = true;
-const spawnAnimationTime = 3;
 
 
 let bullets = [];
@@ -169,7 +168,7 @@ function init() {
 	}
 
 	for (let i = 0; i < enemyAmount; ++i) {
-		if (i % 20 == 0) enemies.push(new BigZombie());
+		if (i !== 0 && i % 15 === 0) enemies.push(new BigZombie());
 		else enemies.push(new Zombie());
 
 		enemies[enemies.length - 1].addToScene();
