@@ -1,6 +1,6 @@
 /*global THREE, Stats, $
 parseJSONToVar, getRandomPosition, getNextHPDrop, getNextWeaponDrop
-Bullet, Drop, Input, Menu, Player, Zombie, BigZombie, settings
+Bullet, Drop, Input, Menu, Player, Zombie, BigZombie, SmallZombie, settings
 */
 
 let clock, scene, camera, renderer;
@@ -54,9 +54,10 @@ const invisibleYPos = 100; // eslint-disable-line no-unused-vars
 let lightFlickerCounter = 0; // eslint-disable-line no-unused-vars
 
 /* Materials */
-const playerMaterial = new THREE.MeshPhongMaterial({ color: playerColour, skinning: true }), // eslint-disable-line no-unused-vars
-	zombieMaterial = new THREE.MeshPhongMaterial({ color: 0x4CAF50, skinning: true }), // eslint-disable-line no-unused-vars
-	bigZombieMaterial = new THREE.MeshPhongMaterial({ color: 0x724CAE, skinning: true }), // eslint-disable-line no-unused-vars
+const playerMaterial = new THREE.MeshPhongMaterial({ color: playerColour, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
+	zombieMaterial = new THREE.MeshPhongMaterial({ color: 0x4CAF50, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
+	bigZombieMaterial = new THREE.MeshPhongMaterial({ color: 0x724CAE, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
+	smallZombieMaterial = new THREE.MeshPhongMaterial({ color: 0xAE9F4C, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
 	weaponDropMaterial = new THREE.MeshPhongMaterial({ color: 0xFF5722 }), // eslint-disable-line no-unused-vars
 	hpDropMaterial = new THREE.MeshPhongMaterial({ color: 0x4CAF50 }), // eslint-disable-line no-unused-vars
 	planeMaterial = new THREE.MeshPhongMaterial({ color: planeColor }); // eslint-disable-line no-unused-vars
@@ -65,6 +66,7 @@ const playerMaterial = new THREE.MeshPhongMaterial({ color: playerColour, skinni
 let characterGeometry = new THREE.BoxBufferGeometry(1, 2, 1), // eslint-disable-line no-unused-vars
 	zombieGeometry = new THREE.BoxBufferGeometry(1, 2, 1), // eslint-disable-line no-unused-vars
 	bigZombieGeometry = new THREE.BoxBufferGeometry(2, 4, 2), // eslint-disable-line no-unused-vars
+	smallZombieGeometry = new THREE.BoxBufferGeometry(1, 1, 1), // eslint-disable-line no-unused-vars
 	dropGeometry = new THREE.BoxBufferGeometry(1, 1, 1); // eslint-disable-line no-unused-vars
 
 
@@ -168,6 +170,7 @@ function init() {
 
 	for (let i = 0; i < enemyAmount; ++i) {
 		if (i !== 0 && i % 15 === 0) enemies.push(new BigZombie());
+		else if (/*i !== 0 && */i % 5 === 0) enemies.push(new SmallZombie());
 		else enemies.push(new Zombie());
 
 		enemies[enemies.length - 1].addToScene();
