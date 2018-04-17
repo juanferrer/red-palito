@@ -57,11 +57,18 @@
 		</div>
 		<div id="settings-menu" class="menu">
 			<div id="settings-buttons" class="button-container">
-				<label class=""> Volume
-					<div id="volume-slider-container">
-						<input type="range" min="0" max="1" value="0.2" step="0.01" class="slider" id="volume-slider">
-					</div>
-				</label>
+				<div class="settings-container">
+					<label> Volume
+						<div id="volume-slider-container" class="setting-value">
+							<input type="range" min="0" max="1" value="0.2" step="0.01" class="slider" id="volume-slider">
+						</div>
+					</label>
+					<label> Double press interval
+						<div id="volume-slider-container" class="setting-value">
+							<input type="range" min="10" max="1000" value="100" step="1" class="slider" id="double-press-slider">
+						</div>
+					</label>
+				</div>
 				<div class="row-button-container">
 					<button id="save-settings-button" class="menu-button">SAVE</button>
 					<button id="cancel-settings-button" class="menu-button">CANCEL</button>

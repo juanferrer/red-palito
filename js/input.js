@@ -1,4 +1,4 @@
-/*global Menu, player,
+/*global Menu, player, $,
 modelRotSpeed, camMoveSpeed, camRotSpeed
 */
 
@@ -15,7 +15,8 @@ class Input {
 		window.addEventListener("keydown", e => {
 			Input.keyState[e.keyCode || e.which] = true;
 			if (Input.keyLastPressed[e.keyCode || e.which] != null) {
-				Input.keyDoublePress[e.keyCode || e.which] = new Date().getTime() - Input.keyLastPressed[e.keyCode || e.which].getTime() < Input.doublePressTimeout;
+				let doublePressTimeout = $("#double-press-slider").val(); // miliseconds
+				Input.keyDoublePress[e.keyCode || e.which] = new Date().getTime() - Input.keyLastPressed[e.keyCode || e.which].getTime() < doublePressTimeout;
 			}
 		}, true);
 		window.addEventListener("keyup", e => {
@@ -206,7 +207,6 @@ Input.camRotSpeed = 0.01;
 Input.keyState = {};
 Input.keyDoublePress = {};
 Input.keyLastPressed = {};
-Input.doublePressTimeout = 100; // miliseconds
 
 Input.isPaused = false;
 Input.canTogglePause = true;
