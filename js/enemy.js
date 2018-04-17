@@ -39,11 +39,15 @@ class Enemy extends Character { // eslint-disable-line no-unused-vars
 		}
 	}
 
+	lookAtPosition(position = player.position) {
+		this.Mesh.lookAt(new THREE.Vector3(position.x, this.position.y, position.z));
+	}
+
 	/**
      * Follow player
      */
 	moveTowardPlayer() {
-		this.Mesh.lookAt(player.position);
+		this.lookAtPosition();
 		this.moveForward();
 		if (settings.modelsEnabled) this.animationMixer.clipAction(this.animations.walk).play();
 	}
@@ -86,7 +90,7 @@ class Enemy extends Character { // eslint-disable-line no-unused-vars
 	 */
 	spawn() {
 		super.spawn();
-		if (!settings.modelsEnabled) this.position.y = -1;
+		//if (!settings.modelsEnabled) this.position.y -= 1;
 		this.isPlayingSpawnAnimation = true;
 	}
 }

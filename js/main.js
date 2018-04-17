@@ -172,7 +172,7 @@ function init() {
 
 	for (let i = 0; i < enemyAmount; ++i) {
 		if (i !== 0 && i % 15 === 0) enemies.push(new BigZombie());
-		else if (i !== 0 && i % 5 === 0) enemies.push(new SmallZombie());
+		else if (/*i !== 0 && */i % 5 === 0) enemies.push(new SmallZombie());
 		else enemies.push(new Zombie());
 
 		enemies[enemies.length - 1].addToScene();
@@ -465,8 +465,8 @@ function updateSpawnCounters() {
 			}
 		} else if (enemies[i].isPlayingSpawnAnimation && enemies[i].position.y < 1) {
 			enemies[i].Mesh.translateY(0.2);
-			if (enemies[i].position.y > 1) {
-				enemies[i].position.y = settings.modelsEnabled ? 0 : 1;
+			if (enemies[i].position.y > enemies[i].startingYPos) {
+				enemies[i].position.y = enemies[i].startingYPos;
 				enemies[i].isPlayingSpawnAnimation = false;
 			}
 		}

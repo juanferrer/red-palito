@@ -15,19 +15,11 @@ class BigZombie extends Enemy { // eslint-disable-line no-unused-vars
 		this.initialSpawnCountDown = Math.random();
 		this.shouldSpawn = true;
 		this.radius = 1;
+		this.startingYPos = 2;
 		this.damage = 5;
 		this.geometry = bigZombieGeometry;
 		this.material = bigZombieMaterial;
 		super.init();
-	}
-
-	/**
-     * Follow player
-     */
-	moveTowardPlayer() {
-		this.Mesh.lookAt(player.position);
-		this.moveForward();
-		if (settings.modelsEnabled) this.animationMixer.clipAction(this.animations.walk).play();
 	}
 
 	/**

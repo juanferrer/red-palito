@@ -18,6 +18,7 @@ class SmallZombie extends Enemy { // eslint-disable-line no-unused-vars
 		this.targetPosition = new THREE.Vector3();
 		this.color = 0xd1b829; // Three stages: #D1B829, #D16729, #FF0000
 		this.initialHP = 1;
+		this.startingYPos = 0.5;
 		this.initialSpawnCountDown = Math.random();
 		this.shouldSpawn = true;
 		this.damage = 2;
@@ -32,14 +33,14 @@ class SmallZombie extends Enemy { // eslint-disable-line no-unused-vars
 	moveTowardPlayer() {
 		if (!this.isDashing) {
 			this.Mesh.material = smallZombieMaterial;
-			this.Mesh.lookAt(player.position);
+			this.lookAtPosition();
 			this.moveForward();
 			if (settings.modelsEnabled) this.animationMixer.clipAction(this.animations.walk).play();
 
 			if (this.position.distanceTo(player.position) <= this.dashDistance) {
 				this.isDashing = true;
 				this.distanceTraveled = 0;
-				this.targetPosition = new THREE.Vector3(player.position.x, player.position.y, player.position.z);
+				this.targetPosition = new THREE.Vector3(player.position.x, this.position.y, player.position.z);
 			}
 		} else {
 			if (this.dashCountDown > 1) {
@@ -50,7 +51,7 @@ class SmallZombie extends Enemy { // eslint-disable-line no-unused-vars
 
 
 			if (this.dashCountDown > 0) {
-				this.Mesh.lookAt(this.targetPosition);
+				this.lookAtPosition(this.targetPosition);
 				this.dashCountDown -= frameTime;
 			} else {
 				this.dashForward();
