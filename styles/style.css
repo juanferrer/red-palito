@@ -3,6 +3,7 @@
 	--secondary-color: white;
 	--semi-transparent-color: rgba(200, 200, 200, 0.2);
 	--version-number: "v0.2";
+	--game-name: "Red Palito";
 }
 
 body {
@@ -104,7 +105,7 @@ Menu
 }
 
 .button-container::before {
-	content: "Survival";
+	content: var(--game-name);
 	font-size: 50px;
 	line-height: 100px;
 	position: absolute;
