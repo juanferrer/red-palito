@@ -331,6 +331,11 @@ function animate() {
 
 			//updateLightFlicker();
 
+			if (player.isTurning) {
+				player.rotateRight(600);
+				if (player.angleRotated >= 170) player.isTurning = false;
+			}
+
 			moveEnemies();
 			updateSpawnCounters();
 			collisions();

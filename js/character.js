@@ -24,6 +24,7 @@ class Character { // eslint-disable-line no-unused-vars
 		this.attackCounter = 0;
 		this.attackSpeed = 1;
 		this.animations = {};
+		this.angleRotated = 0;
 	}
 
 	init() {
@@ -102,12 +103,14 @@ class Character { // eslint-disable-line no-unused-vars
 		this.correctOutOfBounds();
 	}
 
-	rotateRight() {
-		this.Mesh.rotateY(Math.degToRad(-this.rotSpeed * frameTime));
+	rotateRight(rotSpeed) {
+		this.Mesh.rotateY(Math.degToRad((-rotSpeed || -this.rotSpeed) * frameTime));
+		this.angleRotated += ((rotSpeed || this.rotSpeed) * frameTime);
 	}
 
-	rotateLeft() {
-		this.Mesh.rotateY(Math.degToRad(this.rotSpeed * frameTime));
+	rotateLeft(rotSpeed) {
+		this.Mesh.rotateY(Math.degToRad((rotSpeed || this.rotSpeed) * frameTime));
+		this.angleRotated += ((rotSpeed || this.rotSpeed) * frameTime);
 	}
 
 	die() {

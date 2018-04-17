@@ -1,5 +1,5 @@
 /* globals $, THREE, Character, weapons, characterGeometry,
-playerMaterial, player, enemyAmount, enemies, settings,
+playerMaterial, player, enemyAmount, enemies,
 getNextBullet, gunFlare, gunFlareColor, game*/
 
 /**
@@ -289,6 +289,12 @@ class Player extends Character { // eslint-disable-line no-unused-vars
 	playDeathSound() {
 		Audio.playerDeathSounds[Math.randomInterval(0, 2)].play();
 	}
+
+	turnAround() {
+		this.isTurning = true;
+		this.angleRotated = 0;
+	}
+
 	/**
      *
      */
