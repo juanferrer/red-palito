@@ -14,6 +14,7 @@ class BigZombie extends Enemy { // eslint-disable-line no-unused-vars
 		this.initialHP = 15;
 		this.initialSpawnCountDown = Math.random();
 		this.shouldSpawn = true;
+		this.radius = 1;
 		this.damage = 5;
 		this.geometry = bigZombieGeometry;
 		this.material = bigZombieMaterial;
