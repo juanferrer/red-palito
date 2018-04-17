@@ -84,14 +84,6 @@ class Enemy extends Character { // eslint-disable-line no-unused-vars
 	/**
 	 *
 	 */
-	playSound() {
-		this.soundCounter = Math.randomInterval(2, 8);
-		Audio.enemySounds[Math.randomInterval(0, 27)].play();
-	}
-
-	/**
-	 *
-	 */
 	spawn() {
 		super.spawn();
 		if (!settings.modelsEnabled) this.position.y = -1;

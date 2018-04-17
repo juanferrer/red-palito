@@ -28,4 +28,12 @@ class BigZombie extends Enemy { // eslint-disable-line no-unused-vars
 		this.moveForward();
 		if (settings.modelsEnabled) this.animationMixer.clipAction(this.animations.walk).play();
 	}
+
+	/**
+	 *
+	 */
+	playSound() {
+		this.soundCounter = Math.randomInterval(2, 8);
+		Audio.bigEnemySounds[Math.randomInterval(0, Audio.bigEnemySoundsLength - 1)].play();
+	}
 }

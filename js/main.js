@@ -171,7 +171,7 @@ function init() {
 	}
 
 	for (let i = 0; i < enemyAmount; ++i) {
-		if (i !== 0 && i % 15 === 0) enemies.push(new BigZombie());
+		if (/*i !== 0 && */i % 15 === 0) enemies.push(new BigZombie());
 		else if (i !== 0 && i % 5 === 0) enemies.push(new SmallZombie());
 		else enemies.push(new Zombie());
 
