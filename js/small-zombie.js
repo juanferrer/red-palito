@@ -77,6 +77,7 @@ class SmallZombie extends Enemy { // eslint-disable-line no-unused-vars
 		this.distanceTraveled = 0;
 		this.targetPosition = new THREE.Vector3();
 		this.isDashing = false;
+		Audio.smallZombieImpact.play();
 		this.die();
 	}
 
