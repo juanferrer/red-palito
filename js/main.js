@@ -311,7 +311,7 @@ function setGunFlare() {
 
 /** Animate scene */
 function animate() {
-	stats.begin();
+	//stats.begin();
 	requestAnimationFrame(animate);
 
 	if (player !== undefined) {
