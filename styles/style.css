@@ -95,7 +95,7 @@ Menu
 }
 
 .button-container {
-	width: 75%;
+	width: 85%;
 	height: calc(100% - 15vh);
 	margin: 10vh auto 5vh auto;
 	display: flex;
@@ -124,6 +124,7 @@ Menu
 .settings-container {
 	display: flex;
 	height: 50%;
+	width: 90%;
 	justify-content: space-around;
 	align-content: space-around;
 	flex-direction: column;
@@ -163,9 +164,30 @@ Menu
 	cursor: pointer;
 }
 
+.settings-button {
+	font-size: 15px;
+	background-color: transparent;
+	border-color: var(--main-color);
+	border-style: solid;
+	border-width: 3px;
+	color: var(--main-color);
+	transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+	border-radius: 2px;
+}
+
+.settings-button:hover {
+	color: var(--secondary-color);
+	background-color: var(--main-color);
+}
+
 .setting-value {
 	display: inline;
-	margin: 20px;
+}
+
+.settings-label {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
 }
 
 /* Elements */

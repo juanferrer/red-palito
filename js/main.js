@@ -5,6 +5,7 @@ Bullet, Drop, Input, Menu, Player, Zombie, BigZombie, SmallZombie, settings
 
 let clock, scene, camera, renderer;
 let player;
+const player180TurnSpeed = 600;
 const playerColour = 0xF44336,
 	planeColor = 0xFFFFFF;
 let planeG, planeM, plane;
@@ -332,7 +333,7 @@ function animate() {
 			//updateLightFlicker();
 
 			if (player.isTurning) {
-				player.rotateRight(600);
+				settings.turn180TowardsRight ? player.rotateRight(player180TurnSpeed) : player.rotateLeft(player180TurnSpeed);
 				if (player.angleRotated >= 170) player.isTurning = false;
 			}
 
