@@ -25,7 +25,8 @@ let game = {
 	waveNumber: 1,
 	enemiesKilled: 0,
 	packagesReceived: 0,
-	bulletsUsed: 0
+	bulletsUsed: 0,
+	statsUpdated: false
 };
 
 let isWaveSpawning = true;
@@ -345,14 +346,15 @@ function animate() {
 			if (!enemyAlive() && !isWaveSpawning) {
 				spawnWave();
 			}
-		}
-		if (player.isDead) {
+		} if (player.isDead && !game.statsUpdated) {
+			$("#hp-bar")[0].innerHTML = player.HP;
 			Menu.showMenu("end");
 			Input.isPaused = true;
 			$("#wave-num-stat").html(game.waveNumber);
 			$("#enemies-killed-stat").html(game.enemiesKilled);
 			$("#packages-received-stat").html(game.packagesReceived);
 			$("#bullets-used-stat").html(game.bulletsUsed);
+			game.statsUpdated = true;
 		}
 		renderer.render(scene, camera);
 		frameTime = clock.getDelta();
