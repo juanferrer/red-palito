@@ -67,6 +67,6 @@ Audio.bigEnemySounds = [];
 Audio.smallZombieImpact;
 Audio.playerDeathSoundsLength = 3;
 Audio.playerDeathSounds = [];
-Audio.playerHitSoundsLength = 2;
+Audio.playerHitSoundsLength = 6;
 Audio.playerHitSounds = [];
 Audio.waveChangeSound;
