@@ -446,7 +446,7 @@ function moveEnemies() {
 			if (e.position.distanceTo(player.position) <= e.sightDistance || e.isDashing) {
 				// I can see the player
 				e.moveTowardPlayer();
-			} else if (e.position.distanceTo(e.targetPosition) <= (e.radius) * 3) {
+			} else if (e.position.distanceTo(e.targetPosition) <= (e.radius * 10)) {
 				// I arrived to where I was going
 				e.targetPosition = getRandomPosition();
 			} else {

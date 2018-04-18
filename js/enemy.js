@@ -1,5 +1,5 @@
 /* globals THREE, Character, player, game, invisibleYPos, settings,
-	getRandomPosition */
+	frameTime, getRandomPosition */
 
 /**
  * Single class meant to be used by players and enemies alike.
@@ -41,8 +41,22 @@ class Enemy extends Character { // eslint-disable-line no-unused-vars
 		}
 	}
 
+	// Make enemy turn towards specified position
 	lookAtPosition(position = player.position) {
-		this.Mesh.lookAt(new THREE.Vector3(position.x, this.position.y, position.z));
+		let vToPos = new THREE.Vector3(this.position.x - position.x, 0, this.position.z - position.z);
+
+		let angleToFacePosition = this.facingVector.angleTo(vToPos);
+		let angleCheck = this.facingVector.angleTo(vToPos.applyAxisAngle(new THREE.Vector3(0, 1, 0), Math.degToRad(this.rotSpeed * frameTime)));
+
+		if (angleToFacePosition > 0.02) {
+			if (angleToFacePosition > angleCheck) {
+				this.rotateLeft();
+			} else {
+				this.rotateRight();
+			}
+		}
+
+		//this.Mesh.lookAt(new THREE.Vector3(position.x, this.position.y, position.z));
 	}
 
 	/**
