@@ -17,7 +17,7 @@ class Character { // eslint-disable-line no-unused-vars
 		this.initialHP = 0;
 		this.isPlayer = false;
 		this.initialSpawnCountDown = 0;
-		this.startingYPos = 0;
+		this.startingYPos = 1;
 		this.radius = settings.modeslEnabled ? 0.6 : 0.5;
 		this.spawnCountDown = this.initialSpawnCountDown;
 		this.isSpawned = false;
@@ -76,12 +76,20 @@ class Character { // eslint-disable-line no-unused-vars
 	}
 
 	correctOutOfBounds() {
+		// x
 		if (this.Mesh.position.x + this.radius > (planeSize / 2)) {
 			this.Mesh.position.x = (planeSize / 2) - this.radius;
 		}
 		else if (this.Mesh.position.x - this.radius < -(planeSize / 2)) {
 			this.Mesh.position.x = (-planeSize / 2) + this.radius;
 		}
+
+		// y
+		if (this.Mesh.position.y != this.startingYPos) {
+			this.Mesh.position.y = this.startingYPos;
+		}
+
+		// z
 		if (this.Mesh.position.z + this.radius > (planeSize / 2)) {
 			this.Mesh.position.z = (planeSize / 2) - this.radius;
 		}
