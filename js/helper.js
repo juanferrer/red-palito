@@ -1,5 +1,5 @@
 /* globals $, THREE, bullets,
-weaponDrops, weaponDropAmount, hpDrops, hpDropAmount */
+weaponDrops, weaponDropAmount, hpDrops, hpDropAmount, planeSize*/
 
 /**
  * Math polyfill degrees to radians
@@ -60,7 +60,7 @@ function getNextHPDrop() { // eslint-disable-line no-unused-vars
 	return hpd;
 }
 
-function getRandomPosition(maxSize) { // eslint-disable-line no-unused-vars
+function getRandomPosition(maxSize = planeSize) { // eslint-disable-line no-unused-vars
 	return new THREE.Vector3(((Math.random() * maxSize) - (maxSize / 2.0)),
 		0,
 		((Math.random() * maxSize) - (maxSize / 2.0)));

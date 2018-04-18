@@ -1,4 +1,5 @@
-/* globals THREE, Character, player, game, invisibleYPos, settings */
+/* globals THREE, Character, player, game, invisibleYPos, settings,
+	getRandomPosition */
 
 /**
  * Single class meant to be used by players and enemies alike.
@@ -11,6 +12,7 @@ class Enemy extends Character { // eslint-disable-line no-unused-vars
 		this.isPlayer = false;
 		this.isSpawned = false;
 		this.soundCounter = Math.randomInterval(2, 8);
+		this.targetPosition = new THREE.Vector3();
 	}
 
 	init() {
@@ -91,6 +93,7 @@ class Enemy extends Character { // eslint-disable-line no-unused-vars
 	spawn() {
 		super.spawn();
 		//if (!settings.modelsEnabled) this.position.y -= 1;
+		this.targetPosition = getRandomPosition();
 		this.isPlayingSpawnAnimation = true;
 	}
 }

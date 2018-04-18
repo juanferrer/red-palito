@@ -137,7 +137,7 @@ class Character { // eslint-disable-line no-unused-vars
 		this.HP = this.initialHP;
 		this.spawnCountDown = this.initialSpawnCountDown;
 		// 2. Find spawnPoint
-		let spawnPoint = getRandomPosition(planeSize);
+		let spawnPoint = getRandomPosition();
 		// 3. Move to spawnPoint
 		this.Mesh.position.set(spawnPoint.x, -2, spawnPoint.z);
 		// 4. Allow yourself to check if it is spawned or not

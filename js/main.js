@@ -439,15 +439,23 @@ function updateAnimationMixers() {
 	});
 }
 
-/** Move enemies towards player */
+/** Move enemies */
 function moveEnemies() {
 	enemies.forEach(e => {
 		if (e.isSpawned && e.HP > 0 && !e.isPlayingSpawnAnimation) {
-			e.moveTowardPlayer();
+			if (e.position.distanceTo(player.position) <= e.sightDistance || e.isDashing) {
+				// I can see the player
+				e.moveTowardPlayer();
+			} else if (e.position.distanceTo(e.targetPosition) <= (e.radius) * 3) {
+				// I arrived to where I was going
+				e.targetPosition = getRandomPosition();
+			} else {
+				// Let's go somewhere else
+				e.lookAtPosition(e.targetPosition);
+				e.moveForward();
+			}
 		}
 		else if (e.HP <= 0 && e.isSpawned) {
-			// Enemy died
-			// TODO: add death counter
 			e.die();
 		}
 	});
@@ -569,7 +577,7 @@ function updateDropCounters() {
  */
 function makeDrop(type) {
 	// 1. Calculate random position
-	const position = getRandomPosition(planeSize);
+	const position = getRandomPosition();
 	// 2. Set drop to position and calculate random index if weapon
 	if (type == "weapon") {
 		const value = Math.randomInterval(1, weapons.length - 1);
