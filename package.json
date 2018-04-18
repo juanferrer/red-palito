@@ -4,7 +4,7 @@
 	"description": "It is mainly an experiment to try a WebGL based framework. I'm using [Three.js](https://threejs.org/).",
 	"main": "index.js",
 	"dependencies": {
-		"three": "^0.88.0"
+		"three": ">=0.88.0"
 	},
 	"devDependencies": {},
 	"scripts": {

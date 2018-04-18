@@ -1,12 +1,12 @@
-/* globals $, THREE, Character, weapons,
-playerMaterial, player, enemyAmount, enemies
+/* globals $, THREE, Character, weapons, characterGeometry,
+playerMaterial, player, enemyAmount, enemies,
 getNextBullet, gunFlare, gunFlareColor, game*/
 
 /**
  * Single class meant to be used by players and enemies alike.
  * It has a THREE.Geometry, THREE.Material and THREE.Mesh among others.
  */
-class Player extends Character {
+class Player extends Character { // eslint-disable-line no-unused-vars
 	/**
      *
      * @param {string} charType - Type of character it is.
@@ -25,8 +25,9 @@ class Player extends Character {
 			this.weaponsAmmo.push(0);
 		}
 		this.currentWeapon = 0;
+		this.geometry = characterGeometry;
+		this.material = playerMaterial;
 		super.init();
-		this.Mesh.material = playerMaterial;
 		this.attackSpeed = [];
 		this.attackCounter = [0, 0, 0, 0];
 		this.accuracy = 0.5;
@@ -34,6 +35,7 @@ class Player extends Character {
 		this.onWeaponAnim = false;
 		this.acquireWeapon(0);
 		this.updateWeaponStats();
+		this.raycaster = new THREE.Raycaster(new THREE.Vector3(this.position.x, 1, this.position.z), THREE.Vector3(0, 1, 0));
 	}
 
 	/**
@@ -143,6 +145,8 @@ class Player extends Character {
 		this.triggerLostHPAnim();
 		if (this.HP <= 0) {
 			this.die();
+		} else {
+			Audio.playerHitSounds[Math.randomInterval(0, Audio.playerHitSoundsLength - 1)].play();
 		}
 	}
 
@@ -204,12 +208,12 @@ class Player extends Character {
      * @param {bool} resilient - Whether the bullet should go through enemies
      */
 	bulletHitCheck(dirVector, resilient = false) {
-		let raycaster = new THREE.Raycaster(this.position, dirVector);
+		this.raycaster.set(new THREE.Vector3(this.position.x, 1, this.position.z), dirVector);
 		let enemyMeshes = [];
 		for (let e = 0; e < enemyAmount; ++e) {
 			enemyMeshes.push(enemies[e].Mesh);
 		}
-		let intersects = raycaster.intersectObjects(enemyMeshes);
+		let intersects = this.raycaster.intersectObjects(enemyMeshes);
 
 		if (intersects.length > 0) {
 
@@ -287,6 +291,12 @@ class Player extends Character {
 	playDeathSound() {
 		Audio.playerDeathSounds[Math.randomInterval(0, 2)].play();
 	}
+
+	turnAround() {
+		this.isTurning = true;
+		this.angleRotated = 0;
+	}
+
 	/**
      *
      */

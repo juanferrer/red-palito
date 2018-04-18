@@ -1,44 +1,50 @@
-/* globals THREE, characterGeometry, enemyMaterial, scene,
+/* globals THREE, scene,
 planeSize, frameTime,
-getRandomPosition
+getRandomPosition, invisibleYPos,
+settings
 */
 
 /**
  * Single class meant to be used by this.Players and enemies alike.
  * It has a THREE.Geometry, THREE.Material and THREE.Mesh among others.
  */
-class Character {
-	/**
-     *
-     * @param {string} charType - Type of character it is.
-     */
-	constructor(charType) {
+class Character { // eslint-disable-line no-unused-vars
+
+	constructor() {
 
 		this.moveSpeed = 0;
 		this.color = 0;
 		this.initialHP = 0;
 		this.isPlayer = false;
 		this.initialSpawnCountDown = 0;
-		this.radius = 0.5;
+		this.startingYPos = 1;
+		this.radius = settings.modeslEnabled ? 0.6 : 0.5;
 		this.spawnCountDown = this.initialSpawnCountDown;
 		this.isSpawned = false;
 		this.rotSpeed = 60;
 		this.attackCounter = 0;
 		this.attackSpeed = 1;
+		this.animations = {};
+		this.angleRotated = 0;
 	}
 
 	init() {
-		this.Geometry = characterGeometry;
-		this.Material = enemyMaterial;
-		this.Mesh = new THREE.Mesh(this.Geometry, this.Material);
+		// http://www.cgdev.net/blog/482.html Load models from 3DS Max
+		if (settings.modelsEnabled) this.Mesh = new THREE.SkinnedMesh(this.geometry, this.material);
+		else this.Mesh = new THREE.Mesh(this.geometry, this.material);
+		this.HP = this.initialHP;
 		this.Mesh.castShadow = true;
 		this.Mesh.receiveShadow = true;
-		this.HP = this.initialHP;
-		this.damage = 1;
+
+		if (settings.modelsEnabled) {
+			this.animationMixer = new THREE.AnimationMixer(this.Mesh);
+			this.animations.walk = this.Mesh.geometry.animations.filter(a => a.name === "walk")[0];
+			this.animations.attack = this.Mesh.geometry.animations.filter(a => a.name === "attack")[0];
+		}
 	}
 
 	addToScene() {
-		this.Mesh.translateY(this.isPlayer ? 1 : -10);
+		this.Mesh.translateY(this.isPlayer ? (settings.modelsEnabled ? 0 : 1) : invisibleYPos);
 		scene.add(this.Mesh);
 	}
 
@@ -70,12 +76,20 @@ class Character {
 	}
 
 	correctOutOfBounds() {
+		// x
 		if (this.Mesh.position.x + this.radius > (planeSize / 2)) {
 			this.Mesh.position.x = (planeSize / 2) - this.radius;
 		}
 		else if (this.Mesh.position.x - this.radius < -(planeSize / 2)) {
 			this.Mesh.position.x = (-planeSize / 2) + this.radius;
 		}
+
+		// y
+		if (this.Mesh.position.y != this.startingYPos) {
+			this.Mesh.position.y = this.startingYPos;
+		}
+
+		// z
 		if (this.Mesh.position.z + this.radius > (planeSize / 2)) {
 			this.Mesh.position.z = (planeSize / 2) - this.radius;
 		}
@@ -98,12 +112,14 @@ class Character {
 		this.correctOutOfBounds();
 	}
 
-	rotateRight() {
-		this.Mesh.rotateY(Math.degToRad(-this.rotSpeed * frameTime));
+	rotateRight(rotSpeed) {
+		this.Mesh.rotateY(Math.degToRad((-rotSpeed || -this.rotSpeed) * frameTime));
+		this.angleRotated += ((rotSpeed || this.rotSpeed) * frameTime);
 	}
 
-	rotateLeft() {
-		this.Mesh.rotateY(Math.degToRad(this.rotSpeed * frameTime));
+	rotateLeft(rotSpeed) {
+		this.Mesh.rotateY(Math.degToRad((rotSpeed || this.rotSpeed) * frameTime));
+		this.angleRotated += ((rotSpeed || this.rotSpeed) * frameTime);
 	}
 
 	die() {
@@ -123,7 +139,7 @@ class Character {
 		// 2. Find spawnPoint
 		let spawnPoint = getRandomPosition(planeSize);
 		// 3. Move to spawnPoint
-		this.Mesh.position.set(spawnPoint.x, spawnPoint.y, spawnPoint.z);
+		this.Mesh.position.set(spawnPoint.x, this.startingYPos, spawnPoint.z);
 		// 4. Allow yourself to check if it is spawned or not
 		this.isSpawned = true;
 		this.shouldSpawn = false;

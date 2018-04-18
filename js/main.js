@@ -1,6 +1,6 @@
 /*global THREE, Stats, $
-parseJSONToVar, spawnPointsInit, getRandomPosition, getNextHPDrop, getNextWeaponDrop
-Bullet, Drop, Input, Menu, Player, Enemy, settings
+parseJSONToVar, getRandomPosition, getNextHPDrop, getNextWeaponDrop
+Bullet, Drop, Input, Menu, Player, Zombie, BigZombie, SmallZombie, settings
 */
 
 let clock, scene, camera, renderer;
@@ -11,7 +11,7 @@ let planeG, planeM, plane;
 const planeSize = 50;
 
 let light;
-const lightsAmount = 4;
+const lightsAmount = 4; // eslint-disable-line no-unused-vars
 let frameTime;
 
 let enemies = [];
@@ -25,7 +25,8 @@ let game = {
 	waveNumber: 1,
 	enemiesKilled: 0,
 	packagesReceived: 0,
-	bulletsUsed: 0
+	bulletsUsed: 0,
+	statsUpdated: false
 };
 
 let isWaveSpawning = true;
@@ -36,10 +37,10 @@ const bulletsAmount = 30;
 
 let weapons = [];
 const gunFlareFalloffTime = [10, 10, 10, 1, 1];
-const gunFlareColor = [0xF7EFB1, 0xF7EFB1, 0xF7EFB1, 0x0000FF, 0x0];
+const gunFlareColor = [0xF7EFB1, 0xF7EFB1, 0xF7EFB1, 0x0000FF, 0x0]; // eslint-disable-line no-unused-vars
 let gunFlare;
 
-let listener, audioLoader;
+let listener, audioLoader; // eslint-disable-line no-unused-vars
 
 let healthDropCounter, weaponDropCounter;
 const healthDropTime = 30, weaponDropTime = 20;
@@ -49,24 +50,34 @@ let hpDrops = [],
 const hpDropAmount = 1,
 	weaponDropAmount = 4;
 
-let lightFlickerCounter = 0;
+const invisibleYPos = 100; // eslint-disable-line no-unused-vars
+
+let lightFlickerCounter = 0; // eslint-disable-line no-unused-vars
 
 /* Materials */
-const playerMaterial = new THREE.MeshPhongMaterial({ color: playerColour }),
-	enemyMaterial = new THREE.MeshPhongMaterial({ color: 0x4CAF50 }),
-	weaponDropMaterial = new THREE.MeshPhongMaterial({ color: 0xFF5722 }),
-	hpDropMaterial = new THREE.MeshPhongMaterial({ color: 0x4CAF50 }),
-	planeMaterial = new THREE.MeshPhongMaterial({ color: planeColor });
+const playerMaterial = new THREE.MeshPhongMaterial({ color: playerColour, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
+	zombieMaterial = new THREE.MeshPhongMaterial({ color: 0x4CAF50, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
+	bigZombieMaterial = new THREE.MeshPhongMaterial({ color: 0x724CAE, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
+	smallZombieMaterial = new THREE.MeshPhongMaterial({ color: 0xD1B829, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
+	smallZombiePrepareMaterial = new THREE.MeshPhongMaterial({ color: 0xD16729, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
+	smallZombieDashMaterial = new THREE.MeshPhongMaterial({ color: 0xFF0000, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
+	weaponDropMaterial = new THREE.MeshPhongMaterial({ color: 0xFF5722 }), // eslint-disable-line no-unused-vars
+	hpDropMaterial = new THREE.MeshPhongMaterial({ color: 0x4CAF50 }), // eslint-disable-line no-unused-vars
+	planeMaterial = new THREE.MeshPhongMaterial({ color: planeColor }); // eslint-disable-line no-unused-vars
 
 /* Geometries */
-const characterGeometry = new THREE.BoxBufferGeometry(1, 2, 1),
-	dropGeometry = new THREE.BoxBufferGeometry(1, 1, 1);
+let characterGeometry = new THREE.BoxBufferGeometry(1, 2, 1), // eslint-disable-line no-unused-vars
+	zombieGeometry = new THREE.BoxBufferGeometry(1, 2, 1), // eslint-disable-line no-unused-vars
+	bigZombieGeometry = new THREE.BoxBufferGeometry(2, 4, 2), // eslint-disable-line no-unused-vars
+	smallZombieGeometry = new THREE.BoxBufferGeometry(1, 1, 1), // eslint-disable-line no-unused-vars
+	dropGeometry = new THREE.BoxBufferGeometry(1, 1, 1); // eslint-disable-line no-unused-vars
 
 
-// DEBUG
-//let stats = new Stats();
-//stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-//document.body.appendChild(stats.dom);
+let stats = new Stats();
+stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+if (settings.isDev) document.body.appendChild(stats.dom);
+
+let modelLoader = new THREE.JDLoader();
 
 /**
  * Window resize event handler
@@ -79,8 +90,8 @@ function onWindowResize() {
 
 	renderer.setSize(window.innerWidth, window.innerHeight);
 }
-
-init();
+if (settings.modelsEnabled) loadModels(init);
+else init();
 animate();
 
 function reset() {
@@ -94,17 +105,39 @@ function reset() {
 	weaponDropCounter = weaponDropTime;
 }
 
+function loadModels(callback) {
+	modelLoader.load("./models/enemy.jd", data => {
+		characterGeometry = data.geometries[0];
+		callback();
+	});
+}
+
+function getWeapons() { // eslint-disable-line no-unused-vars
+	let parseResult = parseJSONToVar("weapons.json", "weapons", weapons);
+	parseResult.then(() => {
+		Audio.loadWeaponSounds();
+		Audio.loadPickupSounds();
+		Audio.loadEnemySounds();
+		Audio.loadPlayerSounds();
+		listener.setMasterVolume(settings.masterVolume);
+		setupPlayer();
+		setGunFlare();
+
+		player.Mesh.add(listener);
+	});
+}
+
 /** Initialise scene */
 function init() {
 	clock = new THREE.Clock();
 	frameTime = 0;
 
-	let parseResult = parseJSONToVar("weapons.json", "weapons", weapons);
+	//loadModels(getWeapons);
+
 
 	healthDropCounter = healthDropTime;
 	weaponDropCounter = weaponDropTime;
 	Input.keyboardInit();
-	spawnPointsInit();
 
 	scene = new THREE.Scene();
 
@@ -119,6 +152,7 @@ function init() {
 	audioLoader = new THREE.AudioLoader();
 
 	// Load player asynchronously
+	let parseResult = parseJSONToVar("weapons.json", "weapons", weapons);
 	parseResult.then(function () {
 		Audio.loadWeaponSounds();
 		Audio.loadPickupSounds();
@@ -137,7 +171,11 @@ function init() {
 	}
 
 	for (let i = 0; i < enemyAmount; ++i) {
-		addEnemy();
+		if (i !== 0 && i % 15 === 0) enemies.push(new BigZombie());
+		else if (i !== 0 && i % 5 === 0) enemies.push(new SmallZombie());
+		else enemies.push(new Zombie());
+
+		enemies[enemies.length - 1].addToScene();
 	}
 
 	for (let i = 0; i < hpDropAmount; ++i) {
@@ -270,11 +308,6 @@ function setGunFlare() {
 	player.Mesh.add(gunFlare);
 }
 
-function addEnemy() {
-	enemies.push(new Enemy());
-	enemies[enemies.length - 1].addToScene();
-}
-
 /** Animate scene */
 function animate() {
 	//stats.begin();
@@ -294,7 +327,14 @@ function animate() {
 
 			updateBullet();
 
+			if (settings.modelsEnabled) updateAnimationMixers();
+
 			//updateLightFlicker();
+
+			if (player.isTurning) {
+				player.rotateRight(600);
+				if (player.angleRotated >= 170) player.isTurning = false;
+			}
 
 			moveEnemies();
 			updateSpawnCounters();
@@ -305,19 +345,20 @@ function animate() {
 			if (!enemyAlive() && !isWaveSpawning) {
 				spawnWave();
 			}
-		}
-		if (player.isDead) {
+		} if (player.isDead && !game.statsUpdated) {
+			$("#hp-bar")[0].innerHTML = player.HP;
 			Menu.showMenu("end");
 			Input.isPaused = true;
 			$("#wave-num-stat").html(game.waveNumber);
 			$("#enemies-killed-stat").html(game.enemiesKilled);
 			$("#packages-received-stat").html(game.packagesReceived);
 			$("#bullets-used-stat").html(game.bulletsUsed);
+			game.statsUpdated = true;
 		}
 		renderer.render(scene, camera);
+		frameTime = clock.getDelta();
 	}
-	frameTime = clock.getDelta();
-	//stats.end();
+	stats.end();
 }
 
 /** Update elements from the UI */
@@ -388,6 +429,16 @@ function updateBullet() {
 	}
 }
 
+/**
+ * Go through all mixers and update their state
+ */
+function updateAnimationMixers() {
+	player.animationMixer.update(frameTime);
+	enemies.forEach(e => {
+		if (e.isSpawned) e.animationMixer.update(frameTime);
+	});
+}
+
 /** Move enemies towards player */
 function moveEnemies() {
 	enemies.forEach(e => {
@@ -412,6 +463,12 @@ function updateSpawnCounters() {
 				if (isWaveSpawning && i == currentEnemyAmount - 1) {
 					isWaveSpawning = false;
 				}
+			}
+		} else if (enemies[i].isPlayingSpawnAnimation && enemies[i].position.y < 1) {
+			enemies[i].Mesh.translateY(0.2);
+			if (enemies[i].position.y > enemies[i].startingYPos) {
+				enemies[i].position.y = enemies[i].startingYPos;
+				enemies[i].isPlayingSpawnAnimation = false;
 			}
 		}
 	}
@@ -491,7 +548,7 @@ function updateDropCounters() {
 	if (Drop.weaponDropSpawnedThisWave) {
 		weaponDropCounter -= frameTime;
 	}
-	if (player.HP < 10) {
+	if (player.HP < 10 && Drop.wavesSinceHPDrop >= Drop.wavesBetweenHPDrop) {
 		healthDropCounter -= frameTime;
 	}
 
@@ -511,10 +568,9 @@ function updateDropCounters() {
  * @param {string} type - Type of drop to be made
  */
 function makeDrop(type) {
-	// TODO:
 	// 1. Calculate random position
 	const position = getRandomPosition(planeSize);
-	// 3. Set drop to position and calculate random index if weapon
+	// 2. Set drop to position and calculate random index if weapon
 	if (type == "weapon") {
 		const value = Math.randomInterval(1, weapons.length - 1);
 		let weapon = getNextWeaponDrop();
@@ -526,6 +582,7 @@ function makeDrop(type) {
 	if (type == "HP") {
 		let hp = getNextHPDrop();
 		if (!hp.isSpawned) {
+			Drop.wavesSinceHPDrop = 0;
 			hp.spawn(position, 2);
 		}
 	}
@@ -563,6 +620,7 @@ function spawnWave() {
 		makeDrop("weapon");
 	}
 	Drop.weaponDropSpawnedThisWave = false;
+	Drop.wavesSinceHPDrop++;
 
 	// TODO: increase number of enemies to spawn
 	currentEnemyAmount += 2;

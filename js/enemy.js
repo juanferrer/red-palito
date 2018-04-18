@@ -1,24 +1,19 @@
-/* globals THREE, Character, player, game */
+/* globals THREE, Character, player, game, invisibleYPos, settings */
 
 /**
  * Single class meant to be used by players and enemies alike.
  * It has a THREE.Geometry, THREE.Material and THREE.Mesh among others.
  */
-class Enemy extends Character {
-	/**
-     *
-     * @param {string} charType - Type of character it is.
-     */
+class Enemy extends Character { // eslint-disable-line no-unused-vars
+
 	constructor() {
 		super();
 		this.isPlayer = false;
-		this.moveSpeed = 3;
-		this.color = 0x4CAF50;
-		this.initialHP = 4;
-		this.initialSpawnCountDown = Math.random();
-		this.shouldSpawn = true;
 		this.isSpawned = false;
 		this.soundCounter = Math.randomInterval(2, 8);
+	}
+
+	init() {
 		super.init();
 	}
 
@@ -29,7 +24,7 @@ class Enemy extends Character {
 		this.HP = this.initialHP;
 		this.shouldSpawn = true;
 		this.isSpawned = false;
-		this.position.set(0, -10, 0);
+		this.position.set(0, invisibleYPos, 0);
 		this.Mesh.rotation.y = 0;
 	}
 
@@ -44,20 +39,26 @@ class Enemy extends Character {
 		}
 	}
 
+	lookAtPosition(position = player.position) {
+		this.Mesh.lookAt(new THREE.Vector3(position.x, this.position.y, position.z));
+	}
+
 	/**
      * Follow player
      */
 	moveTowardPlayer() {
-		this.Mesh.lookAt(player.position);
+		this.lookAtPosition();
 		this.moveForward();
+		if (settings.modelsEnabled) this.animationMixer.clipAction(this.animations.walk).play();
 	}
 
 	/**
      * Attack whatever is ahead.
      */
 	attack() {
+		let posVector = new THREE.Vector3(this.position.x, 1, this.position.z);
 		if (this.attackCounter <= 0 && this.HP > 0) {
-			let raycaster = new THREE.Raycaster(this.position, this.facingVector);
+			let raycaster = new THREE.Raycaster(posVector, this.facingVector);
 			let intersects = raycaster.intersectObjects([player.Mesh]);
 
 			if (intersects.length > 0) {
@@ -80,16 +81,8 @@ class Enemy extends Character {
 		// 2. setTimeout(disappear, time);
 		this.isSpawned = false;
 		this.spawnCountDown = this.initialSpawnCountDown;
-		this.position.set(0, -2, 0);
+		this.position.set(0, invisibleYPos, 0);
 		game.enemiesKilled++;
-	}
-
-	/**
-	 *
-	 */
-	playSound() {
-		this.soundCounter = Math.randomInterval(2, 8);
-		Audio.enemySounds[Math.randomInterval(0, 28)].play();
 	}
 
 	/**
@@ -97,5 +90,7 @@ class Enemy extends Character {
 	 */
 	spawn() {
 		super.spawn();
+		//if (!settings.modelsEnabled) this.position.y -= 1;
+		this.isPlayingSpawnAnimation = true;
 	}
 }

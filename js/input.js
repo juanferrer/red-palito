@@ -1,4 +1,4 @@
-/*global Menu, player, camera, lightColor2, lightColor3,
+/*global Menu, player, $,
 modelRotSpeed, camMoveSpeed, camRotSpeed
 */
 
@@ -14,9 +14,14 @@ class Input {
 		// Keep track of what keys are down and update in loop
 		window.addEventListener("keydown", e => {
 			Input.keyState[e.keyCode || e.which] = true;
+			if (Input.keyLastPressed[e.keyCode || e.which] != null) {
+				let doublePressTimeout = $("#double-press-slider").val(); // miliseconds
+				Input.keyDoublePress[e.keyCode || e.which] = new Date().getTime() - Input.keyLastPressed[e.keyCode || e.which].getTime() < doublePressTimeout;
+			}
 		}, true);
 		window.addEventListener("keyup", e => {
 			Input.keyState[e.keyCode || e.which] = false;
+			Input.keyLastPressed[e.keyCode || e.which] = new Date();
 		}, true);
 	}
 
@@ -60,11 +65,16 @@ class Input {
 				}
 				// S
 				if (Input.keyState[83]) {
+					if (Input.keyDoublePress[83]) {
+						Input.keyDoublePress[83] = false;
+						Input.keyLastPressed[83] = null;
+						player.turnAround();
+					}
 					player.moveBackward();
 				}
 
-				// unused
-
+				// #region unused
+				/*
 				// Left
 				if (Input.keyState[37]) {
 					this.move(camera, "left");
@@ -102,7 +112,8 @@ class Input {
 					this.changeColor(lightColor3);
 				}
 
-				// End of unused
+				*/
+				// #endregion unused
 			}
 
 			// P
@@ -194,6 +205,8 @@ Input.camMoveSpeed = 0.1;
 Input.camRotSpeed = 0.01;
 
 Input.keyState = {};
+Input.keyDoublePress = {};
+Input.keyLastPressed = {};
 
 Input.isPaused = false;
 Input.canTogglePause = true;
