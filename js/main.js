@@ -442,7 +442,7 @@ function updateAnimationMixers() {
 /** Move enemies towards player */
 function moveEnemies() {
 	enemies.forEach(e => {
-		if (e.isSpawned && e.HP > 0) {
+		if (e.isSpawned && e.HP > 0 && !e.isPlayingSpawnAnimation) {
 			e.moveTowardPlayer();
 		}
 		else if (e.HP <= 0 && e.isSpawned) {
@@ -464,7 +464,7 @@ function updateSpawnCounters() {
 					isWaveSpawning = false;
 				}
 			}
-		} else if (enemies[i].isPlayingSpawnAnimation && enemies[i].position.y < 1) {
+		} else if (enemies[i].isPlayingSpawnAnimation && enemies[i].position.y < enemies[i].startingYPos) {
 			enemies[i].Mesh.translateY(0.2);
 			if (enemies[i].position.y > enemies[i].startingYPos) {
 				enemies[i].position.y = enemies[i].startingYPos;

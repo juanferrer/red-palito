@@ -139,7 +139,7 @@ class Character { // eslint-disable-line no-unused-vars
 		// 2. Find spawnPoint
 		let spawnPoint = getRandomPosition(planeSize);
 		// 3. Move to spawnPoint
-		this.Mesh.position.set(spawnPoint.x, this.startingYPos, spawnPoint.z);
+		this.Mesh.position.set(spawnPoint.x, -2, spawnPoint.z);
 		// 4. Allow yourself to check if it is spawned or not
 		this.isSpawned = true;
 		this.shouldSpawn = false;

@@ -1,4 +1,4 @@
-/* globals Enemy, player, settings,
+/* globals Enemy,
 bigZombieGeometry, bigZombieMaterial */
 
 /**
