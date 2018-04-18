@@ -145,6 +145,8 @@ class Player extends Character { // eslint-disable-line no-unused-vars
 		this.triggerLostHPAnim();
 		if (this.HP <= 0) {
 			this.die();
+		} else {
+			Audio.playerHitSounds[Math.randomInterval(0, Audio.playerHitSoundsLength - 1)].play();
 		}
 	}
 

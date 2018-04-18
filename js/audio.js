@@ -26,14 +26,21 @@ class Audio {
 			Audio.bigEnemySounds.push(new THREE.Audio(listener));
 			this.loadSoundFile(Audio.bigEnemySounds[i], `sounds/enemies/big-zombie${i < 10 ? "0" + i : i}.wav`, 0.4);
 		}
+		Audio.smallZombieImpact = new THREE.Audio(listener);
+		this.loadSoundFile(Audio.smallZombieImpact, "sounds/enemies/small-zombie-impact.wav", 2);
+
 		Audio.waveChangeSound = new THREE.Audio(listener);
 		this.loadSoundFile(Audio.waveChangeSound, "sounds/enemies/wave-change.wav", 2);
 	}
 
 	static loadPlayerSounds() {
-		for (let i = 0; i < 3; ++i) {
+		for (let i = 0; i < Audio.playerDeathSoundsLength; ++i) {
 			Audio.playerDeathSounds.push(new THREE.Audio(listener));
 			this.loadSoundFile(Audio.playerDeathSounds[i], `sounds/player/dying0${i}.wav`);
+		}
+		for (let i = 0; i < Audio.playerHitSoundsLength; ++i) {
+			Audio.playerHitSounds.push(new THREE.Audio(listener));
+			this.loadSoundFile(Audio.playerHitSounds[i], `sounds/player/player-hit0${i}.wav`);
 		}
 	}
 
@@ -57,5 +64,9 @@ Audio.enemySoundsLength = 28;
 Audio.enemySounds = [];
 Audio.bigEnemySoundsLength = 7;
 Audio.bigEnemySounds = [];
+Audio.smallZombieImpact;
+Audio.playerDeathSoundsLength = 3;
 Audio.playerDeathSounds = [];
+Audio.playerHitSoundsLength = 2;
+Audio.playerHitSounds = [];
 Audio.waveChangeSound;
