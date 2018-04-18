@@ -73,10 +73,9 @@ let characterGeometry = new THREE.BoxBufferGeometry(1, 2, 1), // eslint-disable-
 	dropGeometry = new THREE.BoxBufferGeometry(1, 1, 1); // eslint-disable-line no-unused-vars
 
 
-// DEBUG
 let stats = new Stats();
 stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-document.body.appendChild(stats.dom);
+if (settings.isDev) document.body.appendChild(stats.dom);
 
 let modelLoader = new THREE.JDLoader();
 

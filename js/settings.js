@@ -5,6 +5,7 @@ if (!settings.masterVolume) {
 		masterVolume: 0.2,
 		ambientVolume: 1,
 		showBlood: false,
-		modelsEnabled: false
+		modelsEnabled: false,
+		isDev: false
 	};
 }
