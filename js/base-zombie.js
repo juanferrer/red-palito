@@ -16,6 +16,7 @@ class Zombie extends Enemy { // eslint-disable-line no-unused-vars
 		this.shouldSpawn = true;
 		this.damage = 1;
 		this.startingYPos = 1;
+		this.sightDistance = 25;
 		this.geometry = zombieGeometry;
 		this.material = zombieMaterial;
 		super.init();

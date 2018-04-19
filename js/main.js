@@ -5,6 +5,7 @@ Bullet, Drop, Input, Menu, Player, Zombie, BigZombie, SmallZombie, settings
 
 let clock, scene, camera, renderer;
 let player;
+const player180TurnSpeed = 600;
 const playerColour = 0xF44336,
 	planeColor = 0xFFFFFF;
 let planeG, planeM, plane;
@@ -214,7 +215,7 @@ function init() {
 
 	plane.translateY(planeSize / 4);
 
-	/* Button actions */
+	// #region Button actions
 	$("#start-button").click(() => {
 		Menu.isMainMenu = false;
 		Menu.showUI();
@@ -256,6 +257,14 @@ function init() {
 	$("#cancel-settings-button").click(() => {
 		$("#exit-button").click();
 	});
+
+	$("#turn-direction-button").click(() => {
+		$("#turn-direction-button").val(settings.turn180TowardsRight ? "LEFT" : "RIGHT");
+		settings.turn180TowardsRight = !settings.turn180TowardsRight;
+	});
+
+	// #endregion
+
 	//requestAnimationFrame(animate);
 	renderer.render(scene, camera);
 	Menu.hideUI();
@@ -332,7 +341,7 @@ function animate() {
 			//updateLightFlicker();
 
 			if (player.isTurning) {
-				player.rotateRight(600);
+				settings.turn180TowardsRight ? player.rotateRight(player180TurnSpeed) : player.rotateLeft(player180TurnSpeed);
 				if (player.angleRotated >= 170) player.isTurning = false;
 			}
 
@@ -439,15 +448,23 @@ function updateAnimationMixers() {
 	});
 }
 
-/** Move enemies towards player */
+/** Move enemies */
 function moveEnemies() {
 	enemies.forEach(e => {
-		if (e.isSpawned && e.HP > 0) {
-			e.moveTowardPlayer();
+		if (e.isSpawned && e.HP > 0 && !e.isPlayingSpawnAnimation) {
+			if (e.position.distanceTo(player.position) <= e.sightDistance || e.isDashing) {
+				// I can see the player
+				e.moveTowardPlayer();
+			} else if (e.position.distanceTo(e.targetPosition) <= (e.radius * 10)) {
+				// I arrived to where I was going
+				e.targetPosition = getRandomPosition();
+			} else {
+				// Let's go somewhere else
+				e.lookAtPosition(e.targetPosition);
+				e.moveForward();
+			}
 		}
 		else if (e.HP <= 0 && e.isSpawned) {
-			// Enemy died
-			// TODO: add death counter
 			e.die();
 		}
 	});
@@ -464,7 +481,7 @@ function updateSpawnCounters() {
 					isWaveSpawning = false;
 				}
 			}
-		} else if (enemies[i].isPlayingSpawnAnimation && enemies[i].position.y < 1) {
+		} else if (enemies[i].isPlayingSpawnAnimation && enemies[i].position.y < enemies[i].startingYPos) {
 			enemies[i].Mesh.translateY(0.2);
 			if (enemies[i].position.y > enemies[i].startingYPos) {
 				enemies[i].position.y = enemies[i].startingYPos;
@@ -569,7 +586,7 @@ function updateDropCounters() {
  */
 function makeDrop(type) {
 	// 1. Calculate random position
-	const position = getRandomPosition(planeSize);
+	const position = getRandomPosition();
 	// 2. Set drop to position and calculate random index if weapon
 	if (type == "weapon") {
 		const value = Math.randomInterval(1, weapons.length - 1);
