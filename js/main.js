@@ -215,7 +215,7 @@ function init() {
 
 	plane.translateY(planeSize / 4);
 
-	/* Button actions */
+	// #region Button actions
 	$("#start-button").click(() => {
 		Menu.isMainMenu = false;
 		Menu.showUI();
@@ -257,6 +257,14 @@ function init() {
 	$("#cancel-settings-button").click(() => {
 		$("#exit-button").click();
 	});
+
+	$("#turn-direction-button").click(() => {
+		$("#turn-direction-button").val(settings.turn180TowardsRight ? "LEFT" : "RIGHT");
+		settings.turn180TowardsRight = !settings.turn180TowardsRight;
+	});
+
+	// #endregion
+
 	//requestAnimationFrame(animate);
 	renderer.render(scene, camera);
 	Menu.hideUI();

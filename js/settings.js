@@ -4,7 +4,7 @@ if (!settings.masterVolume) {
 	settings = {
 		masterVolume: 0.2,
 		ambientVolume: 1,
-		turn180TowardsRight: false,
+		turn180TowardsRight: true,
 		showBlood: false,
 		modelsEnabled: false,
 		isDev: true
