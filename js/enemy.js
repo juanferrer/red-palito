@@ -46,9 +46,9 @@ class Enemy extends Character { // eslint-disable-line no-unused-vars
 		let vToPos = new THREE.Vector3(this.position.x - position.x, 0, this.position.z - position.z);
 
 		let angleToFacePosition = this.facingVector.angleTo(vToPos);
-		let angleCheck = this.facingVector.angleTo(vToPos.applyAxisAngle(new THREE.Vector3(0, 1, 0), Math.degToRad(this.rotSpeed * frameTime)));
 
 		if (angleToFacePosition > 0.02) {
+			let angleCheck = this.facingVector.angleTo(vToPos.applyAxisAngle(new THREE.Vector3(0, 1, 0), Math.degToRad(this.rotSpeed * frameTime)));
 			if (angleToFacePosition > angleCheck) {
 				this.rotateLeft();
 			} else {
