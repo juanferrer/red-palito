@@ -7,6 +7,6 @@ if (!settings.masterVolume) {
 		turn180TowardsRight: true,
 		showBlood: false,
 		modelsEnabled: false,
-		isDev: true
+		isDev: false
 	};
 }
