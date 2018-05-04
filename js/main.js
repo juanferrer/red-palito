@@ -77,6 +77,7 @@ let characterGeometry = new THREE.BoxBufferGeometry(1, 2, 1), // eslint-disable-
 let stats = new Stats();
 stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
 if (settings.isDev) document.body.appendChild(stats.dom);
+if (!settings.isMobile) $("#mobile-controller").css("display", "none");
 
 let modelLoader = new THREE.JDLoader();
 
@@ -135,6 +136,7 @@ function init() {
 	frameTime = 0;
 
 	//loadModels(getWeapons);
+	loadSettings();
 
 
 	healthDropCounter = healthDropTime;
@@ -278,6 +280,11 @@ function saveSettings() {
 	localStorage.setItem("settings", JSON.stringify(settings));
 }
 
+/** Load settings from the storage */
+function loadSettings() {
+	settings = JSON.parse(localStorage.getItem("settings")); // eslint-disable-line no-global-assign
+}
+
 /** Pass setting values to controls and game logic */
 function applySettings() {
 	listener.setMasterVolume(settings.masterVolume);
@@ -380,6 +387,7 @@ function updateUI() {
 		Menu.showMenu("pause");
 	} else if (!Input.isPaused && !Menu.isMainMenu) {
 		Menu.hideMenu();
+		if (settings.isMobile) Menu.showMobileController();
 		if (game.waveNumber > 0) {
 			$("#wave-number")[0].innerHTML = game.waveNumber;
 		}

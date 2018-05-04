@@ -22,6 +22,7 @@
 
 <body>
 
+	<!-- Menus -->
 	<div id="menu" class="gui">
 		<div id="main-menu" class="menu">
 			<div id="main-menu-buttons" class="button-container">
@@ -90,6 +91,21 @@
 	<div id="current-weapon-stats" class="gui gui-hud">
 		<div id="current-weapon-name" class="gui stats gui-hud">XX</div>
 		<div id="current-weapon-ammo" class="gui stats gui-hud">XX</div>
+	</div>
+
+	<div id="mobile-controller" class="mobile-controller">
+		<div id="directional-pad" class="mobile-button-pad directional-pad">
+			<button id="up-button" class="mobile-button"></button>
+			<div class="left-right-button-container">
+				<button id="right-button" class="mobile-button"></button>
+				<button id="left-button" class="mobile-button"></button>
+			</div>
+			<button id="down-button" class="mobile-button"></button>
+		</div>
+		<div id="other-pad" class="mobile-button-pad">
+			<button id="shift-button" class="mobile-button"></button>
+			<button id="attack-button" class="mobile-button"></button>
+		</div>
 	</div>
 
 	<script src="https://rawgit.com/mrdoob/stats.js/master/build/stats.min.js"></script>

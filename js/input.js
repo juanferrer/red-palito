@@ -25,6 +25,24 @@ class Input {
 		}, true);
 	}
 
+	static mobileControllerInit() {
+		$("#up-button").mousedown(e => {
+			console.log("Press");
+			let e = $.Event("keydown");
+			e.keyCode = 87;
+			$(window).trigger(e);
+		});
+		$("#up-button").mouseup(e => {
+			console.log("Depress");
+			let e = $.Event("keyup");
+			e.keyCode = 87;
+			$(window).trigger(e);
+		});
+		$("#left-button").click(e => { });
+		$("#right-button").click(e => { });
+		$("#down-button").click(e => { });
+	}
+
 	/**
 	 * Check what keys have been pressed since last
 	 * frame and react accordingly

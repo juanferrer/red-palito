@@ -34,6 +34,7 @@ class Menu {
 				break;
 
 		}
+		Menu.hideMobileController();
 		Menu.isShowingMenu = true;
 	}
 
@@ -65,6 +66,18 @@ class Menu {
 		$(".gui-hud").hide();
 		$("canvas").css("filter", "blur(3px)");
 		$("canvas").css("transform", "scale(1.03");
+	}
+
+	static showMobileController() {
+		if ($("#mobile-controller").css("display") === "none") {
+			$("#mobile-controller").css("display", "flex");
+		}
+	}
+
+	static hideMobileController() {
+		if ($("#mobile-controller").css("display") !== "none") {
+			$("#mobile-controller").css("display", "none");
+		}
 	}
 }
 
