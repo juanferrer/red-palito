@@ -5,10 +5,7 @@ modelRotSpeed, camMoveSpeed, camRotSpeed
 //http://keycode.info/
 class Input {
 
-	/**
-	 * Initialise keyboard to keep track what keys have
-	 * are pressed
-	 */
+	/** Initialise keyboard to keep track what keys are pressed */
 	static keyboardInit() {
 		// https://stackoverflow.com/a/12273538/7179042
 		// Keep track of what keys are down and update in loop
@@ -25,16 +22,8 @@ class Input {
 		}, true);
 	}
 
+	/** Initialise the mobile controller to map button press to keypress */
 	static mobileControllerInit() {
-		/*$("#up-button").mousedown(e => {
-			let artificialE = new KeyboardEvent("keydown", { "keyCode": 87 });
-			window.dispatchEvent(artificialE);
-		});
-		$("#up-button").mouseup(e => {
-			let artificialE = new KeyboardEvent("keyup", { "keyCode": 87 });
-			window.dispatchEvent(artificialE);
-		});*/
-
 		let buttonArray = ["up-button", "down-button", "left-button", "right-button"];
 
 		buttonArray.forEach(id => {
@@ -49,10 +38,7 @@ class Input {
 		});
 	}
 
-	/**
-	 * Check what keys have been pressed since last
-	 * frame and react accordingly
-	 */
+	/** Check what keys have been pressed since last frame and react accordingly */
 	static resolveInput() {
 		if (!Menu.isMainMenu) {
 			if (!Input.isPaused) {
