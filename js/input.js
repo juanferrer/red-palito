@@ -10,32 +10,57 @@ class Input {
 		// https://stackoverflow.com/a/12273538/7179042
 		// Keep track of what keys are down and update in loop
 		window.addEventListener("keydown", e => {
-			Input.keyState[e.keyCode || e.which] = true;
+			/*Input.keyState[e.keyCode || e.which] = true;
 			if (Input.keyLastPressed[e.keyCode || e.which] != null) {
 				let doublePressTimeout = $("#double-press-slider").val(); // miliseconds
 				Input.keyDoublePress[e.keyCode || e.which] = new Date().getTime() - Input.keyLastPressed[e.keyCode || e.which].getTime() < doublePressTimeout;
-			}
+			}*/
+			Input.keydown(e.keyCode || e.which);
 		}, true);
 		window.addEventListener("keyup", e => {
-			Input.keyState[e.keyCode || e.which] = false;
-			Input.keyLastPressed[e.keyCode || e.which] = new Date();
+			/*Input.keyState[e.keyCode || e.which] = false;
+			Input.keyLastPressed[e.keyCode || e.which] = new Date();*/
+			Input.keyup(e.keyCode || e.which);
 		}, true);
 	}
 
 	/** Initialise the mobile controller to map button press to keypress */
 	static mobileControllerInit() {
-		let buttonArray = ["up-button", "down-button", "left-button", "right-button"];
+		let buttonArray = ["up-button", "down-button", "left-button", "right-button", "shift-button", "attack-button", "pause-button"];
 
 		buttonArray.forEach(id => {
-			$(`#${id}`).mousedown(e => {
-				let artificialE = new KeyboardEvent("keydown", { "keyCode": e.target.getAttribute("data-keycode") });
-				window.dispatchEvent(artificialE);
+			$(`#${id}`).on("touchstart", e => {
+				/*let artificialE = new KeyboardEvent("keydown", { "keyCode": e.target.getAttribute("data-keycode") });
+				window.dispatchEvent(artificialE);*/
+				Input.keydown(parseInt(e.target.getAttribute("data-keycode")));
 			});
-			$(`#${id}`).mouseup(e => {
-				let artificialE = new KeyboardEvent("keyup", { "keyCode": e.target.getAttribute("data-keycode") });
-				window.dispatchEvent(artificialE);
+			$(`#${id}`).on("touchend", e => {
+				/*let artificialE = new KeyboardEvent("keyup", { "keyCode": e.target.getAttribute("data-keycode") });
+				window.dispatchEvent(artificialE);*/
+				Input.keyup(parseInt(e.target.getAttribute("data-keycode")));
 			});
 		});
+	}
+
+	/**
+	 * React to a keydown event
+	 * @param {number} keyCode
+	 */
+	static keydown(keyCode) {
+		Input.keyState[keyCode] = true;
+		if (Input.keyLastPressed[keyCode] != null) {
+			let doublePressTimeout = $("#double-press-slider").val(); // miliseconds
+			Input.keyDoublePress[keyCode] = new Date().getTime() - Input.keyLastPressed[keyCode].getTime() < doublePressTimeout;
+		}
+	}
+
+	/**
+	 * React to a keyup event
+	 * @param {number} keyCode
+	 */
+	static keyup(keyCode) {
+		Input.keyState[keyCode] = false;
+		Input.keyLastPressed[keyCode] = new Date();
 	}
 
 	/** Check what keys have been pressed since last frame and react accordingly */
@@ -49,12 +74,12 @@ class Input {
 				}
 
 				// Spacebar
-				if (Input.keyState[32]) {
+				if (Input.keyState[Input.keys.attack]) {
 					player.attack();
 				}
 
 				// Shift
-				if (Input.keyState[16]) {
+				if (Input.keyState[Input.keys.shift]) {
 					if (Input.canToggleShift) {
 						player.nextWeapon();
 						Input.canToggleShift = false;
@@ -62,19 +87,19 @@ class Input {
 				}
 
 				// A
-				if (Input.keyState[65]) {
+				if (Input.keyState[Input.keys.left]) {
 					player.rotateLeft();
 				}
 				// D
-				if (Input.keyState[68]) {
+				if (Input.keyState[Input.keys.right]) {
 					player.rotateRight();
 				}
 				// W
-				if (Input.keyState[87]) {
+				if (Input.keyState[Input.keys.forward]) {
 					player.moveForward();
 				}
 				// S
-				if (Input.keyState[83]) {
+				if (Input.keyState[Input.keys.backward]) {
 					if (Input.keyDoublePress[83]) {
 						Input.keyDoublePress[83] = false;
 						Input.keyLastPressed[83] = null;
@@ -126,8 +151,8 @@ class Input {
 				// #endregion unused
 			}
 
-			// P
-			if (Input.keyState[80]) {
+			// Escape
+			if (Input.keyState[Input.keys.pause]) {
 				if (Input.isPaused && Input.canTogglePause) {
 					Input.isPaused = false;
 					Input.canTogglePause = false;
@@ -138,12 +163,12 @@ class Input {
 				}
 			}
 		}
-		if (!Input.keyState[80]) {
+		if (!Input.keyState[Input.keys.pause]) {
 			Input.canTogglePause = true;
 		}
 
 		// Release shift
-		if (!Input.keyState[16]) {
+		if (!Input.keyState[Input.keys.shift]) {
 			Input.canToggleShift = true;
 		}
 	}
@@ -222,3 +247,14 @@ Input.isPaused = false;
 Input.canTogglePause = true;
 
 Input.canToggleShift = true;
+
+
+Input.keys = {
+	"attack": 32,
+	"shift": 16,
+	"left": 65,
+	"right": 68,
+	"forward": 87,
+	"backward": 83,
+	"pause": 27,
+};
