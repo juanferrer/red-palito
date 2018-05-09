@@ -4,8 +4,8 @@
 	--semi-transparent-color: rgba(200, 200, 200, 0.2);
 	--version-number: "v0.2";
 	--game-name: "Red Palito";
-	--menu-z-index: 2;
-	--mobile-controler-z-index: 1;
+	--mobile-controler-z-index: 2;
+	--menu-z-index: 1;
 	--canvas-z-index: -1;
 }
 

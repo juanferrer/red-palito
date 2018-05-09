@@ -142,6 +142,7 @@ function init() {
 	healthDropCounter = healthDropTime;
 	weaponDropCounter = weaponDropTime;
 	Input.keyboardInit();
+	if (settings.isMobile) Input.mobileControllerInit();
 
 	scene = new THREE.Scene();
 

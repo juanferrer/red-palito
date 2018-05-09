@@ -26,21 +26,27 @@ class Input {
 	}
 
 	static mobileControllerInit() {
-		$("#up-button").mousedown(e => {
-			console.log("Press");
-			let e = $.Event("keydown");
-			e.keyCode = 87;
-			$(window).trigger(e);
+		/*$("#up-button").mousedown(e => {
+			let artificialE = new KeyboardEvent("keydown", { "keyCode": 87 });
+			window.dispatchEvent(artificialE);
 		});
 		$("#up-button").mouseup(e => {
-			console.log("Depress");
-			let e = $.Event("keyup");
-			e.keyCode = 87;
-			$(window).trigger(e);
+			let artificialE = new KeyboardEvent("keyup", { "keyCode": 87 });
+			window.dispatchEvent(artificialE);
+		});*/
+
+		let buttonArray = ["up-button", "down-button", "left-button", "right-button"];
+
+		buttonArray.forEach(id => {
+			$(`#${id}`).mousedown(e => {
+				let artificialE = new KeyboardEvent("keydown", { "keyCode": e.target.getAttribute("data-keycode") });
+				window.dispatchEvent(artificialE);
+			});
+			$(`#${id}`).mouseup(e => {
+				let artificialE = new KeyboardEvent("keyup", { "keyCode": e.target.getAttribute("data-keycode") });
+				window.dispatchEvent(artificialE);
+			});
 		});
-		$("#left-button").click(e => { });
-		$("#right-button").click(e => { });
-		$("#down-button").click(e => { });
 	}
 
 	/**
