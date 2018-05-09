@@ -55,8 +55,8 @@ canvas {
 	width: 100%;
 	min-height: 50px;
 	height: 5vh;
-	margin: 10% 0 10% 0;
-	font-size: 30px;
+	margin: 10% 5% 10% 5%;
+	font-size: 150%;
 	background-color: transparent;
 	border-color: var(--main-color);
 	border-style: solid;
@@ -86,7 +86,7 @@ canvas {
 	z-index: var(--menu-z-index);
 	width: 30vw;
 	height: 50vh;
-	min-height: 400px;
+	min-height: 300px;
 	min-width: 300px;
 	margin: auto;
 	display: flow-root;
@@ -133,10 +133,10 @@ canvas {
 
 .row-button-container {
 	display: flex;
-	height: 50%;
+	width: 100%;
 	justify-content: flex-end;
-	align-content: space-around;
-	flex-direction: column;
+	align-content: space-between;
+	flex-direction: row;
 }
 
 .end-game-stat {
@@ -411,3 +411,41 @@ canvas {
 }
 
 /* #endregion */
+
+/* #region Media queries*/
+
+/* Small devices (landscape phones, 576px and up) */
+
+@media (min-width: 576px) {
+	.button-container::before {
+		font-size: 30px;
+		line-height: 60px;
+	}
+	.button-container::after {
+		font-size: 15px;
+	}
+}
+
+/* Medium devices (tablets, 768px and up) */
+
+@media (min-width: 768px) {
+	.button-container::before {
+		font-size: 40px;
+		line-height: 80px;
+	}
+	.button-container::after {
+		font-size: 20px;
+	}
+}
+
+/* Large devices (desktops, 992px and up) */
+
+@media (min-width: 992px) {
+	.button-container::before {
+		font-size: 50px;
+		line-height: 100px;
+	}
+	.button-container::after {
+		font-size: 30px;
+	}
+}
