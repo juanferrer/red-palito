@@ -525,8 +525,9 @@ function moveEnemies() {
 	});
 }
 
-/** Perform all calculations and animations that happen on enemies */
+/** Perform all calculations and animations that happen on particles */
 function animateEnemies() {
+	// Blood enemies
 	enemies.forEach(e => {
 		if (e.isPlayingBloodAnimation) {
 			e.bloodCounter += frameTime;
@@ -534,7 +535,7 @@ function animateEnemies() {
 				e.isPlayingBloodAnimation = false;
 				e.bloodCounter = 0;
 			} else if (e.bloodCounter > e.bloodEmissionTime) {
-				e.Mesh.material = zombieMaterial;
+				e.Mesh.material = e.originalMaterial;
 			} else if (settings.showBlood) {
 				for (let i = 0; i < 50; ++i) {
 					particleSystem.spawnParticle({
@@ -551,9 +552,10 @@ function animateEnemies() {
 					});
 				}
 			}
-			particleSystem.update(game.time);
 		}
 	});
+
+	particleSystem.update(game.time);
 }
 
 function updateSpawnCounters() {
