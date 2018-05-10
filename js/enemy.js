@@ -19,7 +19,6 @@ class Enemy extends Character { // eslint-disable-line no-unused-vars
 		this.hurtMaterial = damagedMaterial;
 		this.isPlayingSpawnAnimation = false;
 		this.isPlayingBloodAnimation = false;
-		this.particleSystem = new THREE.GPUParticleSystem({ maxParticles: 2500 });
 	}
 
 	init() {

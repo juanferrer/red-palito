@@ -56,6 +56,8 @@ const invisibleYPos = 100; // eslint-disable-line no-unused-vars
 
 let lightFlickerCounter = 0; // eslint-disable-line no-unused-vars
 
+let particleSystem = new THREE.GPUParticleSystem({ maxParticles: 25000 });
+
 let settings;
 loadSettings();
 
@@ -66,7 +68,7 @@ const playerMaterial = new THREE.MeshPhongMaterial({ color: playerColour, skinni
 	smallZombieMaterial = new THREE.MeshPhongMaterial({ color: 0xD1B829, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
 	smallZombiePrepareMaterial = new THREE.MeshPhongMaterial({ color: 0xD16729, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
 	smallZombieDashMaterial = new THREE.MeshPhongMaterial({ color: 0xFF0000, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
-	damagedMaterial = new THREE.MeshPhongMaterial({ color: 0xFFFFFF, skinning: settings.modelsEnabled ? true : false }), // eslint-disable-line no-unused-vars
+	damagedMaterial = new THREE.MeshPhongMaterial({ color: 0xB30000, skinning: settings.modelsEnabled ? true : false }), // eslint-disable-line no-unused-vars
 	weaponDropMaterial = new THREE.MeshPhongMaterial({ color: 0xFF5722 }), // eslint-disable-line no-unused-vars
 	hpDropMaterial = new THREE.MeshPhongMaterial({ color: 0x4CAF50 }), // eslint-disable-line no-unused-vars
 	planeMaterial = new THREE.MeshPhongMaterial({ color: planeColor }); // eslint-disable-line no-unused-vars
@@ -108,6 +110,11 @@ function reset() {
 	game.bulletsUsed = game.enemiesKilled = game.packagesReceived = 0;
 	game.time = 0;
 	isWaveSpawning = true;
+
+	// If we don't reset the particle system, users will see repetitions of previous particles
+	scene.remove(particleSystem);
+	particleSystem = new THREE.GPUParticleSystem({ maxParticles: 25000 });
+	scene.add(particleSystem);
 
 	healthDropCounter = healthDropTime;
 	weaponDropCounter = weaponDropTime;
@@ -173,6 +180,8 @@ function init() {
 
 		player.Mesh.add(listener);
 	});
+
+	scene.add(particleSystem);
 
 	// Models
 	for (let i = 0; i < bulletsAmount; ++i) {
@@ -522,21 +531,21 @@ function animateEnemies() {
 				e.Mesh.material = zombieMaterial;
 			} else {
 				for (let i = 0; i < 50; ++i) {
-					e.particleSystem.spawnParticle({
+					particleSystem.spawnParticle({
 						position: e.pointOfImpact,
 						positionRandomness: 0.2,
 						velocity: new THREE.Vector3().subVectors(player.position, e.pointOfImpact).normalize(),
 						velocityRandomness: 2.15,
-						color: 0xff0000,
+						color: 0xb30000,
 						colorRandomness: 0.1,
 						turbulence: 0.05,
 						lifetime: 0.2,
-						size: 14,
-						sizeRandomness: 1
+						size: 10,
+						sizeRandomness: 5
 					});
 				}
 			}
-			e.particleSystem.update(game.time);
+			particleSystem.update(game.time);
 		}
 	});
 }
