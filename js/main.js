@@ -1,6 +1,6 @@
 /*global THREE, Stats, $
 parseJSONToVar, getRandomPosition, getNextHPDrop, getNextWeaponDrop
-Bullet, Drop, Input, Menu, Player, Zombie, BigZombie, SmallZombie, settings
+Bullet, Drop, Input, Menu, Player, Zombie, BigZombie, SmallZombie
 */
 
 let clock, scene, camera, renderer;
@@ -55,6 +55,9 @@ const invisibleYPos = 100; // eslint-disable-line no-unused-vars
 
 let lightFlickerCounter = 0; // eslint-disable-line no-unused-vars
 
+let settings;
+loadSettings();
+
 /* Materials */
 const playerMaterial = new THREE.MeshPhongMaterial({ color: playerColour, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
 	zombieMaterial = new THREE.MeshPhongMaterial({ color: 0x4CAF50, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
@@ -72,7 +75,6 @@ let characterGeometry = new THREE.BoxBufferGeometry(1, 2, 1), // eslint-disable-
 	bigZombieGeometry = new THREE.BoxBufferGeometry(2, 4, 2), // eslint-disable-line no-unused-vars
 	smallZombieGeometry = new THREE.BoxBufferGeometry(1, 1, 1), // eslint-disable-line no-unused-vars
 	dropGeometry = new THREE.BoxBufferGeometry(1, 1, 1); // eslint-disable-line no-unused-vars
-
 
 let stats = new Stats();
 stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
@@ -136,7 +138,6 @@ function init() {
 	frameTime = 0;
 
 	//loadModels(getWeapons);
-	loadSettings();
 
 
 	healthDropCounter = healthDropTime;
@@ -284,6 +285,18 @@ function saveSettings() {
 /** Load settings from the storage */
 function loadSettings() {
 	settings = JSON.parse(localStorage.getItem("settings")); // eslint-disable-line no-global-assign
+	if (!settings || $.isEmptyObject(settings)) {
+		settings = {
+			masterVolume: 0.2,
+			ambientVolume: 1,
+			turn180TowardsRight: true,
+			showBlood: false,
+			modelsEnabled: false,
+			isMobile: false,
+			isDev: true
+		};
+		saveSettings();
+	}
 }
 
 /** Pass setting values to controls and game logic */
