@@ -82,9 +82,9 @@ class Player extends Character { // eslint-disable-line no-unused-vars
 			// Update stats
 			setTimeout(function () {
 				do {
-					// player instead of this because it's a callback
+					// Using "player" instead of "this" because it's a callback
 					player.currentWeapon = player.currentWeapon < player.ownedWeapons.length - 1 ? player.currentWeapon + 1 : 0;
-				} while (!player.ownedWeapons[player.currentWeapon] && !player.currentWeapon == 0);
+				} while (!player.ownedWeapons[player.currentWeapon] && !player.currentWeapon === 0);
 				player.updateWeaponStats();
 				player.onWeaponAnim = false;
 			}, 200);
