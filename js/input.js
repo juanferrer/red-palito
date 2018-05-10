@@ -248,7 +248,6 @@ Input.canTogglePause = true;
 
 Input.canToggleShift = true;
 
-
 Input.keys = {
 	"attack": 32,
 	"shift": 16,
@@ -258,3 +257,11 @@ Input.keys = {
 	"backward": 83,
 	"pause": 27,
 };
+
+$("#up-button").attr("data-keycode", Input.keys.forward);
+$("#down-button").attr("data-keycode", Input.keys.backward);
+$("#left-button").attr("data-keycode", Input.keys.left);
+$("#right-button").attr("data-keycode", Input.keys.right);
+$("#attack-button").attr("data-keycode", Input.keys.attack);
+$("#shift-button").attr("data-keycode", Input.keys.shift);
+$("#pause-button").attr("data-keycode", Input.keys.pause);
