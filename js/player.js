@@ -36,6 +36,8 @@ class Player extends Character { // eslint-disable-line no-unused-vars
 		this.acquireWeapon(0);
 		this.updateWeaponStats();
 		this.raycaster = new THREE.Raycaster(new THREE.Vector3(this.position.x, 1, this.position.z), THREE.Vector3(0, 1, 0));
+		this.isPlayingHealAnimation = false;
+		this.healAnimationTime = 0.3;
 	}
 
 	/**
@@ -156,6 +158,8 @@ class Player extends Character { // eslint-disable-line no-unused-vars
      */
 	heal(hpHealed) {
 		this.HP += hpHealed;
+		player.isPlayingHealAnimation = true;
+		player.healCounter = 0;
 		this.triggerGainedHPAnim();
 		Audio.gainHPSound.play();
 	}

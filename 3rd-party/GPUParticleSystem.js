@@ -31,6 +31,9 @@ THREE.GPUParticleSystem = function (options) {
 
 	this.PARTICLES_PER_CONTAINER = Math.ceil(this.PARTICLE_COUNT / this.PARTICLE_CONTAINERS);
 	this.PARTICLE_CURSOR = 0;
+
+	this.BLENDING = options.blending || null;
+
 	this.time = 0;
 	this.particleContainers = [];
 	this.rand = [];
@@ -196,7 +199,7 @@ THREE.GPUParticleSystem = function (options) {
 			}
 		},
 		//blending: THREE.AdditiveBlending,
-		blending: THREE.NormalBlending,
+		blending: this.BLENDING || THREE.NormalBlending,
 		vertexShader: GPUParticleShader.vertexShader,
 		fragmentShader: GPUParticleShader.fragmentShader
 	});

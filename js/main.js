@@ -56,8 +56,6 @@ const invisibleYPos = 100; // eslint-disable-line no-unused-vars
 
 let lightFlickerCounter = 0; // eslint-disable-line no-unused-vars
 
-let particleSystem = new THREE.GPUParticleSystem({ maxParticles: 25000 });
-
 let settings;
 loadSettings();
 
@@ -86,6 +84,13 @@ if (settings.isDev) document.body.appendChild(stats.dom);
 if (!settings.isMobile) $("#mobile-controller").css("display", "none");
 
 let modelLoader = new THREE.JDLoader();
+let textureLoader = new THREE.TextureLoader();
+
+let healParticlesTexture = textureLoader.load("textures/heal-particle.png");
+let bloodParticlesTexture = textureLoader.load("textures/blood-particle.png");
+
+let bloodParticleSystem = new THREE.GPUParticleSystem({ maxParticles: 25000, particleSpriteTex: bloodParticlesTexture, blending: THREE.NormalBlending });
+let healParticleSystem = new THREE.GPUParticleSystem({ maxParticles: 25000, particleSpriteTex: healParticlesTexture, blending: THREE.AdditiveBlending });
 
 /**
  * Window resize event handler
@@ -112,9 +117,13 @@ function reset() {
 	isWaveSpawning = true;
 
 	// If we don't reset the particle system, users will see repetitions of previous particles
-	scene.remove(particleSystem);
-	particleSystem = new THREE.GPUParticleSystem({ maxParticles: 25000 });
-	scene.add(particleSystem);
+	scene.remove(bloodParticleSystem);
+	bloodParticleSystem = new THREE.GPUParticleSystem({ maxParticles: 25000, particleSpriteTex: bloodParticlesTexture, blending: THREE.NormalBlending });
+	scene.add(bloodParticleSystem);
+
+	scene.remove(healParticleSystem);
+	healParticleSystem = new THREE.GPUParticleSystem({ maxParticles: 25000, particleSpriteTex: healParticlesTexture, blending: THREE.AdditiveBlending });
+	scene.add(healParticleSystem);
 
 	healthDropCounter = healthDropTime;
 	weaponDropCounter = weaponDropTime;
@@ -153,7 +162,7 @@ function init() {
 	healthDropCounter = healthDropTime;
 	weaponDropCounter = weaponDropTime;
 	Input.keyboardInit();
-	if (settings.isMobile) Input.mobileControllerInit();
+	Input.mobileControllerInit();
 
 	scene = new THREE.Scene();
 
@@ -181,7 +190,7 @@ function init() {
 		player.Mesh.add(listener);
 	});
 
-	scene.add(particleSystem);
+	scene.add(bloodParticleSystem);
 
 	// Models
 	for (let i = 0; i < bulletsAmount; ++i) {
@@ -286,7 +295,7 @@ function init() {
 
 	$("#mobile-controller-button").click(() => {
 		settings.isMobile = !settings.isMobile;
-		$("#mobile-controller-button").val(settings.isMobile ? "SHOW" : "HIDe");
+		$("#mobile-controller-button").val(settings.isMobile ? "SHOW" : "HIDE");
 	});
 
 	$("#blood-button").click(() => {
@@ -538,7 +547,7 @@ function animateEnemies() {
 				e.Mesh.material = e.originalMaterial;
 			} else if (settings.showBlood) {
 				for (let i = 0; i < 50; ++i) {
-					particleSystem.spawnParticle({
+					bloodParticleSystem.spawnParticle({
 						position: e.pointOfImpact,
 						positionRandomness: 0.2,
 						velocity: new THREE.Vector3().subVectors(player.position, e.pointOfImpact).normalize(),
@@ -555,7 +564,32 @@ function animateEnemies() {
 		}
 	});
 
-	particleSystem.update(game.time);
+	// Player heal
+	if (player.isPlayingHealAnimation) {
+		player.healCounter += frameTime;
+		if (player.healCounter > player.healAnimationTime) {
+			player.isPlayingHealAnimation = false;
+			player.healCounter = 0;
+		} else {
+			for (let i = 0; i < 10; ++i) {
+				healParticleSystem.spawnParticle({
+					position: player.position,
+					positionRandomness: 2,
+					velocity: new THREE.Vector3(),
+					velocityRandomness: 0.2,
+					color: 0x4fff4d,
+					colorRandomness: 0.2,
+					turbulence: 0,
+					lifetime: 5,
+					size: 10,
+					sizeRandomness: 10
+				});
+			}
+		}
+	}
+
+	bloodParticleSystem.update(game.time);
+	healParticleSystem.update(game.time);
 }
 
 function updateSpawnCounters() {
