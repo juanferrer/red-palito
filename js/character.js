@@ -46,6 +46,7 @@ class Character { // eslint-disable-line no-unused-vars
 	addToScene() {
 		this.Mesh.translateY(this.isPlayer ? (settings.modelsEnabled ? 0 : 1) : invisibleYPos);
 		scene.add(this.Mesh);
+		if (this.particleSystem) scene.add(this.particleSystem);
 	}
 
 	/**

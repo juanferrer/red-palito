@@ -27,7 +27,8 @@ let game = {
 	enemiesKilled: 0,
 	packagesReceived: 0,
 	bulletsUsed: 0,
-	statsUpdated: false
+	statsUpdated: false,
+	time: 0
 };
 
 let isWaveSpawning = true;
@@ -65,6 +66,7 @@ const playerMaterial = new THREE.MeshPhongMaterial({ color: playerColour, skinni
 	smallZombieMaterial = new THREE.MeshPhongMaterial({ color: 0xD1B829, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
 	smallZombiePrepareMaterial = new THREE.MeshPhongMaterial({ color: 0xD16729, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
 	smallZombieDashMaterial = new THREE.MeshPhongMaterial({ color: 0xFF0000, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
+	damagedMaterial = new THREE.MeshPhongMaterial({ color: 0xFFFFFF, skinning: settings.modelsEnabled ? true : false }), // eslint-disable-line no-unused-vars
 	weaponDropMaterial = new THREE.MeshPhongMaterial({ color: 0xFF5722 }), // eslint-disable-line no-unused-vars
 	hpDropMaterial = new THREE.MeshPhongMaterial({ color: 0x4CAF50 }), // eslint-disable-line no-unused-vars
 	planeMaterial = new THREE.MeshPhongMaterial({ color: planeColor }); // eslint-disable-line no-unused-vars
@@ -104,6 +106,7 @@ function reset() {
 	game.waveNumber = 1;
 	game.statsUpdated = false;
 	game.bulletsUsed = game.enemiesKilled = game.packagesReceived = 0;
+	game.time = 0;
 	isWaveSpawning = true;
 
 	healthDropCounter = healthDropTime;
@@ -379,6 +382,7 @@ function animate() {
 			}
 
 			moveEnemies();
+			animateEnemies();
 			updateSpawnCounters();
 			collisions();
 
@@ -399,6 +403,7 @@ function animate() {
 		}
 		renderer.render(scene, camera);
 		frameTime = clock.getDelta();
+		game.time += frameTime;
 	}
 	stats.end();
 }
@@ -501,6 +506,37 @@ function moveEnemies() {
 		}
 		else if (e.HP <= 0 && e.isSpawned) {
 			e.die();
+		}
+	});
+}
+
+/** Perform all calculations and animations that happen on enemies */
+function animateEnemies() {
+	enemies.forEach(e => {
+		if (e.isPlayingBloodAnimation) {
+			e.bloodCounter += frameTime;
+			if (e.bloodCounter > e.bloodAnimationTime) {
+				e.isPlayingBloodAnimation = false;
+				e.bloodCounter = 0;
+			} else if (e.bloodCounter > e.bloodEmissionTime) {
+				e.Mesh.material = zombieMaterial;
+			} else {
+				for (let i = 0; i < 50; ++i) {
+					e.particleSystem.spawnParticle({
+						position: e.pointOfImpact,
+						positionRandomness: 0.2,
+						velocity: new THREE.Vector3().subVectors(player.position, e.pointOfImpact).normalize(),
+						velocityRandomness: 2.15,
+						color: 0xff0000,
+						colorRandomness: 0.1,
+						turbulence: 0.05,
+						lifetime: 0.2,
+						size: 14,
+						sizeRandomness: 1
+					});
+				}
+			}
+			e.particleSystem.update(game.time);
 		}
 	});
 }

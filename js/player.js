@@ -229,7 +229,7 @@ class Player extends Character { // eslint-disable-line no-unused-vars
 			else {
 				enemies.forEach(enemy => {
 					if (intersects[0].object.id === enemy.id && enemy.HP > 0) {
-						enemy.receiveDamage(this.damage);
+						enemy.receiveDamage(this.damage, intersects[0].point);
 					}
 				});
 			}

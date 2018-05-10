@@ -22,7 +22,8 @@ class SmallZombie extends Enemy { // eslint-disable-line no-unused-vars
 		this.shouldSpawn = true;
 		this.damage = 2;
 		this.geometry = smallZombieGeometry;
-		this.material = smallZombieMaterial;
+		this.originalMaterial = smallZombieMaterial;
+		this.material = this.originalMaterial;
 		super.init();
 	}
 
@@ -63,7 +64,7 @@ class SmallZombie extends Enemy { // eslint-disable-line no-unused-vars
 
 	moveForward() {
 		super.moveForward();
-		this.Mesh.material = smallZombieMaterial;
+		this.Mesh.material = this.originalMaterial;
 	}
 
 	dashForward() {

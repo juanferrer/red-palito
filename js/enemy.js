@@ -1,5 +1,5 @@
 /* globals THREE, Character, player, game, invisibleYPos, settings,
-	frameTime, getRandomPosition */
+	frameTime, getRandomPosition, damagedMaterial*/
 
 /**
  * General enemy class
@@ -12,7 +12,14 @@ class Enemy extends Character { // eslint-disable-line no-unused-vars
 		this.isSpawned = false;
 		this.soundCounter = Math.randomInterval(2, 8);
 		this.targetPosition = new THREE.Vector3();
-		this.bloodCounter = 1000;	// Miliseconds
+		this.bloodEmissionTime = 0.05; // Seconds
+		this.bloodAnimationTime = 1; // Seconds
+		this.bloodCounter = -1;
+		this.pointOfImpact = new THREE.Vector3();
+		this.hurtMaterial = damagedMaterial;
+		this.isPlayingSpawnAnimation = false;
+		this.isPlayingBloodAnimation = false;
+		this.particleSystem = new THREE.GPUParticleSystem({ maxParticles: 2500 });
 	}
 
 	init() {
@@ -32,8 +39,8 @@ class Enemy extends Character { // eslint-disable-line no-unused-vars
      * Reduce HP of enemy by an amount
      * @param {number} damageDealt - Amount by which HP is reduced
      */
-	receiveDamage(damageDealt) {
-		this.triggerBlood();
+	receiveDamage(damageDealt, pointOfImpact) {
+		this.triggerBlood(pointOfImpact);
 		this.HP -= damageDealt;
 		if (this.HP < 0) {
 			this.die();
@@ -41,8 +48,11 @@ class Enemy extends Character { // eslint-disable-line no-unused-vars
 	}
 
 	/**  */
-	triggerBlood() {
-
+	triggerBlood(pointOfImpact) {
+		this.isPlayingBloodAnimation = true;
+		this.bloodCounter = 0;
+		this.pointOfImpact = pointOfImpact;
+		this.Mesh.material = damagedMaterial;
 	}
 
 	/**
@@ -100,6 +110,8 @@ class Enemy extends Character { // eslint-disable-line no-unused-vars
 		this.spawnCountDown = this.initialSpawnCountDown;
 		this.position.set(0, invisibleYPos, 0);
 		game.enemiesKilled++;
+		//this.isPlayingBloodAnimation = false;
+		//this.bloodCounter = 0;
 	}
 
 	/**  */
@@ -108,5 +120,7 @@ class Enemy extends Character { // eslint-disable-line no-unused-vars
 		//if (!settings.modelsEnabled) this.position.y -= 1;
 		this.targetPosition = getRandomPosition();
 		this.isPlayingSpawnAnimation = true;
+		this.isPlayingBloodAnimation = false;
+		this.Mesh.material = this.originalMaterial;
 	}
 }
