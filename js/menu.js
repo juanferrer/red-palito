@@ -35,6 +35,7 @@ class Menu {
 
 		}
 		Menu.hideMobileController();
+		Menu.hideUI();
 		Menu.isShowingMenu = true;
 	}
 

@@ -224,10 +224,13 @@ function init() {
 	$("#start-button").click(() => {
 		Menu.isMainMenu = false;
 		Menu.showUI();
+		if (settings.isMobile) Menu.showMobileController();
 		reset();
 	});
 	$("#resume-button").click(() => {
 		Input.isPaused = false;
+		Menu.showUI();
+		if (settings.isMobile) Menu.showMobileController();
 	});
 	$("#exit-button").click(() => {
 		Menu.isMainMenu = true;
@@ -242,6 +245,7 @@ function init() {
 		Menu.hideMenu();
 		Input.isPaused = false;
 		Menu.showUI();
+		if (settings.isMobile) Menu.showMobileController();
 		reset();
 	});
 
@@ -282,7 +286,7 @@ function saveSettings() {
 	localStorage.setItem("settings", JSON.stringify(settings));
 }
 
-/** Load settings from the storage */
+/** Load settings from the storage or set default settings if empty */
 function loadSettings() {
 	settings = JSON.parse(localStorage.getItem("settings")); // eslint-disable-line no-global-assign
 	if (!settings || $.isEmptyObject(settings)) {
@@ -292,7 +296,7 @@ function loadSettings() {
 			turn180TowardsRight: true,
 			showBlood: false,
 			modelsEnabled: false,
-			isMobile: false,
+			isMobile: true,
 			isDev: true
 		};
 		saveSettings();
@@ -401,6 +405,7 @@ function updateUI() {
 		Menu.showMenu("pause");
 	} else if (!Input.isPaused && !Menu.isMainMenu) {
 		Menu.hideMenu();
+		Menu.showUI();
 		if (settings.isMobile) Menu.showMobileController();
 		if (game.waveNumber > 0) {
 			$("#wave-number")[0].innerHTML = game.waveNumber;
