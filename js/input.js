@@ -100,9 +100,9 @@ class Input {
 				}
 				// S
 				if (Input.keyState[Input.keys.backward]) {
-					if (Input.keyDoublePress[83]) {
-						Input.keyDoublePress[83] = false;
-						Input.keyLastPressed[83] = null;
+					if (Input.keyDoublePress[Input.keys.backward]) {
+						Input.keyDoublePress[Input.keys.backward] = false;
+						Input.keyLastPressed[Input.keys.backward] = null;
 						player.turnAround();
 					}
 					player.moveBackward();
