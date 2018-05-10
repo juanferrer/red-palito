@@ -301,7 +301,7 @@ function loadSettings() {
 			turn180TowardsRight: true,
 			showBlood: false,
 			modelsEnabled: false,
-			isMobile: true,
+			isMobile: false,
 			isDev: true
 		};
 		saveSettings();
@@ -312,6 +312,8 @@ function loadSettings() {
 function applySettings() {
 	listener.setMasterVolume(settings.masterVolume);
 	$("#volume-slider").val(settings.masterVolume);
+	$("#turn-direction-button").val(settings.turn180TowardsRight ? "RIGHT" : "LEFT");
+	$("#mobile-controller-button").val(settings.isMobile ? "SHOW" : "HIDE");
 }
 
 /** Prepare player for game */

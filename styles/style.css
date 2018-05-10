@@ -148,6 +148,7 @@ canvas {
 }
 
 .slider {
+	appearance: none;
 	-webkit-appearance: none;
 	width: 100%;
 	height: 7px;
@@ -158,6 +159,7 @@ canvas {
 }
 
 .slider::-webkit-slider-thumb {
+	appearance: none;
 	-webkit-appearance: none;
 	width: 15px;
 	height: 15px;
