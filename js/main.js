@@ -280,13 +280,18 @@ function init() {
 	});
 
 	$("#turn-direction-button").click(() => {
-		$("#turn-direction-button").val(settings.turn180TowardsRight ? "LEFT" : "RIGHT");
 		settings.turn180TowardsRight = !settings.turn180TowardsRight;
+		$("#turn-direction-button").val(settings.turn180TowardsRight ? "RIGHT" : "LEFT");
 	});
 
 	$("#mobile-controller-button").click(() => {
-		$("#mobile-controller-button").val(settings.isMobile ? "HIDE" : "SHOW");
 		settings.isMobile = !settings.isMobile;
+		$("#mobile-controller-button").val(settings.isMobile ? "SHOW" : "HIDe");
+	});
+
+	$("#blood-button").click(() => {
+		settings.showBlood = !settings.showBlood;
+		$("#blood-button").val(settings.showBlood ? "ON" : "OFF");
 	});
 
 	// #endregion
@@ -311,7 +316,7 @@ function loadSettings() {
 			masterVolume: 0.2,
 			ambientVolume: 1,
 			turn180TowardsRight: true,
-			showBlood: false,
+			showBlood: true,
 			modelsEnabled: false,
 			isMobile: false,
 			isDev: true
@@ -326,6 +331,7 @@ function applySettings() {
 	$("#volume-slider").val(settings.masterVolume);
 	$("#turn-direction-button").val(settings.turn180TowardsRight ? "RIGHT" : "LEFT");
 	$("#mobile-controller-button").val(settings.isMobile ? "SHOW" : "HIDE");
+	$("#blood-button").val(settings.showBlood ? "ON" : "OFF");
 }
 
 /** Prepare player for game */
@@ -529,7 +535,7 @@ function animateEnemies() {
 				e.bloodCounter = 0;
 			} else if (e.bloodCounter > e.bloodEmissionTime) {
 				e.Mesh.material = zombieMaterial;
-			} else {
+			} else if (settings.showBlood) {
 				for (let i = 0; i < 50; ++i) {
 					particleSystem.spawnParticle({
 						position: e.pointOfImpact,
