@@ -55,7 +55,7 @@ canvas {
 	width: 100%;
 	min-height: 50px;
 	height: 5vh;
-	margin: 10% 5% 10% 5%;
+	margin: 5% 5% 5% 5%;
 	font-size: 150%;
 	background-color: transparent;
 	border-color: var(--main-color);
@@ -426,16 +426,18 @@ canvas {
 	.button-container::after {
 		font-size: 15px;
 	}
+	.end-game-stat {
+		font-size: 15px;
+	}
 }
 
 /* Medium devices (tablets, 768px and up) */
 
 @media (min-width: 768px) {
-	.button-container::before {
-		font-size: 40px;
-		line-height: 80px;
-	}
 	.button-container::after {
+		font-size: 20px;
+	}
+	.end-game-stat {
 		font-size: 20px;
 	}
 }
@@ -446,6 +448,9 @@ canvas {
 	.button-container::before {
 		font-size: 50px;
 		line-height: 100px;
+	}
+	.end-game-stat {
+		font-size: 25px;
 	}
 }
 
