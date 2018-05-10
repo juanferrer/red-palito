@@ -272,6 +272,11 @@ function init() {
 		settings.turn180TowardsRight = !settings.turn180TowardsRight;
 	});
 
+	$("#mobile-controller-button").click(() => {
+		$("#mobile-controller-button").val(settings.isMobile ? "HIDE" : "SHOW");
+		settings.isMobile = !settings.isMobile;
+	});
+
 	// #endregion
 
 	//requestAnimationFrame(animate);
