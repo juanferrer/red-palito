@@ -2,8 +2,7 @@
 smallZombieGeometry, smallZombieMaterial, smallZombiePrepareMaterial, smallZombieDashMaterial*/
 
 /**
- * Single class meant to be used by players and enemies alike.
- * It has a THREE.Geometry, THREE.Material and THREE.Mesh among others.
+ * Small enemy class (A.K.A. Zoomies)
  */
 class SmallZombie extends Enemy { // eslint-disable-line no-unused-vars
 
