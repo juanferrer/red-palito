@@ -81,13 +81,11 @@ class Menu {
 		}
 	}
 
-	static showLowHPBackdrop(opacity) {
+	static showLowHPBackdrop() {
 		if ($("#low-hp-backdrop").css("display") === "none") {
 			$("#low-hp-backdrop").css("display", "flex");
 			$("#low-hp-veins").css("display", "flex");
 		}
-		$("#low-hp-backdrop").css("opacity", opacity);
-		$("#low-hp-veins").css("opacity", opacity / 2);
 	}
 
 	static hideLowHPBackdrop() {

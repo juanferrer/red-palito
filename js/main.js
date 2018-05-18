@@ -33,7 +33,7 @@ let game = {
 
 let isWaveSpawning = true;
 
-const lowHPAnimationThreshold = 5;
+const lowHPAnimationThreshold = 4;
 
 let bullets = [];
 const bulletsAmount = 30;
@@ -418,6 +418,8 @@ function animate() {
 			updateSpawnCounters();
 			collisions();
 
+			animateLowHPBackdrop();
+
 			updateDropCounters();
 
 			if (!enemyAlive() && !isWaveSpawning) {
@@ -440,14 +442,16 @@ function animate() {
 	stats.end();
 }
 
-/** Update elements from the UI */
-function updateUI() {
+function updateLowHPBackdrop() {
 	if (player.HP <= lowHPAnimationThreshold) {
-		Menu.showLowHPBackdrop(1 / player.HP);
+		Menu.showLowHPBackdrop();
 	} else {
 		Menu.hideLowHPBackdrop();
 	}
+}
 
+/** Update elements from the UI */
+function updateUI() {
 	if (Menu.isMainMenu && !Menu.isShowingMenu) {
 		Menu.showMenu("main");
 	} else if (Input.isPaused && !Menu.isShowingMenu) {
@@ -605,6 +609,20 @@ function animateEnemies() {
 	healParticleSystem.update(game.time);
 }
 
+let lowHPAnimationCounter = 0.5;
+
+function animateLowHPBackdrop() {
+	if (player.HP <= lowHPAnimationThreshold) {
+		lowHPAnimationCounter += frameTime * 2 / player.HP;
+		if (lowHPAnimationCounter > 1) {
+			lowHPAnimationCounter = 0;
+		} else if (lowHPAnimationCounter > 0.5) {
+			$("#low-hp-backdrop").css("opacity", (1 / Math.sin(lowHPAnimationCounter) / 5) + (1 / (player.HP * 2)));
+			$("#low-hp-veins").css("opacity", (1 / Math.sin(lowHPAnimationCounter) / 5)/* + (1 / (player.HP * 2))*/);
+		}
+	}
+}
+
 function updateSpawnCounters() {
 	for (let i = 0; i < currentEnemyAmount; ++i) {
 		if (enemies[i].shouldSpawn) {
@@ -652,6 +670,7 @@ function enemyCollisions() {
 				a.position.add(direction.clone().multiplyScalar(a.moveSpeed * frameTime));
 				//player.position.add(direction.clone().multiplyScalar(-player.radius / 10));
 				a.attack();
+				updateLowHPBackdrop();
 				updateUI();
 			}
 		}
@@ -666,10 +685,11 @@ function objectCollisions() {
 	hpDrops.forEach(d => {
 		if (d.isSpawned) {
 			if (d.position.distanceTo(player.position) < (player.radius * 2)) {
-				updateUI();
 				player.heal(d.value);
 				d.unspawn();
 				game.packagesReceived++;
+				updateLowHPBackdrop();
+				updateUI();
 			}
 		}
 	});
