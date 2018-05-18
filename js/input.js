@@ -1,5 +1,6 @@
 /*global Menu, player, $,
-modelRotSpeed, camMoveSpeed, camRotSpeed
+modelRotSpeed, camMoveSpeed, camRotSpeed,
+updateUI
 */
 
 //http://keycode.info/
@@ -161,6 +162,7 @@ class Input {
 					Input.isPaused = true;
 					Input.canTogglePause = false;
 				}
+				updateUI();
 			}
 		}
 		if (!Input.keyState[Input.keys.pause]) {

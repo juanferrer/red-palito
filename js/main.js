@@ -189,6 +189,7 @@ function init() {
 		setGunFlare();
 
 		player.Mesh.add(listener);
+		updateUI();
 	});
 
 	scene.add(bloodParticleSystem);
@@ -248,11 +249,13 @@ function init() {
 		Menu.showUI();
 		if (settings.isMobile) Menu.showMobileController();
 		reset();
+		updateUI();
 	});
 	$("#resume-button").click(() => {
 		Input.isPaused = false;
 		Menu.showUI();
 		if (settings.isMobile) Menu.showMobileController();
+		updateUI();
 	});
 	$("#exit-button").click(() => {
 		Menu.isMainMenu = true;
@@ -260,6 +263,7 @@ function init() {
 		Input.isPaused = false;
 		Menu.hideUI();
 		reset();
+		updateUI();
 	});
 
 	$("#play-again-button").click(() => {
@@ -269,6 +273,7 @@ function init() {
 		Menu.showUI();
 		if (settings.isMobile) Menu.showMobileController();
 		reset();
+		updateUI();
 	});
 
 	$("#settings-button").click(() => {
@@ -277,12 +282,14 @@ function init() {
 		Menu.showMenu("settings");
 		Input.isPaused = true;
 		Menu.hideUI();
+		updateUI();
 	});
 
 	$("#save-settings-button").click(() => {
 		saveSettings();
 		applySettings();
 		$("#exit-button").click();
+		updateUI();
 	});
 
 	$("#cancel-settings-button").click(() => {
@@ -385,7 +392,7 @@ function animate() {
 
 	if (player !== undefined) {
 
-		updateUI();
+		//updateUI();
 
 		Input.resolveInput();
 
@@ -433,16 +440,14 @@ function animate() {
 	stats.end();
 }
 
-function updateLowHPBackdrop() {
+/** Update elements from the UI */
+function updateUI() {
 	if (player.HP <= lowHPAnimationThreshold) {
 		Menu.showLowHPBackdrop(1 / player.HP);
 	} else {
 		Menu.hideLowHPBackdrop();
 	}
-}
 
-/** Update elements from the UI */
-function updateUI() {
 	if (Menu.isMainMenu && !Menu.isShowingMenu) {
 		Menu.showMenu("main");
 	} else if (Input.isPaused && !Menu.isShowingMenu) {
@@ -647,7 +652,7 @@ function enemyCollisions() {
 				a.position.add(direction.clone().multiplyScalar(a.moveSpeed * frameTime));
 				//player.position.add(direction.clone().multiplyScalar(-player.radius / 10));
 				a.attack();
-				updateLowHPBackdrop();
+				updateUI();
 			}
 		}
 	});
@@ -661,7 +666,7 @@ function objectCollisions() {
 	hpDrops.forEach(d => {
 		if (d.isSpawned) {
 			if (d.position.distanceTo(player.position) < (player.radius * 2)) {
-				updateLowHPBackdrop();
+				updateUI();
 				player.heal(d.value);
 				d.unspawn();
 				game.packagesReceived++;

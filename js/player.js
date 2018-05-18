@@ -1,6 +1,6 @@
 /* globals $, THREE, Character, weapons, characterGeometry,
 playerMaterial, player, enemyAmount, enemies,
-getNextBullet, gunFlare, gunFlareColor, game*/
+getNextBullet, gunFlare, gunFlareColor, game, updateUI*/
 
 /**
  * Single class meant to be used by players and enemies alike.
@@ -87,6 +87,7 @@ class Player extends Character { // eslint-disable-line no-unused-vars
 				} while (!player.ownedWeapons[player.currentWeapon] || player.weaponsAmmo[player.currentWeapon] === 0);
 				player.updateWeaponStats();
 				player.onWeaponAnim = false;
+				updateUI();
 			}, 200);
 		}
 	}
@@ -135,6 +136,7 @@ class Player extends Character { // eslint-disable-line no-unused-vars
 			this.useWeapon();
 			Audio.weaponSounds[this.currentWeapon].play();
 			this.attackCounter[this.currentWeapon] = this.attackSpeed[this.currentWeapon];
+			updateUI();
 		}
 	}
 
