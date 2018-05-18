@@ -33,6 +33,7 @@ let game = {
 
 let isWaveSpawning = true;
 
+const lowHPAnimationThreshold = 5;
 
 let bullets = [];
 const bulletsAmount = 30;
@@ -432,11 +433,18 @@ function animate() {
 	stats.end();
 }
 
+function updateLowHPBackdrop() {
+	if (player.HP <= lowHPAnimationThreshold) {
+		Menu.showLowHPBackdrop(1 / player.HP);
+	} else {
+		Menu.hideLowHPBackdrop();
+	}
+}
+
 /** Update elements from the UI */
 function updateUI() {
 	if (Menu.isMainMenu && !Menu.isShowingMenu) {
 		Menu.showMenu("main");
-
 	} else if (Input.isPaused && !Menu.isShowingMenu) {
 		Menu.showMenu("pause");
 	} else if (!Input.isPaused && !Menu.isMainMenu) {
@@ -639,6 +647,7 @@ function enemyCollisions() {
 				a.position.add(direction.clone().multiplyScalar(a.moveSpeed * frameTime));
 				//player.position.add(direction.clone().multiplyScalar(-player.radius / 10));
 				a.attack();
+				updateLowHPBackdrop();
 			}
 		}
 	});
@@ -652,6 +661,7 @@ function objectCollisions() {
 	hpDrops.forEach(d => {
 		if (d.isSpawned) {
 			if (d.position.distanceTo(player.position) < (player.radius * 2)) {
+				updateLowHPBackdrop();
 				player.heal(d.value);
 				d.unspawn();
 				game.packagesReceived++;

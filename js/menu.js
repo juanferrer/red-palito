@@ -80,6 +80,22 @@ class Menu {
 			$("#mobile-controller").css("display", "none");
 		}
 	}
+
+	static showLowHPBackdrop(opacity) {
+		if ($("#low-hp-backdrop").css("display") === "none") {
+			$("#low-hp-backdrop").css("display", "flex");
+			$("#low-hp-veins").css("display", "flex");
+		}
+		$("#low-hp-backdrop").css("opacity", opacity);
+		$("#low-hp-veins").css("opacity", opacity / 2);
+	}
+
+	static hideLowHPBackdrop() {
+		if ($("#low-hp-backdrop").css("display") !== "none") {
+			$("#low-hp-backdrop").css("display", "none");
+			$("#low-hp-veins").css("display", "none");
+		}
+	}
 }
 
 Menu.isShowingMenu = false;

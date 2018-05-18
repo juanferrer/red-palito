@@ -4,8 +4,9 @@
 	--semi-transparent-color: rgba(200, 200, 200, 0.2);
 	--version-number: "v0.2";
 	--game-name: "Red Palito";
-	--mobile-controler-z-index: 2;
-	--menu-z-index: 1;
+	--mobile-controler-z-index: 3;
+	--menu-z-index: 2;
+	--backdrop-z-index: 1;
 	--canvas-z-index: -1;
 }
 
@@ -197,7 +198,23 @@ canvas {
 	padding: 10px;
 }
 
+.backdrop {
+	height: 100vh;
+	width: 100vw;
+	position: absolute;
+	z-index: var(--backdrop-z-index);
+	display: none;
+}
+
 /* Elements */
+
+#low-hp-backdrop {
+	background: transparent url("../textures/low-hp-backdrop.png") no-repeat center;
+}
+
+#low-hp-veins {
+	background: transparent url("../textures/low-hp-veins.png") no-repeat center;
+}
 
 #wave-number {
 	width: 100%;
