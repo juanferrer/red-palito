@@ -213,7 +213,8 @@ class Player extends Character { // eslint-disable-line no-unused-vars
      * @param {THREE.Vector3} dirVector - Target direction of bullet
      * @param {bool} resilient - Whether the bullet should go through enemies
      */
-	bulletHitCheck(dirVector, resilient = false) {
+	bulletHitCheck(bullet, resilient = false) {
+		let dirVector = bullet.direction;
 		this.raycaster.set(new THREE.Vector3(this.position.x, 1, this.position.z), dirVector);
 		let enemyMeshes = [];
 		for (let e = 0; e < enemyAmount; ++e) {
@@ -236,6 +237,7 @@ class Player extends Character { // eslint-disable-line no-unused-vars
 				enemies.forEach(enemy => {
 					if (intersects[0].object.id === enemy.id && enemy.HP > 0) {
 						enemy.receiveDamage(this.damage, intersects[0].point);
+						bullet.setDestructionPoint(intersects[0].point);
 					}
 				});
 			}
@@ -254,9 +256,8 @@ class Player extends Character { // eslint-disable-line no-unused-vars
 			case 0: case 1:
 				bullet = getNextBullet();
 				bullet.prepareForWeapon(this.currentWeapon);
-				// bullet.prepareBulletForWeapons(weapons[this.currentWeapon]);
 				bullet.spawn(this.position, this.facingVector, this.accuracy);
-				this.bulletHitCheck(bullet.direction);
+				this.bulletHitCheck(bullet);
 
 				break;
 			// Special cases
@@ -267,14 +268,13 @@ class Player extends Character { // eslint-disable-line no-unused-vars
 				for (let i = 0; i < 5; ++i) {
 					bullet = getNextBullet();
 					bullet.prepareForWeapon(this.currentWeapon);
-					// bullet.prepareBulletForWeapons(weapons[this.currentWeapon]);
 					dirVector = this.facingVector;
 					randX = (Math.random() / 5) - 0.1;
 					randY = (Math.random() / 5) - 0.1;
 					randZ = (Math.random() / 5) - 0.1;
 					dirVector.add(new THREE.Vector3(randX, randY, randZ));
 					bullet.spawn(this.position, dirVector, this.accuracy);
-					this.bulletHitCheck(bullet.direction);
+					this.bulletHitCheck(bullet);
 				}
 				break;
 			// Laser: single, long ray. Damages everything in it's path
@@ -284,7 +284,7 @@ class Player extends Character { // eslint-disable-line no-unused-vars
 				posOffset = bullet.Mesh.scale.y * 2;
 				laserBeamPos = new THREE.Vector3(this.position.x + this.facingVector.x * posOffset, this.position.y + this.facingVector.y * posOffset, this.position.z + this.facingVector.z * posOffset);
 				bullet.spawn(laserBeamPos, this.facingVector, this.accuracy, 0, 0.1);
-				this.bulletHitCheck(bullet.direction, true);
+				this.bulletHitCheck(bullet, true);
 				break;
 		}
 	}

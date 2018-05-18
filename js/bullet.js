@@ -13,6 +13,7 @@ class Bullet { // eslint-disable-line no-unused-vars
 		this.lifeTime = this.initialLifeTime;
 		this.direction = null;
 		this.speed = 1.8;
+		this.destructionPoint = null;
 	}
 
 	get position() {
@@ -32,6 +33,14 @@ class Bullet { // eslint-disable-line no-unused-vars
 		this.speed = sp;
 		this.Mesh.position.set(pos.x, 1, pos.z);
 		this.orient(acc);
+	}
+
+	/**
+	 * Set the position where the bullet should be destroyed
+	 * @param {THREE.Vector3} point
+	 */
+	setDestructionPoint(point) {
+		this.destructionPoint = point;
 	}
 
 	/**

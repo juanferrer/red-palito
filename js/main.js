@@ -505,10 +505,26 @@ function updateBullet() {
 	bullets.forEach(b => {
 		if (b.isAlive) {
 			b.lifeTime -= frameTime;
+			let oldPosition = b.position.clone();
 			b.position.add(b.direction.multiplyScalar(b.speed));
+
+			// Check if the destruction point is between the current position and the next position
+			// It's actually checking if the three points form a triangle (but we can assume that the destruction point
+			// is between the 2 other points since we calculated the destruction point as a point in the line defined
+			// by the direction vector)
+			if (b.destructionPoint) {
+				let la = oldPosition.distanceTo(b.position);
+				let lb = b.position.distanceTo(b.destructionPoint);
+				let lc = b.destructionPoint.distanceTo(oldPosition);
+
+				// Pythagoras theorem
+				if (la * la + lb * lb >= lc * lc && la * la + lc * lc >= lb * lb) b.reset();
+			}
+
+
 			//console.log(bullets[i].position);
 		}
-		if (b.lifeTime < 0) {
+		if (b.lifeTime < 0 || (b.destructionPoint && b.position.distanceTo(b.destructionPoint) < 3)) {
 			b.reset();
 		}
 	});
