@@ -90,6 +90,7 @@ class Bullet { // eslint-disable-line no-unused-vars
 		this.isAlive = false;
 		this.direction = null;
 		this.position.set(0, this.initialYPos, 0);
+		this.destructionPoint = undefined;
 	}
 
 	/**
