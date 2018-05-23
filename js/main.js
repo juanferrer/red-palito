@@ -108,6 +108,7 @@ if (settings.modelsEnabled) loadModels(init);
 else init();
 animate();
 
+/** Reset game so that it can be started again */
 function reset() {
 	setupPlayer();
 	currentEnemyAmount = initialEnemyAmount;
@@ -130,6 +131,10 @@ function reset() {
 	weaponDropCounter = weaponDropTime;
 }
 
+/**
+ * Load models
+ * @param {function} callback
+ */
 function loadModels(callback) {
 	modelLoader.load("./models/enemy.jd", data => {
 		characterGeometry = data.geometries[0];
@@ -137,6 +142,7 @@ function loadModels(callback) {
 	});
 }
 
+/** Load weapon data from JSON */
 function getWeapons() { // eslint-disable-line no-unused-vars
 	let parseResult = parseJSONToVar("weapons.json", "weapons", weapons);
 	parseResult.then(() => {
@@ -442,6 +448,7 @@ function animate() {
 	stats.end();
 }
 
+/** Update state of low HP backdrop depending on player HP */
 function updateLowHPBackdrop() {
 	if (player.HP <= lowHPAnimationThreshold) {
 		Menu.showLowHPBackdrop();
@@ -487,6 +494,7 @@ function updateAttackCounters() {
 	}
 }
 
+/** Decrease sound cooldowns */
 function updateSoundCounters() {
 	enemies.forEach(e => {
 		if (e.isSpawned) {
@@ -535,9 +543,7 @@ function updateBullet() {
 	}
 }
 
-/**
- * Go through all mixers and update their state
- */
+/** Go through all mixers and update their state */
 function updateAnimationMixers() {
 	player.animationMixer.update(frameTime);
 	enemies.forEach(e => {
@@ -627,6 +633,7 @@ function animateEnemies() {
 
 let lowHPAnimationCounter = 0.5;
 
+/** Make pump animation of low HP backdrop */
 function animateLowHPBackdrop() {
 	if (player.HP <= lowHPAnimationThreshold) {
 		lowHPAnimationCounter += frameTime * 2 / player.HP;
@@ -639,6 +646,7 @@ function animateLowHPBackdrop() {
 	}
 }
 
+/** Prepare enemies for spawn */
 function updateSpawnCounters() {
 	for (let i = 0; i < currentEnemyAmount; ++i) {
 		if (enemies[i].shouldSpawn) {
@@ -799,7 +807,7 @@ function enemyAlive() {
 	return false;
 }
 
-/** */
+/** Start spawning a new wave and prepare everything for the next wave*/
 function spawnWave() {
 	triggerIncomingWaveAnim();
 	Audio.waveChangeSound.play();
@@ -812,7 +820,7 @@ function spawnWave() {
 	Drop.weaponDropSpawnedThisWave = false;
 	Drop.wavesSinceHPDrop++;
 
-	// TODO: increase number of enemies to spawn
+	// Increase number of enemies to spawn
 	currentEnemyAmount += 2;
 
 	for (let i = 0; i < currentEnemyAmount; ++i) {

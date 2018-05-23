@@ -28,6 +28,7 @@ class Character { // eslint-disable-line no-unused-vars
 		this.angleRotated = 0;
 	}
 
+	/** Initialise characters */
 	init() {
 		// http://www.cgdev.net/blog/482.html Load models from 3DS Max
 		if (settings.modelsEnabled) this.Mesh = new THREE.SkinnedMesh(this.geometry, this.material);
@@ -43,6 +44,7 @@ class Character { // eslint-disable-line no-unused-vars
 		}
 	}
 
+	/** Add character to scene */
 	addToScene() {
 		this.Mesh.translateY(this.isPlayer ? (settings.modelsEnabled ? 0 : 1) : invisibleYPos);
 		scene.add(this.Mesh);
@@ -75,6 +77,7 @@ class Character { // eslint-disable-line no-unused-vars
 		return direction.applyMatrix4(matrix).normalize();
 	}
 
+	/** Move character back inside of bounds if it ever goes out */
 	correctOutOfBounds() {
 		// x
 		if (this.Mesh.position.x + this.radius > (planeSize / 2)) {

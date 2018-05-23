@@ -62,11 +62,13 @@ class SmallZombie extends Enemy { // eslint-disable-line no-unused-vars
 		}
 	}
 
+	/** Additionally, it resets the material */
 	moveForward() {
 		super.moveForward();
 		this.Mesh.material = this.originalMaterial;
 	}
 
+	/** Small zombies can dash */
 	dashForward() {
 		let newPos = this.Mesh.position;
 		newPos.add(this.facingVector.normalize().multiplyScalar(this.dashSpeed * frameTime));
@@ -75,6 +77,7 @@ class SmallZombie extends Enemy { // eslint-disable-line no-unused-vars
 		this.distanceTraveled += this.dashSpeed * frameTime;
 	}
 
+	/** The attack is made on dash */
 	attack() {
 		super.attack();
 		this.dashCountDown = this.dashTime;
@@ -85,9 +88,7 @@ class SmallZombie extends Enemy { // eslint-disable-line no-unused-vars
 		this.die();
 	}
 
-	/**
- 	*
- 	*/
+	/** */
 	playSound() {
 		this.soundCounter = Math.randomInterval(2, 8);
 		Audio.enemySounds[Math.randomInterval(0, Audio.enemySoundsLength - 1)].play();

@@ -28,6 +28,9 @@ class Drop {
 		this.position.set(0, -10, 0);
 	}
 
+	/**
+	 * @returns {THREE.Vector3}
+	 */
 	get position() {
 		return this.Mesh.position;
 	}

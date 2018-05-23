@@ -214,7 +214,7 @@ class Input {
 	}
 
 	/**
-	 * Rotate camera locally. TODO: global
+	 * Rotate locally
 	 * @param {string} dir - Direction of rotation
 	 * @param {THREE.Object3D} obj - Object to be moved
 	 */

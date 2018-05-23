@@ -40,9 +40,7 @@ class Player extends Character { // eslint-disable-line no-unused-vars
 		this.healAnimationTime = 0.3;
 	}
 
-	/**
-     * Set new player
-     */
+	/** Set new player  */
 	reset() {
 		this.HP = this.initialHP;
 		this.isDead = false;
@@ -66,9 +64,7 @@ class Player extends Character { // eslint-disable-line no-unused-vars
 		this.Mesh.rotation.y = 0;
 	}
 
-	/**
-     * Change current weapon to next owned weapon
-     */
+	/** Change current weapon to next owned weapon */
 	nextWeapon() {
 		// // DEBUG
 		// var w = 1;
@@ -92,9 +88,7 @@ class Player extends Character { // eslint-disable-line no-unused-vars
 		}
 	}
 
-	/**
-     * Set stats to those of the weapon
-     */
+	/** Set stats to those of the weapon */
 	updateWeaponStats() {
 		this.attackSpeed[this.currentWeapon] = weapons[this.currentWeapon].recharge;
 		this.accuracy = weapons[this.currentWeapon].accuracy;
@@ -120,9 +114,7 @@ class Player extends Character { // eslint-disable-line no-unused-vars
 		}
 	}
 
-	/**
-    * Attack whatever is ahead.
-    */
+	/** Attack whatever is ahead */
 	attack() {
 		if (this.weaponsAmmo[this.currentWeapon] == 0) {
 			//this.weaponsAmmo.slice(this.ownedWeapons[this.currentWeapon], 1);
@@ -201,6 +193,7 @@ class Player extends Character { // eslint-disable-line no-unused-vars
 		weapon.classList.add("changed-weapon-anim");
 	}
 
+	/** Shoot/swing/bite/whatever */
 	useWeapon() {
 		this.weaponAnimation();
 		this.gunFlareAnimation();
@@ -244,9 +237,7 @@ class Player extends Character { // eslint-disable-line no-unused-vars
 		}
 	}
 
-	/**
-     * Make the animation for the different weapons
-     */
+	/** Make the animation for the different weapons */
 	weaponAnimation() {
 		let bullet;
 		let dirVector, randX, randY, randZ;
@@ -289,23 +280,24 @@ class Player extends Character { // eslint-disable-line no-unused-vars
 		}
 	}
 
+	/** Display gun flare */
 	gunFlareAnimation() {
 		gunFlare.intensity = 1;
 		gunFlare.color.setHex(gunFlareColor[this.currentWeapon]);
 	}
 
+	/** Play sound of death */
 	playDeathSound() {
 		Audio.playerDeathSounds[Math.randomInterval(0, 2)].play();
 	}
 
+	/** 180 degree turn */
 	turnAround() {
 		this.isTurning = true;
 		this.angleRotated = 0;
 	}
 
-	/**
-     *
-     */
+	/** Die */
 	die() {
 		// TODO:
 		// 1. Animation + sound

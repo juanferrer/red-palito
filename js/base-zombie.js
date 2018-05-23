@@ -22,7 +22,7 @@ class Zombie extends Enemy { // eslint-disable-line no-unused-vars
 		super.init();
 	}
 
-	/**  */
+	/** Play a random sound of the ones available */
 	playSound() {
 		this.soundCounter = Math.randomInterval(2, 8);
 		Audio.enemySounds[Math.randomInterval(0, Audio.enemySoundsLength - 1)].play();

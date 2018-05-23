@@ -21,6 +21,7 @@ class Enemy extends Character { // eslint-disable-line no-unused-vars
 		this.isPlayingBloodAnimation = false;
 	}
 
+
 	init() {
 		super.init();
 	}
@@ -46,7 +47,10 @@ class Enemy extends Character { // eslint-disable-line no-unused-vars
 		}
 	}
 
-	/**  */
+	/**
+	 * Display blood from pointOfImpact
+	 * @param {THREE.Vector3} pointOfImpact Point where bullet hit enemy
+	 */
 	triggerBlood(pointOfImpact) {
 		this.isPlayingBloodAnimation = true;
 		this.bloodCounter = 0;
