@@ -1,9 +1,8 @@
 /* globals THREE, Character, player, game, invisibleYPos, settings,
-	frameTime, getRandomPosition */
+	frameTime, getRandomPosition, damagedMaterial*/
 
 /**
- * Single class meant to be used by players and enemies alike.
- * It has a THREE.Geometry, THREE.Material and THREE.Mesh among others.
+ * General enemy class
  */
 class Enemy extends Character { // eslint-disable-line no-unused-vars
 
@@ -13,15 +12,21 @@ class Enemy extends Character { // eslint-disable-line no-unused-vars
 		this.isSpawned = false;
 		this.soundCounter = Math.randomInterval(2, 8);
 		this.targetPosition = new THREE.Vector3();
+		this.bloodEmissionTime = 0.05; // Seconds
+		this.bloodAnimationTime = 1; // Seconds
+		this.bloodCounter = -1;
+		this.pointOfImpact = new THREE.Vector3();
+		this.hurtMaterial = damagedMaterial;
+		this.isPlayingSpawnAnimation = false;
+		this.isPlayingBloodAnimation = false;
 	}
+
 
 	init() {
 		super.init();
 	}
 
-	/**
-     * Set enemy to its initial state
-     */
+	/**  Set enemy to its initial state */
 	reset() {
 		this.HP = this.initialHP;
 		this.shouldSpawn = true;
@@ -34,14 +39,29 @@ class Enemy extends Character { // eslint-disable-line no-unused-vars
      * Reduce HP of enemy by an amount
      * @param {number} damageDealt - Amount by which HP is reduced
      */
-	receiveDamage(damageDealt) {
+	receiveDamage(damageDealt, pointOfImpact) {
+		this.triggerBlood(pointOfImpact);
 		this.HP -= damageDealt;
 		if (this.HP < 0) {
 			this.die();
 		}
 	}
 
-	// Make enemy turn towards specified position
+	/**
+	 * Display blood from pointOfImpact
+	 * @param {THREE.Vector3} pointOfImpact Point where bullet hit enemy
+	 */
+	triggerBlood(pointOfImpact) {
+		this.isPlayingBloodAnimation = true;
+		this.bloodCounter = 0;
+		this.pointOfImpact = pointOfImpact;
+		this.Mesh.material = damagedMaterial;
+	}
+
+	/**
+	 * Make enemy turn towards specified position
+	 * @param {THREE.Vector3} position
+	 */
 	lookAtPosition(position = player.position) {
 		let vToPos = new THREE.Vector3(this.position.x - position.x, 0, this.position.z - position.z);
 
@@ -59,18 +79,14 @@ class Enemy extends Character { // eslint-disable-line no-unused-vars
 		//this.Mesh.lookAt(new THREE.Vector3(position.x, this.position.y, position.z));
 	}
 
-	/**
-     * Follow player
-     */
+	/**  Follow player */
 	moveTowardPlayer() {
 		this.lookAtPosition();
 		this.moveForward();
 		if (settings.modelsEnabled) this.animationMixer.clipAction(this.animations.walk).play();
 	}
 
-	/**
-     * Attack whatever is ahead.
-     */
+	/** Attack whatever is ahead */
 	attack() {
 		let posVector = new THREE.Vector3(this.position.x, 1, this.position.z);
 		if (this.attackCounter <= 0 && this.HP > 0) {
@@ -88,9 +104,7 @@ class Enemy extends Character { // eslint-disable-line no-unused-vars
 	}
 
 
-	/**
-	 *
-	 */
+	/**  */
 	die() {
 		// TODO:
 		// 1. Animation + sound
@@ -99,15 +113,17 @@ class Enemy extends Character { // eslint-disable-line no-unused-vars
 		this.spawnCountDown = this.initialSpawnCountDown;
 		this.position.set(0, invisibleYPos, 0);
 		game.enemiesKilled++;
+		//this.isPlayingBloodAnimation = false;
+		//this.bloodCounter = 0;
 	}
 
-	/**
-	 *
-	 */
+	/**  */
 	spawn() {
 		super.spawn();
 		//if (!settings.modelsEnabled) this.position.y -= 1;
 		this.targetPosition = getRandomPosition();
 		this.isPlayingSpawnAnimation = true;
+		this.isPlayingBloodAnimation = false;
+		this.Mesh.material = this.originalMaterial;
 	}
 }

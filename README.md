@@ -9,3 +9,26 @@ is [BoxHead](http://www.boxheadgame.com/).
 > You can't win. You can only eventually loose.
 
 Stuff will be added and may end up being something fun.
+
+## Changelog
+
+### v0.3
+
+- Blood particles and setting to disable
+- Enemy hit feedback
+- Heal particles
+- Pulsating low HP vision
+
+### v0.2
+
+- 180º turn mechanic
+- Two types of enemies
+- Enemies start to chase player on sight
+
+### v0.1
+
+- Basic logic implemented
+- Enemies chase player
+- A few weapons to chose from
+- Weapon and HP drops
+- Basic animations

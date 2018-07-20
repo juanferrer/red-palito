@@ -2,8 +2,7 @@
 bigZombieGeometry, bigZombieMaterial */
 
 /**
- * Single class meant to be used by players and enemies alike.
- * It has a THREE.Geometry, THREE.Material and THREE.Mesh among others.
+ * Big enemy class (A.K.A. Biggies)
  */
 class BigZombie extends Enemy { // eslint-disable-line no-unused-vars
 
@@ -19,7 +18,8 @@ class BigZombie extends Enemy { // eslint-disable-line no-unused-vars
 		this.sightDistance = 30;
 		this.damage = 5;
 		this.geometry = bigZombieGeometry;
-		this.material = bigZombieMaterial;
+		this.originalMaterial = bigZombieMaterial;
+		this.material = this.originalMaterial;
 		super.init();
 	}
 

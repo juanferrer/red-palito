@@ -1,6 +1,10 @@
 /* globals $, THREE, bullets,
 weaponDrops, weaponDropAmount, hpDrops, hpDropAmount, planeSize*/
 
+let currentBullet = 0;
+let currentWeaponDrop = 0;
+let currentHPDrop = 0;
+
 /**
  * Math polyfill degrees to radians
  * @param {number} x - Degrees to be converted
@@ -17,12 +21,16 @@ Math.radToDeg = function (x) {
 	return x * (180.0 / Math.PI);
 };
 
+/**
+ * Get a random int between min and max
+ * @param {number} min Lower number, inclusive
+ * @param {*} max Upper boundary, exclusive
+ */
 Math.randomInterval = function (min, max) {
 	return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
-let currentBullet = 0;
-
+/** Get the next bullet to be shoot */
 function getNextBullet() { // eslint-disable-line no-unused-vars
 	let bullet = bullets[currentBullet];
 	bullet.isAlive = true;
@@ -44,22 +52,24 @@ function parseJSONToVar(file, object, copyTo) { // eslint-disable-line no-unused
 	});
 }
 
-let currentWeaponDrop = 0;
-
+/** Get the next weapon drop ready */
 function getNextWeaponDrop() { // eslint-disable-line no-unused-vars
 	const wd = weaponDrops[currentWeaponDrop];
 	currentWeaponDrop = currentWeaponDrop < weaponDropAmount - 1 ? currentWeaponDrop + 1 : 0;
 	return wd;
 }
 
-let currentHPDrop = 0;
-
+/** Get the next HP drop ready */
 function getNextHPDrop() { // eslint-disable-line no-unused-vars
 	const hpd = hpDrops[currentHPDrop];
 	currentHPDrop = currentHPDrop < hpDropAmount - 1 ? currentHPDrop + 1 : 0;
 	return hpd;
 }
 
+/**
+ * Get a random position in a plane of maxSize * maxSize
+ * @param {number} maxSize Size of plane
+ */
 function getRandomPosition(maxSize = planeSize) { // eslint-disable-line no-unused-vars
 	return new THREE.Vector3(((Math.random() * maxSize) - (maxSize / 2.0)),
 		0,

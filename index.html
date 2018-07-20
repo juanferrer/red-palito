@@ -17,10 +17,19 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
 	<link rel="stylesheet" href="styles/style.css">
 	<link href="https://fonts.googleapis.com/css?family=Anton" rel="stylesheet">
+	<link rel="shortcut icon" href="favicon.ico">
+	<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+	<link rel="manifest" href="manifest.json">
+	<link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
+	<meta name="msapplication-TileColor" content="#da532c">
+	<meta name="theme-color" content="#ffffff">
 </head>
 
 <body>
 
+	<!-- Menus -->
 	<div id="menu" class="gui">
 		<div id="main-menu" class="menu">
 			<div id="main-menu-buttons" class="button-container">
@@ -73,6 +82,16 @@
 							<input type="button" class="settings-button" id="turn-direction-button" value="RIGHT">
 						</div>
 					</label>
+					<label class="settings-label"> Mobile controller
+						<div id="mobile-controller-container" class="setting-value">
+							<input type="button" class="settings-button" id="mobile-controller-button" value="HIDE">
+						</div>
+					</label>
+					<label class="settings-label"> Blood
+						<div id="mobile-controller-container" class="setting-value">
+							<input type="button" class="settings-button" id="blood-button" value="ON">
+						</div>
+					</label>
 				</div>
 				<div class="row-button-container">
 					<button id="save-settings-button" class="menu-button">SAVE</button>
@@ -83,12 +102,32 @@
 	</div>
 
 	<!-- GUI -->
+	<div id="low-hp-veins" class="backdrop"></div>
+	<div id="low-hp-backdrop" class="backdrop"></div>
 	<div id="wave-number" class="gui gui-main gui-hud">0</div>
 	<div id="hp-bar" class="gui gui-main gui-hud">XX</div>
 
 	<div id="current-weapon-stats" class="gui gui-hud">
 		<div id="current-weapon-name" class="gui stats gui-hud">XX</div>
 		<div id="current-weapon-ammo" class="gui stats gui-hud">XX</div>
+	</div>
+
+	<div id="mobile-controller" class="mobile-controller">
+		<div id="directional-pad" class="mobile-button-pad directional-pad">
+			<button id="up-button" class="mobile-button" data-keycode="">&#x25B2</button>
+			<div class="left-right-button-container">
+				<button id="left-button" class="mobile-button" data-keycode="">&#x25C0</button>
+				<button id="right-button" class="mobile-button" data-keycode="">&#x25B6</button>
+			</div>
+			<button id="down-button" class="mobile-button" data-keycode="">&#x25BC</button>
+		</div>
+		<div id="pause-pad" class="mobile-button-pad">
+			<button id="pause-button" class="mobile-button" data-keycode="">MENU</button>
+		</div>
+		<div id="other-pad" class="mobile-button-pad">
+			<button id="shift-button" class="mobile-button" data-keycode="">B</button>
+			<button id="attack-button" class="mobile-button" data-keycode="">A</button>
+		</div>
 	</div>
 
 	<script src="https://rawgit.com/mrdoob/stats.js/master/build/stats.min.js"></script>
@@ -108,7 +147,7 @@
 	<script src="js/small-zombie.js"></script>
 	<script src="js/weapon.js"></script>
 	<script src="js/menu.js"></script>
-	<script src="js/settings.js"></script>
+	<script src="3rd-party/GPUParticleSystem.js"></script>
 	<script src="js/main.js"></script>
 </body>
 

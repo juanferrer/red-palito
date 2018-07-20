@@ -1,6 +1,6 @@
 /*global THREE, Stats, $
 parseJSONToVar, getRandomPosition, getNextHPDrop, getNextWeaponDrop
-Bullet, Drop, Input, Menu, Player, Zombie, BigZombie, SmallZombie, settings
+Bullet, Drop, Input, Menu, Player, Zombie, BigZombie, SmallZombie
 */
 
 let clock, scene, camera, renderer;
@@ -27,11 +27,13 @@ let game = {
 	enemiesKilled: 0,
 	packagesReceived: 0,
 	bulletsUsed: 0,
-	statsUpdated: false
+	statsUpdated: false,
+	time: 0
 };
 
 let isWaveSpawning = true;
 
+const lowHPAnimationThreshold = 4;
 
 let bullets = [];
 const bulletsAmount = 30;
@@ -55,6 +57,9 @@ const invisibleYPos = 100; // eslint-disable-line no-unused-vars
 
 let lightFlickerCounter = 0; // eslint-disable-line no-unused-vars
 
+let settings;
+loadSettings();
+
 /* Materials */
 const playerMaterial = new THREE.MeshPhongMaterial({ color: playerColour, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
 	zombieMaterial = new THREE.MeshPhongMaterial({ color: 0x4CAF50, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
@@ -62,6 +67,7 @@ const playerMaterial = new THREE.MeshPhongMaterial({ color: playerColour, skinni
 	smallZombieMaterial = new THREE.MeshPhongMaterial({ color: 0xD1B829, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
 	smallZombiePrepareMaterial = new THREE.MeshPhongMaterial({ color: 0xD16729, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
 	smallZombieDashMaterial = new THREE.MeshPhongMaterial({ color: 0xFF0000, skinning: settings.modeslEnabled ? true : false }), // eslint-disable-line no-unused-vars
+	damagedMaterial = new THREE.MeshPhongMaterial({ color: 0xB30000, skinning: settings.modelsEnabled ? true : false }), // eslint-disable-line no-unused-vars
 	weaponDropMaterial = new THREE.MeshPhongMaterial({ color: 0xFF5722 }), // eslint-disable-line no-unused-vars
 	hpDropMaterial = new THREE.MeshPhongMaterial({ color: 0x4CAF50 }), // eslint-disable-line no-unused-vars
 	planeMaterial = new THREE.MeshPhongMaterial({ color: planeColor }); // eslint-disable-line no-unused-vars
@@ -73,12 +79,19 @@ let characterGeometry = new THREE.BoxBufferGeometry(1, 2, 1), // eslint-disable-
 	smallZombieGeometry = new THREE.BoxBufferGeometry(1, 1, 1), // eslint-disable-line no-unused-vars
 	dropGeometry = new THREE.BoxBufferGeometry(1, 1, 1); // eslint-disable-line no-unused-vars
 
-
 let stats = new Stats();
 stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
 if (settings.isDev) document.body.appendChild(stats.dom);
+if (!settings.isMobile) $("#mobile-controller").css("display", "none");
 
 let modelLoader = new THREE.JDLoader();
+let textureLoader = new THREE.TextureLoader();
+
+let healParticlesTexture = textureLoader.load("textures/heal-particle.png");
+let bloodParticlesTexture = textureLoader.load("textures/blood-particle.png");
+
+let bloodParticleSystem = new THREE.GPUParticleSystem({ maxParticles: 25000, particleSpriteTex: bloodParticlesTexture, blending: THREE.NormalBlending });
+let healParticleSystem = new THREE.GPUParticleSystem({ maxParticles: 25000, particleSpriteTex: healParticlesTexture, blending: THREE.AdditiveBlending });
 
 /**
  * Window resize event handler
@@ -95,18 +108,33 @@ if (settings.modelsEnabled) loadModels(init);
 else init();
 animate();
 
+/** Reset game so that it can be started again */
 function reset() {
 	setupPlayer();
 	currentEnemyAmount = initialEnemyAmount;
 	game.waveNumber = 1;
 	game.statsUpdated = false;
 	game.bulletsUsed = game.enemiesKilled = game.packagesReceived = 0;
+	game.time = 0;
 	isWaveSpawning = true;
+
+	// If we don't reset the particle system, users will see repetitions of previous particles
+	scene.remove(bloodParticleSystem);
+	bloodParticleSystem = new THREE.GPUParticleSystem({ maxParticles: 25000, particleSpriteTex: bloodParticlesTexture, blending: THREE.NormalBlending });
+	scene.add(bloodParticleSystem);
+
+	scene.remove(healParticleSystem);
+	healParticleSystem = new THREE.GPUParticleSystem({ maxParticles: 25000, particleSpriteTex: healParticlesTexture, blending: THREE.AdditiveBlending });
+	scene.add(healParticleSystem);
 
 	healthDropCounter = healthDropTime;
 	weaponDropCounter = weaponDropTime;
 }
 
+/**
+ * Load models
+ * @param {function} callback
+ */
 function loadModels(callback) {
 	modelLoader.load("./models/enemy.jd", data => {
 		characterGeometry = data.geometries[0];
@@ -114,6 +142,7 @@ function loadModels(callback) {
 	});
 }
 
+/** Load weapon data from JSON */
 function getWeapons() { // eslint-disable-line no-unused-vars
 	let parseResult = parseJSONToVar("weapons.json", "weapons", weapons);
 	parseResult.then(() => {
@@ -140,6 +169,7 @@ function init() {
 	healthDropCounter = healthDropTime;
 	weaponDropCounter = weaponDropTime;
 	Input.keyboardInit();
+	Input.mobileControllerInit();
 
 	scene = new THREE.Scene();
 
@@ -165,7 +195,10 @@ function init() {
 		setGunFlare();
 
 		player.Mesh.add(listener);
+		updateUI();
 	});
+
+	scene.add(bloodParticleSystem);
 
 	// Models
 	for (let i = 0; i < bulletsAmount; ++i) {
@@ -220,10 +253,15 @@ function init() {
 	$("#start-button").click(() => {
 		Menu.isMainMenu = false;
 		Menu.showUI();
+		if (settings.isMobile) Menu.showMobileController();
 		reset();
+		updateUI();
 	});
 	$("#resume-button").click(() => {
 		Input.isPaused = false;
+		Menu.showUI();
+		if (settings.isMobile) Menu.showMobileController();
+		updateUI();
 	});
 	$("#exit-button").click(() => {
 		Menu.isMainMenu = true;
@@ -231,6 +269,7 @@ function init() {
 		Input.isPaused = false;
 		Menu.hideUI();
 		reset();
+		updateUI();
 	});
 
 	$("#play-again-button").click(() => {
@@ -238,7 +277,9 @@ function init() {
 		Menu.hideMenu();
 		Input.isPaused = false;
 		Menu.showUI();
+		if (settings.isMobile) Menu.showMobileController();
 		reset();
+		updateUI();
 	});
 
 	$("#settings-button").click(() => {
@@ -247,12 +288,14 @@ function init() {
 		Menu.showMenu("settings");
 		Input.isPaused = true;
 		Menu.hideUI();
+		updateUI();
 	});
 
 	$("#save-settings-button").click(() => {
 		saveSettings();
 		applySettings();
 		$("#exit-button").click();
+		updateUI();
 	});
 
 	$("#cancel-settings-button").click(() => {
@@ -260,8 +303,18 @@ function init() {
 	});
 
 	$("#turn-direction-button").click(() => {
-		$("#turn-direction-button").val(settings.turn180TowardsRight ? "LEFT" : "RIGHT");
 		settings.turn180TowardsRight = !settings.turn180TowardsRight;
+		$("#turn-direction-button").val(settings.turn180TowardsRight ? "RIGHT" : "LEFT");
+	});
+
+	$("#mobile-controller-button").click(() => {
+		settings.isMobile = !settings.isMobile;
+		$("#mobile-controller-button").val(settings.isMobile ? "SHOW" : "HIDE");
+	});
+
+	$("#blood-button").click(() => {
+		settings.showBlood = !settings.showBlood;
+		$("#blood-button").val(settings.showBlood ? "ON" : "OFF");
 	});
 
 	// #endregion
@@ -278,10 +331,30 @@ function saveSettings() {
 	localStorage.setItem("settings", JSON.stringify(settings));
 }
 
+/** Load settings from the storage or set default settings if empty */
+function loadSettings() {
+	settings = JSON.parse(localStorage.getItem("settings")); // eslint-disable-line no-global-assign
+	if (!settings || $.isEmptyObject(settings)) {
+		settings = {
+			masterVolume: 0.2,
+			ambientVolume: 1,
+			turn180TowardsRight: true,
+			showBlood: true,
+			modelsEnabled: false,
+			isMobile: false,
+			isDev: true
+		};
+		saveSettings();
+	}
+}
+
 /** Pass setting values to controls and game logic */
 function applySettings() {
 	listener.setMasterVolume(settings.masterVolume);
 	$("#volume-slider").val(settings.masterVolume);
+	$("#turn-direction-button").val(settings.turn180TowardsRight ? "RIGHT" : "LEFT");
+	$("#mobile-controller-button").val(settings.isMobile ? "SHOW" : "HIDE");
+	$("#blood-button").val(settings.showBlood ? "ON" : "OFF");
 }
 
 /** Prepare player for game */
@@ -325,7 +398,7 @@ function animate() {
 
 	if (player !== undefined) {
 
-		updateUI();
+		//updateUI();
 
 		Input.resolveInput();
 
@@ -347,8 +420,11 @@ function animate() {
 			}
 
 			moveEnemies();
+			animateEnemies();
 			updateSpawnCounters();
 			collisions();
+
+			animateLowHPBackdrop();
 
 			updateDropCounters();
 
@@ -367,19 +443,30 @@ function animate() {
 		}
 		renderer.render(scene, camera);
 		frameTime = clock.getDelta();
+		game.time += frameTime;
 	}
 	stats.end();
+}
+
+/** Update state of low HP backdrop depending on player HP */
+function updateLowHPBackdrop() {
+	if (player.HP <= lowHPAnimationThreshold) {
+		Menu.showLowHPBackdrop();
+	} else {
+		Menu.hideLowHPBackdrop();
+	}
 }
 
 /** Update elements from the UI */
 function updateUI() {
 	if (Menu.isMainMenu && !Menu.isShowingMenu) {
 		Menu.showMenu("main");
-
 	} else if (Input.isPaused && !Menu.isShowingMenu) {
 		Menu.showMenu("pause");
 	} else if (!Input.isPaused && !Menu.isMainMenu) {
 		Menu.hideMenu();
+		Menu.showUI();
+		if (settings.isMobile) Menu.showMobileController();
 		if (game.waveNumber > 0) {
 			$("#wave-number")[0].innerHTML = game.waveNumber;
 		}
@@ -407,6 +494,7 @@ function updateAttackCounters() {
 	}
 }
 
+/** Decrease sound cooldowns */
 function updateSoundCounters() {
 	enemies.forEach(e => {
 		if (e.isSpawned) {
@@ -425,10 +513,26 @@ function updateBullet() {
 	bullets.forEach(b => {
 		if (b.isAlive) {
 			b.lifeTime -= frameTime;
+			let oldPosition = b.position.clone();
 			b.position.add(b.direction.multiplyScalar(b.speed));
+
+			// Check if the destruction point is between the current position and the next position
+			// It's actually checking if the three points form a triangle (but we can assume that the destruction point
+			// is between the 2 other points since we calculated the destruction point as a point in the line defined
+			// by the direction vector)
+			if (b.destructionPoint) {
+				let la = oldPosition.distanceTo(b.position);
+				let lb = b.position.distanceTo(b.destructionPoint);
+				let lc = b.destructionPoint.distanceTo(oldPosition);
+
+				// Pythagoras theorem
+				if (la * la + lb * lb >= lc * lc && la * la + lc * lc >= lb * lb) b.reset();
+			}
+
+
 			//console.log(bullets[i].position);
 		}
-		if (b.lifeTime < 0) {
+		if (b.lifeTime < 0 || (b.destructionPoint && b.position.distanceTo(b.destructionPoint) < 3)) {
 			b.reset();
 		}
 	});
@@ -439,9 +543,7 @@ function updateBullet() {
 	}
 }
 
-/**
- * Go through all mixers and update their state
- */
+/** Go through all mixers and update their state */
 function updateAnimationMixers() {
 	player.animationMixer.update(frameTime);
 	enemies.forEach(e => {
@@ -471,6 +573,80 @@ function moveEnemies() {
 	});
 }
 
+/** Perform all calculations and animations that happen on particles */
+function animateEnemies() {
+	// Blood enemies
+	enemies.forEach(e => {
+		if (e.isPlayingBloodAnimation) {
+			e.bloodCounter += frameTime;
+			if (e.bloodCounter > e.bloodAnimationTime) {
+				e.isPlayingBloodAnimation = false;
+				e.bloodCounter = 0;
+			} else if (e.bloodCounter > e.bloodEmissionTime) {
+				e.Mesh.material = e.originalMaterial;
+			} else if (settings.showBlood) {
+				for (let i = 0; i < 50; ++i) {
+					bloodParticleSystem.spawnParticle({
+						position: e.pointOfImpact,
+						positionRandomness: 0.2,
+						velocity: new THREE.Vector3().subVectors(player.position, e.pointOfImpact).normalize(),
+						velocityRandomness: 2.15,
+						color: 0xb30000,
+						colorRandomness: 0.1,
+						turbulence: 0.05,
+						lifetime: 0.2,
+						size: 10,
+						sizeRandomness: 5
+					});
+				}
+			}
+		}
+	});
+
+	// Player heal
+	if (player.isPlayingHealAnimation) {
+		player.healCounter += frameTime;
+		if (player.healCounter > player.healAnimationTime) {
+			player.isPlayingHealAnimation = false;
+			player.healCounter = 0;
+		} else {
+			for (let i = 0; i < 10; ++i) {
+				healParticleSystem.spawnParticle({
+					position: player.position,
+					positionRandomness: 2,
+					velocity: new THREE.Vector3(),
+					velocityRandomness: 0.2,
+					color: 0x4fff4d,
+					colorRandomness: 0.2,
+					turbulence: 0,
+					lifetime: 5,
+					size: 10,
+					sizeRandomness: 10
+				});
+			}
+		}
+	}
+
+	bloodParticleSystem.update(game.time);
+	healParticleSystem.update(game.time);
+}
+
+let lowHPAnimationCounter = 0.5;
+
+/** Make pump animation of low HP backdrop */
+function animateLowHPBackdrop() {
+	if (player.HP <= lowHPAnimationThreshold) {
+		lowHPAnimationCounter += frameTime * 2 / player.HP;
+		if (lowHPAnimationCounter > 1) {
+			lowHPAnimationCounter = 0;
+		} else if (lowHPAnimationCounter > 0.5) {
+			$("#low-hp-backdrop").css("opacity", (1 / Math.sin(lowHPAnimationCounter) / 5) + (1 / (player.HP * 2)));
+			$("#low-hp-veins").css("opacity", (1 / Math.sin(lowHPAnimationCounter) / 5)/* + (1 / (player.HP * 2))*/);
+		}
+	}
+}
+
+/** Prepare enemies for spawn */
 function updateSpawnCounters() {
 	for (let i = 0; i < currentEnemyAmount; ++i) {
 		if (enemies[i].shouldSpawn) {
@@ -518,6 +694,8 @@ function enemyCollisions() {
 				a.position.add(direction.clone().multiplyScalar(a.moveSpeed * frameTime));
 				//player.position.add(direction.clone().multiplyScalar(-player.radius / 10));
 				a.attack();
+				updateLowHPBackdrop();
+				updateUI();
 			}
 		}
 	});
@@ -534,6 +712,8 @@ function objectCollisions() {
 				player.heal(d.value);
 				d.unspawn();
 				game.packagesReceived++;
+				updateLowHPBackdrop();
+				updateUI();
 			}
 		}
 	});
@@ -627,7 +807,7 @@ function enemyAlive() {
 	return false;
 }
 
-/** */
+/** Start spawning a new wave and prepare everything for the next wave*/
 function spawnWave() {
 	triggerIncomingWaveAnim();
 	Audio.waveChangeSound.play();
@@ -640,7 +820,7 @@ function spawnWave() {
 	Drop.weaponDropSpawnedThisWave = false;
 	Drop.wavesSinceHPDrop++;
 
-	// TODO: increase number of enemies to spawn
+	// Increase number of enemies to spawn
 	currentEnemyAmount += 2;
 
 	for (let i = 0; i < currentEnemyAmount; ++i) {
