@@ -13,17 +13,24 @@ class Bullet { // eslint-disable-line no-unused-vars
 		this.lifeTime = this.initialLifeTime;
 		this.direction = null;
 		this.speed = 1.8;
+		this.destructionPoint = null;
 	}
 
+	/**
+	 * Gets the position of
+	 * @returns {THREE.Vector3}
+	 */
 	get position() {
 		return this.Mesh.position;
 	}
 
 	/**
-     *
-     * @param {THREE.Vector3} pos - Spawning position
-     * @param {THREE.Vector3} dir - Facing direction of bullet
-     * @param {number} acc - Shot accuracy
+     * Prepare a bullet and place it in the right position
+     * @param {THREE.Vector3} pos Spawning position
+     * @param {THREE.Vector3} dir Facing direction of bullet
+     * @param {number} acc Shot accuracy
+	 * @param {number} sp Speed of bullet
+	 * @param {number} lt Lifetime
      */
 	spawn(pos, dir, acc, sp = 1.8, lt = this.initialLifeTime) {
 		this.direction = dir;
@@ -35,8 +42,16 @@ class Bullet { // eslint-disable-line no-unused-vars
 	}
 
 	/**
+	 * Set the position where the bullet should be destroyed
+	 * @param {THREE.Vector3} point
+	 */
+	setDestructionPoint(point) {
+		this.destructionPoint = point;
+	}
+
+	/**
      * Orient bullet towards target
-     * @param {number} acc - Shot accuracy
+     * @param {number} acc Shot accuracy
      */
 	orient(acc) {
 		const randX = Math.max((Math.random() - acc) / 20, 0);
@@ -47,9 +62,9 @@ class Bullet { // eslint-disable-line no-unused-vars
 	}
 
 	/**
-    *
-     * @param {number} weaponIndex - Index of weapon to prepare bullet for
-    */
+     * Prepare bullet for specific weapon
+     * @param {number} weaponIndex Index of weapon to prepare bullet for
+     */
 	prepareForWeapon(weaponIndex) {
 		switch (weaponIndex) {
 			case 0: // Pistol
@@ -72,21 +87,20 @@ class Bullet { // eslint-disable-line no-unused-vars
 	}
 
 
-	/**
-     * Set bullet to its initial state
-     */
+	/** Set bullet to its initial state */
 	reset() {
 		this.Material.color.setHex(0x0);
 		this.Mesh.scale.y = 1;
 		this.isAlive = false;
 		this.direction = null;
 		this.position.set(0, this.initialYPos, 0);
+		this.destructionPoint = undefined;
 	}
 
 	/**
-    * Gets the Y vector of the model. A.K.A. Upward
-    * @returns {THREE.Vector3}
-    */
+     * Gets the Z vector of the model. A.K.A. Forward
+     * @returns {THREE.Vector3}
+     */
 	get frontVector() {
 		let matrix = new THREE.Matrix4();
 		matrix.extractRotation(this.Mesh.matrix);

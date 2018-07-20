@@ -2,8 +2,7 @@
 zombieGeometry, zombieMaterial */
 
 /**
- * Single class meant to be used by players and enemies alike.
- * It has a THREE.Geometry, THREE.Material and THREE.Mesh among others.
+ * Basic enemy class
  */
 class Zombie extends Enemy { // eslint-disable-line no-unused-vars
 
@@ -18,13 +17,12 @@ class Zombie extends Enemy { // eslint-disable-line no-unused-vars
 		this.startingYPos = 1;
 		this.sightDistance = 25;
 		this.geometry = zombieGeometry;
-		this.material = zombieMaterial;
+		this.originalMaterial = zombieMaterial;
+		this.material = this.originalMaterial;
 		super.init();
 	}
 
-	/**
- 	*
- 	*/
+	/** Play a random sound of the ones available */
 	playSound() {
 		this.soundCounter = Math.randomInterval(2, 8);
 		Audio.enemySounds[Math.randomInterval(0, Audio.enemySoundsLength - 1)].play();

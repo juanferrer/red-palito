@@ -2,8 +2,7 @@
 smallZombieGeometry, smallZombieMaterial, smallZombiePrepareMaterial, smallZombieDashMaterial*/
 
 /**
- * Single class meant to be used by players and enemies alike.
- * It has a THREE.Geometry, THREE.Material and THREE.Mesh among others.
+ * Small enemy class (A.K.A. Zoomies)
  */
 class SmallZombie extends Enemy { // eslint-disable-line no-unused-vars
 
@@ -23,7 +22,8 @@ class SmallZombie extends Enemy { // eslint-disable-line no-unused-vars
 		this.shouldSpawn = true;
 		this.damage = 2;
 		this.geometry = smallZombieGeometry;
-		this.material = smallZombieMaterial;
+		this.originalMaterial = smallZombieMaterial;
+		this.material = this.originalMaterial;
 		super.init();
 	}
 
@@ -42,6 +42,7 @@ class SmallZombie extends Enemy { // eslint-disable-line no-unused-vars
 				this.targetPosition = new THREE.Vector3(player.position.x, this.position.y, player.position.z);
 			}
 		} else {
+			if (this.position.y < this.startingYPos) this.position.y = this.startingYPos;
 			if (this.dashCountDown > 1) {
 				this.Mesh.material = smallZombiePrepareMaterial;
 			} else {
@@ -62,11 +63,13 @@ class SmallZombie extends Enemy { // eslint-disable-line no-unused-vars
 		}
 	}
 
+	/** Additionally, it resets the material */
 	moveForward() {
 		super.moveForward();
-		this.Mesh.material = smallZombieMaterial;
+		this.Mesh.material = this.originalMaterial;
 	}
 
+	/** Small zombies can dash */
 	dashForward() {
 		let newPos = this.Mesh.position;
 		newPos.add(this.facingVector.normalize().multiplyScalar(this.dashSpeed * frameTime));
@@ -75,6 +78,7 @@ class SmallZombie extends Enemy { // eslint-disable-line no-unused-vars
 		this.distanceTraveled += this.dashSpeed * frameTime;
 	}
 
+	/** The attack is made on dash */
 	attack() {
 		super.attack();
 		this.dashCountDown = this.dashTime;
@@ -85,9 +89,7 @@ class SmallZombie extends Enemy { // eslint-disable-line no-unused-vars
 		this.die();
 	}
 
-	/**
- 	*
- 	*/
+	/** */
 	playSound() {
 		this.soundCounter = Math.randomInterval(2, 8);
 		Audio.enemySounds[Math.randomInterval(0, Audio.enemySoundsLength - 1)].play();
