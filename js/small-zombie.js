@@ -42,6 +42,7 @@ class SmallZombie extends Enemy { // eslint-disable-line no-unused-vars
 				this.targetPosition = new THREE.Vector3(player.position.x, this.position.y, player.position.z);
 			}
 		} else {
+			if (this.position.y < this.startingYPos) this.position.y = this.startingYPos;
 			if (this.dashCountDown > 1) {
 				this.Mesh.material = smallZombiePrepareMaterial;
 			} else {
