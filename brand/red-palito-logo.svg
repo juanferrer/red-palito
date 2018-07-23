@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="100"
+   height="100"
+   viewBox="0 0 99.999997 99.999997"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="red-palito-logo.svg"
+   inkscape:export-filename="C:\Users\juanf\Documents\Projects\JuanFerrer.github.io\img\red-palito-logo.png"
+   inkscape:export-xdpi="217.90204"
+   inkscape:export-ydpi="217.90204">
+  <defs
+     id="defs4">
+    <linearGradient
+       id="linearGradient4709"
+       osb:paint="solid">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop4711" />
+    </linearGradient>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath4909">
+      <circle
+         clip-path="none"
+         r="44.194172"
+         cy="49.997459"
+         cx="50.002552"
+         id="circle4911"
+         style="display:inline;fill:#33a5c1;fill-opacity:1;stroke:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </clipPath>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="5.6"
+     inkscape:cx="20.091315"
+     inkscape:cy="49.982554"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer3"
+     showgrid="false"
+     units="px"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1">
+    <sodipodi:guide
+       position="31.946073,50.00255"
+       orientation="0,1"
+       id="guide4686" />
+    <sodipodi:guide
+       position="50.00255,55.684657"
+       orientation="1,0"
+       id="guide4688" />
+    <sodipodi:guide
+       position="50.00255,50.00255"
+       orientation="-0.70710678,0.70710678"
+       id="guide4723" />
+    <sodipodi:guide
+       position="50.00255,50.00255"
+       orientation="0.70710678,0.70710678"
+       id="guide4725" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="BG"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-952.36222)"
+     style="display:inline">
+    <circle
+       style="fill:#828282;fill-opacity:1;stroke:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path4690"
+       cx="50.002552"
+       cy="1002.3597"
+       r="49.908459"
+       clip-path="none" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Shadow"
+     style="display:inline">
+    <path
+       style="fill:#000000;fill-opacity:0.55111108;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 50.002552,50.249987 18.750957,81.249043 c 0,0 18.839949,18.099089 30.746519,18.182746 12.197596,0.0857 31.75667,-18.182746 31.75667,-18.182746 z"
+       id="path4727"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccacc"
+       clip-path="url(#clipPath4909)"
+       transform="matrix(1.1292995,0,0,1.1292995,-6.4653066,-6.4646482)" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Palito"
+     style="display:inline">
+    <rect
+       ry="0.291453"
+       rx="0.64938432"
+       y="12.779995"
+       x="32.035503"
+       height="54.756714"
+       width="35.93409"
+       id="rect4913"
+       style="fill:#f44336;fill-opacity:1;stroke:none;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <rect
+       style="fill:#8e1108;fill-opacity:1;stroke:none;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4699"
+       width="35.93409"
+       height="54.756714"
+       x="32.035503"
+       y="28.7507"
+       rx="0.64938432"
+       ry="0.291453" />
+  </g>
+</svg>
