@@ -1,5 +1,5 @@
 # Red Palito
-It is mainly an experiment to try a WebGL based framework. I'm using [Three.js](https://threejs.org/)
+It is mainly an experiment to try a WebGL based framework. I'm using [Three.js r100](https://threejs.org/)
 ([Repo](https://github.com/mrdoob/three.js/)).
 
 It's a classic survival, so the objetive of the game is to stay alive as long as possible while killing
